@@ -4,7 +4,7 @@ import {
   number,
   object,
   safeParse,
-} from "https://deno.land/x/valibot@v0.29.0/mod.ts";
+} from "https://deno.land/x/valibot@v0.30.0/mod.ts";
 import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@6.1.0";
 import { join } from "https://deno.land/std@0.220.1/path/mod.ts";
 import { type Project, projectSchema } from "./type.ts";
