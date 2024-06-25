@@ -10,7 +10,7 @@ import {
   regex,
   string,
   transform,
-} from "jsr:@valibot/valibot@0.30.0";
+} from "jsr:@valibot/valibot@0.35.0";
 
 const inputProjectSchema = object({
   id: number(),

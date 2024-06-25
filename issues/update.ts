@@ -2,7 +2,7 @@ import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@6.2.2";
 import { Context } from "../context.ts";
 import { Issue } from "./type.ts";
 import { join } from "jsr:@std/path@0.225.2";
-import { array, is, object, string } from "jsr:@valibot/valibot@0.30.0";
+import { array, is, object, string } from "jsr:@valibot/valibot@0.35.0";
 import { convertError } from "../error.ts";
 
 type UpdateOption = {

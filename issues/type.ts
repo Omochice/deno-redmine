@@ -11,7 +11,7 @@ import {
   string,
   transform,
   union,
-} from "jsr:@valibot/valibot@0.30.0";
+} from "jsr:@valibot/valibot@0.35.0";
 
 export type IdName = Output<typeof IdName>;
 export const IdName = object({
