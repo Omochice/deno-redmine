@@ -4,7 +4,7 @@ import {
   number,
   object,
   string,
-} from "jsr:@valibot/valibot@0.41.0";
+} from "jsr:@valibot/valibot@0.42.1";
 
 export const trackerSchema = object({
   id: number(),
