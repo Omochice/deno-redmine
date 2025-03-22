@@ -11,7 +11,7 @@ export function convertError(
 }
 
 export class UnprocessableEntityError extends Error {
-  cause: Response;
+  override cause: Response;
   constructor(response: Response) {
     super(response.statusText);
     this.cause = response;
