@@ -1,5 +1,5 @@
 import { array, object, parse } from "jsr:@valibot/valibot@0.41.0";
-import { ResultAsync } from "npm:neverthrow@7.2.0";
+import { ResultAsync } from "npm:neverthrow@8.2.0";
 import { join } from "jsr:@std/url@1.0.0-rc.3";
 import { type Tracker, trackerSchema } from "./type.ts";
 import type { Context } from "../context.ts";
