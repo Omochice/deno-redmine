@@ -1,7 +1,7 @@
 import { fetchList } from "./list.ts";
 import { contexts, handler } from "./list.mock.ts";
 import { setupServer } from "npm:msw@2.7.3/node";
-import { assert } from "jsr:@std/assert@1.0.11";
+import { assert } from "jsr:@std/assert@1.0.12";
 
 const server = setupServer(...handler);
 server.listen();
