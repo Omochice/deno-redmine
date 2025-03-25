@@ -1,7 +1,7 @@
 import { show } from "./show.ts";
 import { context, handler } from "./show.mock.ts";
 import { setupServer } from "npm:msw@2.7.3/node";
-import { assert } from "jsr:@std/assert@1.0.11";
+import { assert } from "jsr:@std/assert@1.0.12";
 
 const server = setupServer(...handler);
 server.listen();
