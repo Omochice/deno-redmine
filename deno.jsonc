@@ -5,7 +5,7 @@
     "check": "deno check ./**/*.ts",
     "lint": "deno lint ./**/*.ts",
     "test": "deno test --unstable-broadcast-channel --allow-env=DEBUG",
-    "test:coverage": "mkdir coverage -p && deno test --unstable-broadcast-channel --coverage=coverage/coverage && deno coverage coverage/coverage --lcov --output=coverage/lcov.info"
+    "test:coverage": "mkdir coverage -p && deno test --unstable-broadcast-channel --coverage=coverage/coverage --allow-env=DEBUG && deno coverage coverage/coverage --lcov --output=coverage/lcov.info"
   },
   "lock": false,
   "fmt": {
