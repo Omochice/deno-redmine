@@ -2,7 +2,7 @@ import { listIssues } from "./list.ts";
 import { assert } from "jsr:@std/assert@1.0.13";
 
 import { context, invalidHandler, validHandler } from "./list.mock.ts";
-import { setupServer } from "npm:msw@2.8.5/node";
+import { setupServer } from "npm:msw@2.8.6/node";
 
 const server = setupServer();
 server.listen();
