@@ -47,6 +47,27 @@ export const validResponseHandelrs = [
       },
     });
   }),
+  http.get(
+    `${context.endpoint}/projects/:id/wiki/:page/:version.json`,
+    ({ params }) => {
+      const { id, page, version } = params;
+      return HttpResponse.json({
+        wiki_page: {
+          title: page,
+          version: Number(version),
+          text: `# sample page on project ${id}`,
+          author: {
+            id: 1,
+            name: "Admin User",
+            login: "admin",
+          },
+          comments: "Updated via API",
+          created_on: "2023-01-01T00:00:00Z",
+          updated_on: "2023-01-02T00:00:00Z",
+        },
+      });
+    },
+  ),
   http.put(
     `${context.endpoint}/projects/:id/wiki/create.json`,
     async ({ request }) => {

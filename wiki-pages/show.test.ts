@@ -24,3 +24,13 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
     assert(e.error.message === "Unprocessable Entity");
   });
 });
+
+Deno.test("GET /projects/:id/wiki/:page/:version.json", async (t) => {
+  await t.step("if got 200, should be success", async () => {
+    server.resetHandlers(...validResponseHandelrs);
+    const e = await show(context, 1, "sample-title", 3);
+    assert(e.isOk());
+    assert(e.value.title === "sample-title");
+    assert(e.value.version === 3);
+  });
+});
