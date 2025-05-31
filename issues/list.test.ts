@@ -1,15 +1,15 @@
 import { listIssues } from "./list.ts";
 import { assert } from "jsr:@std/assert@1.0.13";
 
-import { context, invalidHandler, validHandler } from "./list.mock.ts";
+import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.8.7/node";
 
 const server = setupServer();
 server.listen();
 
-Deno.test("test for redmine issue 'list' endpoint", async (t) => {
+Deno.test("GET /projects/issues.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
-    server.resetHandlers(...validHandler);
+    server.resetHandlers(...validHandlers);
     const e = await listIssues(context);
     assert(e.isOk());
   });
@@ -17,7 +17,7 @@ Deno.test("test for redmine issue 'list' endpoint", async (t) => {
   await t.step(
     "if get invalid response with error object, should be err with error text",
     async () => {
-      server.resetHandlers(...invalidHandler);
+      server.resetHandlers(...invalidHandlers);
       const e = await listIssues(context);
       assert(e.isErr());
     },

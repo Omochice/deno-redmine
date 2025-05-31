@@ -11,7 +11,7 @@ import {
   string,
   transform,
 } from "jsr:@valibot/valibot@1.1.0";
-import { join } from "jsr:@std/url@1.0.0-rc.3";
+import { join } from "jsr:@std/path@1.1.0/posix/join";
 import { Context } from "../context.ts";
 import { UnprocessableEntityError } from "../error.ts";
 import { ResultAsync } from "npm:neverthrow@8.2.0";
