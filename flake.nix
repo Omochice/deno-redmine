@@ -81,6 +81,8 @@
               ${pkgs.actionlint}/bin/actionlint
               ${pkgs.ghalint}/bin/ghalint --version
               ${pkgs.ghalint}/bin/ghalint run
+              ${pkgs.zizmor}/bin/zizmor --version
+              ${pkgs.zizmor}/bin/zizmor ./.github/workflows
             ''
             |> runAs "check-actions";
           check-renovate-config =
