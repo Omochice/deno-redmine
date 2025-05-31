@@ -97,10 +97,12 @@ export const wikiDetail = pipe(
  */
 export function makeWikiPutRequest(wiki: WikiContent) {
   const page = {
-    text: sanitizeTitle(wiki.text),
+    text: wiki.text,
     comments: wiki.comments,
     version: wiki.version,
-    parent_title: wiki.parentTitle,
+    parent_title: wiki.parentTitle == null
+      ? undefined
+      : sanitizeTitle(wiki.parentTitle),
   } satisfies Omit<SnakeCasedProperties<WikiContent>, "title">;
   return { wiki_page: page };
 }
