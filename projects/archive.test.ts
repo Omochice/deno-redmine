@@ -30,7 +30,7 @@ Deno.test("PUT /projects/:id/archive.json", async (t) => {
   });
 });
 
-Deno.test("PUT /projects/:id/aunrchive.json", async (t) => {
+Deno.test("PUT /projects/:id/unarchive.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.use(...validHandlers);
     const e = await unarchive(1, context);
