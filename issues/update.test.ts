@@ -1,13 +1,14 @@
 import { update } from "./update.ts";
 import { assert } from "jsr:@std/assert@1.0.13";
-import { context, handler } from "./update.mock.ts";
+import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.8.7/node";
 
-const server = setupServer(...handler);
+const server = setupServer();
 server.listen();
 
-Deno.test("test for redmine project 'update' endpoint", async (t) => {
+Deno.test("PUT /projects/issues/:id.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
+    server.resetHandlers(...validHandlers);
     const e = await update(1, { notes: "sample" }, context);
     assert(e.isOk());
   });
@@ -15,17 +16,15 @@ Deno.test("test for redmine project 'update' endpoint", async (t) => {
   await t.step(
     "if get invalid response with error object, should be err with error text",
     async () => {
-      const e = await update(2, { notes: "sample" }, context);
+      server.resetHandlers(...invalidHandlers);
+      const e = await update(411, { notes: "sample" }, context);
       assert(e.isErr());
-      // assertEquals(
-      //   e.error.message,
-      //   JSON.stringify((urlTable.get(2)?.obj as { errors: string[] }).errors),
-      // );
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
-    const e = await update(3, { notes: "sample" }, context);
+    server.resetHandlers(...invalidHandlers);
+    const e = await update(404, { notes: "sample" }, context);
     assert(e.isErr());
   });
 });
