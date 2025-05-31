@@ -44,7 +44,7 @@ export class Client {
   }
 
   /**
-   * Create a wiki page in the project
+   * Update a wiki page in the project
    *
    * @param projectId The project ID
    * @param wiki wiki content object
@@ -54,7 +54,7 @@ export class Client {
   }
 
   /**
-   * Update a wiki page in the project
+   * Create a wiki page in the project
    *
    * @param projectId The project ID
    * @param wiki wiki content object
