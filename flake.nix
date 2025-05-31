@@ -99,12 +99,12 @@
               ${pkgs.deno}/bin/deno task test
             ''
             |> runAs "check-deno";
-          test-cavarage =
+          test-coverage =
             ''
               set -e
-              ${pkgs.deno}/bin/deno test test:coverage
+              ${pkgs.deno}/bin/deno task test:coverage
             ''
-            |> runAs "test-cavarage";
+            |> runAs "test-coverage";
         };
       }
     );
