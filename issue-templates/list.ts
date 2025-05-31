@@ -1,7 +1,7 @@
 import type { Context } from "../context.ts";
 import { parse } from "jsr:@valibot/valibot@1.1.0";
 import { ResultAsync } from "npm:neverthrow@8.2.0";
-import { join } from "jsr:@std/url@1.0.0-rc.3";
+import { join } from "jsr:@std/path@1.1.0/posix/join";
 import { convertError } from "../error.ts";
 import { type Response_, responseSchema } from "./type.ts";
 

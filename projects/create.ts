@@ -1,5 +1,5 @@
 import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@8.2.0";
-import { join } from "jsr:@std/path@1.1.0";
+import { join } from "jsr:@std/path@1.1.0/posix/join";
 import type { Context } from "../context.ts";
 import { array, is, object, string } from "jsr:@valibot/valibot@1.1.0";
 import type { ProjectRequest } from "./type.ts";
