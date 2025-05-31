@@ -6,7 +6,7 @@ export const context = {
   endpoint: "http://redmine.example.com",
 };
 
-export const validResponseHandelrs = [
+export const validResponseHandelers = [
   http.get(
     `${context.endpoint}/projects/:id/wiki/index.json`,
     () => {

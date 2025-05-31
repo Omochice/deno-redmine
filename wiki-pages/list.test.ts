@@ -4,7 +4,7 @@ import { assert } from "jsr:@std/assert@1.0.13";
 import {
   context,
   invalidResponseHandlers,
-  validResponseHandelrs,
+  validResponseHandelers,
 } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.8.5/node";
 
@@ -13,7 +13,7 @@ server.listen();
 
 Deno.test("GET /projects/:id/wiki/index.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
-    server.resetHandlers(...validResponseHandelrs);
+    server.resetHandlers(...validResponseHandelers);
     const e = await fetchList(context, 1);
     assert(e.isOk());
     assert(e.value.length === 2);

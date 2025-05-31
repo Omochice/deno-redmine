@@ -3,7 +3,7 @@ import { assert } from "jsr:@std/assert@1.0.13";
 import {
   context,
   invalidResponseHandlers,
-  validResponseHandelrs,
+  validResponseHandelers,
 } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.8.5/node";
 
@@ -12,7 +12,7 @@ server.listen();
 
 Deno.test("POST /project/:id/wiki/:page.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
-    server.resetHandlers(...validResponseHandelrs);
+    server.resetHandlers(...validResponseHandelers);
     const r = await create(context, 1, {
       title: "create",
       text: "sample text",
