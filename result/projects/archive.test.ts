@@ -10,7 +10,7 @@ server.listen();
 Deno.test("PUT /projects/:id/archive.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.use(...validHandlers);
-    const e = await archive(1, context);
+    const e = await archive(context, 1);
     assert(e.isOk());
   });
 
@@ -18,14 +18,14 @@ Deno.test("PUT /projects/:id/archive.json", async (t) => {
     "if get invalid response with error object, should be err with error text",
     async () => {
       server.use(...invalidHandlers);
-      const e = await archive(422, context);
+      const e = await archive(context, 422);
       assert(e.isErr());
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
-    const e = await archive(404, context);
+    const e = await archive(context, 404);
     assert(e.isErr());
   });
 });
@@ -33,7 +33,7 @@ Deno.test("PUT /projects/:id/archive.json", async (t) => {
 Deno.test("PUT /projects/:id/unarchive.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.use(...validHandlers);
-    const e = await unarchive(1, context);
+    const e = await unarchive(context, 1);
     assert(e.isOk());
   });
 
@@ -41,14 +41,14 @@ Deno.test("PUT /projects/:id/unarchive.json", async (t) => {
     "if get invalid response with error object, should be err with error text",
     async () => {
       server.use(...invalidHandlers);
-      const e = await unarchive(422, context);
+      const e = await unarchive(context, 422);
       assert(e.isErr());
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
-    const e = await unarchive(404, context);
+    const e = await unarchive(context, 404);
     assert(e.isErr());
   });
 });

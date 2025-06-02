@@ -1,8 +1,6 @@
-import { ResultAsync } from "npm:neverthrow@8.2.0";
-import type { Context } from "../context.ts";
+import type { Context } from "../../context.ts";
 import { fetchList } from "./list.ts";
 import { show } from "./show.ts";
-import type { Project } from "./type.ts";
 import { create } from "./create.ts";
 import type { ProjectRequest } from "./type.ts";
 import { type ProjectUpdateInformation, update } from "./update.ts";
@@ -20,7 +18,7 @@ export class Client {
    * Returns all projects
    * This includes all public projects and private projects where user have access to.
    */
-  list(): ResultAsync<Project[], Error> {
+  list(): ReturnType<typeof fetchList> {
     return fetchList(this.#context);
   }
 
@@ -29,10 +27,8 @@ export class Client {
    *
    * @param id Project identifier
    */
-  show(
-    id: number,
-  ): ResultAsync<Project, Error> {
-    return show(id, this.#context);
+  show(id: number): ReturnType<typeof show> {
+    return show(this.#context, id);
   }
 
   /**
@@ -40,10 +36,8 @@ export class Client {
    *
    * @param project The project attributes
    */
-  create(
-    project: ProjectRequest,
-  ): ResultAsync<void, Error> {
-    return create(project, this.#context);
+  create(project: ProjectRequest): ReturnType<typeof create> {
+    return create(this.#context, project);
   }
 
   /**
@@ -55,8 +49,8 @@ export class Client {
   update(
     id: number,
     project: ProjectUpdateInformation,
-  ): ResultAsync<void, Error> {
-    return update(id, project, this.#context);
+  ): ReturnType<typeof update> {
+    return update(this.#context, id, project);
   }
 
   /**
@@ -64,8 +58,8 @@ export class Client {
    *
    * @param id Project identifier
    */
-  delete(id: number): ResultAsync<void, Error> {
-    return deleteProject(id, this.#context);
+  delete(id: number): ReturnType<typeof deleteProject> {
+    return deleteProject(this.#context, id);
   }
 
   /**
@@ -75,8 +69,8 @@ export class Client {
    *
    * @note This feature is available since Redmine 5.0.
    */
-  archive(id: number): ResultAsync<void, Error> {
-    return archive(id, this.#context);
+  archive(id: number): ReturnType<typeof archive> {
+    return archive(this.#context, id);
   }
 
   /**
@@ -86,7 +80,7 @@ export class Client {
    *
    * @note This feature is available since Redmine 5.0.
    */
-  unarchive(id: number): ResultAsync<void, Error> {
-    return unarchive(id, this.#context);
+  unarchive(id: number): ReturnType<typeof unarchive> {
+    return unarchive(this.#context, id);
   }
 }

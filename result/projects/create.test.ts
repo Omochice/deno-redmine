@@ -12,8 +12,8 @@ Deno.test("POST /projects.json", async (t) => {
     async () => {
       server.use(...validHandlers);
       const e = await create(
-        { name: "sample", identifier: "sample" },
         context,
+        { name: "sample", identifier: "sample" },
       );
       assert(e.isOk());
     },
@@ -24,7 +24,7 @@ Deno.test("POST /projects.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const c = { ...context, endpoint: `${context.endpoint}/422` };
-      const e = await create({ name: "sample", identifier: "sample" }, c);
+      const e = await create(c, { name: "sample", identifier: "sample" });
       assert(e.isErr());
     },
   );
@@ -32,7 +32,7 @@ Deno.test("POST /projects.json", async (t) => {
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const c = { ...context, endpoint: `${context.endpoint}/422` };
-    const e = await create({ name: "sample", identifier: "sample" }, c);
+    const e = await create(c, { name: "sample", identifier: "sample" });
     assert(e.isErr());
   });
 });
