@@ -1,7 +1,6 @@
-import { Context } from "../context.ts";
+import { Context } from "../../context.ts";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
-import { ResultAsync } from "npm:neverthrow@8.2.0";
-import { assertResponse, convertError } from "../error.ts";
+import { assertResponse } from "../../error.ts";
 import { parse } from "jsr:@valibot/valibot@1.1.0";
 import { sanitizeTitle, type WikiDetail } from "./type.ts";
 import { wikiDetail } from "./validator.ts";
@@ -15,7 +14,7 @@ import { wikiDetail } from "./validator.ts";
  * @param title Title for wiki page
  * @returns Wiki page object
  */
-async function showWithError(
+export async function show(
   context: Context,
   projectId: number,
   title: string,
@@ -51,16 +50,3 @@ async function showWithError(
   assertResponse(r);
   return parse(wikiDetail, await r.json());
 }
-
-/**
- * Show the wiki page in the project
- *
- * @param context REST endpoint context
- * @param projectId Project identifier
- * @param title Title for wiki page
- * @returns Wiki page object
- */
-export const show = ResultAsync.fromThrowable(
-  showWithError,
-  convertError("unknown error show a wiki page"),
-);

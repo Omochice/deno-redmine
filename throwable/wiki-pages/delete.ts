@@ -1,7 +1,6 @@
-import { Context } from "../context.ts";
+import { Context } from "../../context.ts";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
-import { ResultAsync } from "npm:neverthrow@8.2.0";
-import { assertResponse, convertError } from "../error.ts";
+import { assertResponse } from "../../error.ts";
 import { sanitizeTitle } from "./type.ts";
 
 /**
@@ -12,7 +11,7 @@ import { sanitizeTitle } from "./type.ts";
  * @param projectId Project identifier
  * @param title Title for wiki page
  */
-export async function deleteWikiWithError(
+export async function deleteWiki(
   context: Context,
   projectId: number,
   title: string,
@@ -35,15 +34,3 @@ export async function deleteWikiWithError(
   );
   assertResponse(await fetch(url, opts));
 }
-
-/**
- * Delete a wiki page in the project
- *
- * @param context REST endpoint context
- * @param projectId Project identifier
- * @param title Title for wiki page
- */
-export const deleteWiki = ResultAsync.fromThrowable(
-  deleteWikiWithError,
-  convertError("unknown error delete a wiki page"),
-);

@@ -1,4 +1,4 @@
-import type { Context } from "../context.ts";
+import type { Context } from "../../context.ts";
 import type { WikiContent } from "./type.ts";
 import { fetchList } from "./list.ts";
 import { show } from "./show.ts";

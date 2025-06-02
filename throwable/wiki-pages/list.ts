@@ -1,7 +1,6 @@
-import { Context } from "../context.ts";
+import { Context } from "../../context.ts";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
-import { ResultAsync } from "npm:neverthrow@8.2.0";
-import { assertResponse, convertError } from "../error.ts";
+import { assertResponse } from "../../error.ts";
 import { parse } from "jsr:@valibot/valibot@1.1.0";
 import type { Wiki } from "./type.ts";
 import { wikis } from "./validator.ts";
@@ -14,7 +13,7 @@ import { wikis } from "./validator.ts";
  * @param projectId Project identifier
  * @returns Wiki pages
  */
-async function fetchListWithError(
+export async function fetchList(
   context: Context,
   projectId: number,
 ): Promise<Wiki[]> {
@@ -33,15 +32,3 @@ async function fetchListWithError(
   assertResponse(r);
   return parse(wikis, await r.json());
 }
-
-/**
- * List wiki pages included in the project
- *
- * @param context REST endpoint context
- * @param projectId Project identifier
- * @returns Wiki pages
- */
-export const fetchList = ResultAsync.fromThrowable(
-  fetchListWithError,
-  convertError("unknown error fetching wiki pages"),
-);
