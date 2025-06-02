@@ -1,9 +1,8 @@
 import { array, object, parse } from "jsr:@valibot/valibot@1.1.0";
-import { ResultAsync } from "npm:neverthrow@8.2.0";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
 import { type Tracker, trackerSchema } from "./type.ts";
-import type { Context } from "../context.ts";
-import { convertError } from "../error.ts";
+import type { Context } from "../../context.ts";
+import { assertResponse } from "../../error.ts";
 
 const responseSchema = object({
   trackers: array(trackerSchema),
@@ -13,20 +12,9 @@ const responseSchema = object({
  * Fetch trackers
  *
  * @param context REST endpoint context
- * @return Promise of result-type which has tracker or error
- */
-export const fetchList = ResultAsync.fromThrowable(
-  throwableFetchList,
-  convertError("Unexpected error"),
-);
-
-/**
- * Fetch trackers
- *
- * @param context REST endpoint context
  * @return Array of Tracker
  */
-async function throwableFetchList(context: Context): Promise<Tracker[]> {
+export async function fetchList(context: Context): Promise<Tracker[]> {
   const endpoint = join(context.endpoint, "trackers.json");
   const response = await fetch(
     endpoint,
@@ -38,5 +26,6 @@ async function throwableFetchList(context: Context): Promise<Tracker[]> {
       },
     },
   );
+  assertResponse(response);
   return parse(responseSchema, await response.json()).trackers;
 }
