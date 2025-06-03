@@ -1,4 +1,4 @@
-import type { Context } from "./context.ts";
+import type { Context } from "../context.ts";
 import { Client as Issue } from "./issues/mod.ts";
 import { Client as Project } from "./projects/mod.ts";
 import { Client as Tracker } from "./trackers/mod.ts";
