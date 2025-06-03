@@ -9,7 +9,7 @@ server.listen();
 Deno.test("PUT /projects/issues/:id.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validHandlers);
-    const e = await update(1, { notes: "sample" }, context);
+    const e = await update(context, 1, { notes: "sample" });
     assert(e.isOk());
   });
 
@@ -17,14 +17,14 @@ Deno.test("PUT /projects/issues/:id.json", async (t) => {
     "if get invalid response with error object, should be err with error text",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      const e = await update(411, { notes: "sample" }, context);
+      const e = await update(context, 411, { notes: "sample" });
       assert(e.isErr());
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...invalidHandlers);
-    const e = await update(404, { notes: "sample" }, context);
+    const e = await update(context, 404, { notes: "sample" });
     assert(e.isErr());
   });
 });

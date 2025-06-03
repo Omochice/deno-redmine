@@ -1,9 +1,13 @@
-import { Context } from "../context.ts";
-import type { Issue } from "./type.ts";
-import { listIssues, type Option } from "./list.ts";
-import { type Include, show } from "./show.ts";
-import { update, type UpdateOption } from "./update.ts";
-import { createIssue, type Issue as InputIssue } from "./create.ts";
+import { Context } from "../../context.ts";
+import { listIssues } from "./list.ts";
+import { show } from "./show.ts";
+import { update } from "./update.ts";
+import { createIssue } from "./create.ts";
+import type { Option } from "../../throwable/issues/list.ts";
+import type { Include } from "../../throwable/issues/show.ts";
+import type { UpdateOption } from "../../throwable/issues/update.ts";
+import type { Issue } from "../../throwable/issues/type.ts";
+import type { Issue as InputIssue } from "../../throwable/issues/create.ts";
 
 export class Client {
   readonly #context: Context;
@@ -28,7 +32,7 @@ export class Client {
    * @param includes Options to include additional information
    */
   show(id: number, includes?: Include[]): ReturnType<typeof show> {
-    return show(id, this.#context, includes);
+    return show(this.#context, id, includes);
   }
 
   /**
@@ -41,7 +45,7 @@ export class Client {
     id: number,
     issue: Partial<Issue & UpdateOption>,
   ): ReturnType<typeof update> {
-    return update(id, issue, this.#context);
+    return update(this.#context, id, issue);
   }
 
   /**

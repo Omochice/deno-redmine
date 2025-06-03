@@ -12,9 +12,8 @@ import {
   transform,
 } from "jsr:@valibot/valibot@1.1.0";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
-import { Context } from "../context.ts";
-import { UnprocessableEntityError } from "../error.ts";
-import { ResultAsync } from "npm:neverthrow@8.2.0";
+import { Context } from "../../context.ts";
+import { assertResponse } from "../../error.ts";
 
 const inputIssueSchema = object({
   projectId: number(),
@@ -63,9 +62,10 @@ export type Issue = InferInput<typeof issueSchema>;
  * @param context REST endpoint context
  * @return Promise of result-type
  */
-export const createIssue = ResultAsync.fromThrowable(throwableCreateIssue);
-
-async function throwableCreateIssue(context: Context, issue: Issue) {
+export async function createIssue(
+  context: Context,
+  issue: Issue,
+): Promise<void> {
   const url = join(context.endpoint, "issues.json");
   const response = await fetch(url, {
     method: "POST",
@@ -75,7 +75,5 @@ async function throwableCreateIssue(context: Context, issue: Issue) {
     },
     body: JSON.stringify(parse(inputIssueSchema, issue)),
   });
-  if (!response.ok) {
-    throw new UnprocessableEntityError(response);
-  }
+  assertResponse(response);
 }

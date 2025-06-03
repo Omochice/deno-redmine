@@ -1,15 +1,8 @@
-import type { Context } from "../context.ts";
-import {
-  array,
-  is,
-  number,
-  object,
-  safeParse,
-} from "jsr:@valibot/valibot@1.1.0";
-import { errAsync, okAsync, ResultAsync } from "npm:neverthrow@8.2.0";
+import type { Context } from "../../context.ts";
+import { array, number, object, parse } from "jsr:@valibot/valibot@1.1.0";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
 import { type Issue, issueSchema } from "./type.ts";
-import { convertError } from "../error.ts";
+import { assertResponse } from "../../error.ts";
 
 const responseSchema = object({
   issues: array(issueSchema),
@@ -66,10 +59,10 @@ function convertOptionToObject(
   return Object.fromEntries(entries);
 }
 
-export function listIssues(
+export async function listIssues(
   context: Context,
   option: Partial<Option> = {},
-): ResultAsync<Issue[], Error> {
+): Promise<Issue[]> {
   const limit = 100;
   const opts: RequestInit = {
     method: "GET",
@@ -79,51 +72,32 @@ export function listIssues(
     },
   };
   const convertedOption = convertOptionToObject(option);
-
-  return fetchNumberOfIssues(context, option)
-    .andThen((n) => {
-      const results: ResultAsync<Response, Error>[] = [];
-      for (let offset = 0; offset < n; offset += limit) {
-        const endpoint = new URL(join(context.endpoint, "issues.json"));
-        endpoint.search = new URLSearchParams({
-          limit: `${limit}`,
-          offset: `${offset}`,
-          ...convertedOption,
-        }).toString();
-        results.push(
-          ResultAsync.fromPromise(
-            fetch(endpoint, opts),
-            convertError("Unexpected Error1"),
-          ),
-        );
-      }
-      return ResultAsync.combine(results);
-    })
-    .andThen((r) =>
-      ResultAsync.fromPromise(
-        Promise.all(r.map((e) => e.json())),
-        convertError("Unexpected Error"),
-      )
-    )
-    .andThen((r: unknown[]) => {
-      const issues: Issue[][] = [];
-      for (const issue of r) {
-        const parsed = safeParse(responseSchema, issue);
-        if (!parsed.success) {
-          return errAsync(
-            new Error("Unexpected Error2", { cause: parsed.issues }),
-          );
-        }
-        issues.push(parsed.output.issues);
-      }
-      return okAsync(issues.flat());
-    });
+  const n = await fetchNumberOfIssues(context, option);
+  const results: Response[] = [];
+  for (let offset = 0; offset < n; offset += limit) {
+    const endpoint = new URL(join(context.endpoint, "issues.json"));
+    endpoint.search = new URLSearchParams({
+      limit: `${limit}`,
+      offset: `${offset}`,
+      ...convertedOption,
+    }).toString();
+    const response = await fetch(endpoint, opts);
+    assertResponse(response);
+    results.push(response);
+  }
+  const issues: Issue[] = [];
+  for (const response of results) {
+    const json = await response.json();
+    const parsed = parse(responseSchema, json);
+    issues.push(...parsed.issues);
+  }
+  return issues;
 }
 
-function fetchNumberOfIssues(
+async function fetchNumberOfIssues(
   context: Context,
   option: Partial<Option>,
-): ResultAsync<number, Error> {
+): Promise<number> {
   const endpoint = new URL(join(context.endpoint, "issues.json"));
   endpoint.search = new URLSearchParams({
     limit: "1",
@@ -131,22 +105,17 @@ function fetchNumberOfIssues(
     ...convertOptionToObject(option),
   }).toString();
 
-  return ResultAsync.fromPromise(
-    fetch(endpoint, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Redmine-API-Key": context.apiKey,
-      },
-    }),
-    convertError("Unexpected Error2"),
-  )
-    .andThen((r: Response) =>
-      ResultAsync.fromPromise(r.json(), convertError("Unexpected Error4"))
-    )
-    .andThen((r: unknown) => {
-      return is(object({ total_count: number() }), r)
-        ? okAsync(r.total_count)
-        : errAsync(new Error("Unexpected Error5", { cause: r }));
-    });
+  const response = await fetch(endpoint, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Redmine-API-Key": context.apiKey,
+    },
+  });
+
+  assertResponse(response);
+  return parse(
+    object({ total_count: number() }),
+    await response.json(),
+  ).total_count;
 }
