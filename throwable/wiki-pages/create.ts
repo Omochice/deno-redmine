@@ -1,6 +1,6 @@
 import { Context } from "../../context.ts";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
-import { assertResponse, convertError } from "../../error.ts";
+import { assertResponse } from "../../error.ts";
 import { makeWikiPutRequest } from "./validator.ts";
 import { sanitizeTitle, type WikiContent } from "./type.ts";
 
