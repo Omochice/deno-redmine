@@ -1,4 +1,4 @@
-import type { Context } from "../context.ts";
+import type { Context } from "../../context.ts";
 import { list } from "./list.ts";
 
 export class Client {
