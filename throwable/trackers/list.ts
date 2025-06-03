@@ -9,10 +9,14 @@ const responseSchema = object({
 });
 
 /**
- * Fetch trackers
+ * Retrieves a list of trackers from the REST API.
  *
- * @param context REST endpoint context
- * @return Array of Tracker
+ * Sends a GET request to the endpoint specified in {@link context} and returns an array of validated {@link Tracker} objects.
+ *
+ * @param context - Contains the API endpoint and authentication key.
+ * @returns An array of {@link Tracker} objects retrieved from the API.
+ *
+ * @throws {Error} If the HTTP response is not successful or the response data is invalid.
  */
 export async function fetchList(context: Context): Promise<Tracker[]> {
   const endpoint = join(context.endpoint, "trackers.json");

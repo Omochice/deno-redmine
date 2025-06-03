@@ -8,6 +8,15 @@ export type UpdateOption = {
   private_notes?: boolean;
 };
 
+/**
+ * Updates an existing issue on the remote server with the specified fields.
+ *
+ * @param id - The unique identifier of the issue to update.
+ * @param issue - An object containing the fields to update for the issue.
+ *
+ * @remark
+ * Only the fields provided in {@link issue} will be updated; all other fields remain unchanged.
+ */
 export async function update(
   context: Context,
   id: number,

@@ -11,6 +11,13 @@ const responseSchema = object({
   limit: number(),
 });
 
+/**
+ * Retrieves all projects from the Redmine API, handling pagination and combining results.
+ *
+ * Fetches the complete list of projects by making concurrent paginated requests to the Redmine endpoint, then validates and aggregates the results.
+ *
+ * @returns An array containing all projects available in the Redmine instance.
+ */
 export async function fetchList(context: Context): Promise<Project[]> {
   const limit = 25;
   const opts: RequestInit = {
@@ -39,6 +46,11 @@ export async function fetchList(context: Context): Promise<Project[]> {
   return results.flat();
 }
 
+/**
+ * Retrieves the total number of projects available from the Redmine API.
+ *
+ * @returns The total count of projects as reported by the API.
+ */
 async function fetchNumberOfProjects(context: Context): Promise<number> {
   const endpoint = new URL(join(context.endpoint, "projects.json"));
   endpoint.search = new URLSearchParams({

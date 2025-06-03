@@ -42,6 +42,15 @@ function convertCustomFields(
   return customFields?.map(({ id, value }) => [`cf_${id}`, value]) ?? [];
 }
 
+/**
+ * Converts an {@link Option} object into a record of string key-value pairs suitable for URL query parameters.
+ *
+ * Fields with undefined values are omitted. Custom fields are included with keys prefixed by "cf_".
+ *
+ * @returns An object mapping query parameter names to their string values.
+ *
+ * @remark The key "trakcer_id" contains a typo and should likely be "tracker_id".
+ */
 function convertOptionToObject(
   option: Partial<Option>,
 ): Record<string, string> {
@@ -59,6 +68,16 @@ function convertOptionToObject(
   return Object.fromEntries(entries);
 }
 
+/**
+ * Retrieves all issues from the Redmine API matching the specified filtering options.
+ *
+ * Fetches issues in batches of 100, handling pagination automatically, and aggregates all results into a single array.
+ *
+ * @param option - Filtering and pagination options for the issue query.
+ * @returns A promise that resolves to an array of issues matching the criteria.
+ *
+ * @throws {Error} If the API request fails, the response is invalid, or the response data does not match the expected schema.
+ */
 export async function listIssues(
   context: Context,
   option: Partial<Option> = {},
@@ -94,6 +113,13 @@ export async function listIssues(
   return issues;
 }
 
+/**
+ * Retrieves the total number of Redmine issues matching the specified filtering options.
+ *
+ * @returns The total count of issues that satisfy the given criteria.
+ *
+ * @throws {Error} If the network request fails, the response is invalid, or the response does not contain a valid `total_count`.
+ */
 async function fetchNumberOfIssues(
   context: Context,
   option: Partial<Option>,

@@ -6,12 +6,12 @@ import type { Wiki } from "./type.ts";
 import { wikis } from "./validator.ts";
 
 /**
- * List wiki pages included in the project
- * This may throw `Error`
+ * Retrieves the list of wiki pages for a specified project.
  *
- * @param context REST endpoint context
- * @param projectId Project identifier
- * @returns Wiki pages
+ * @param projectId - The unique identifier of the project whose wiki pages are to be fetched.
+ * @returns An array of {@link Wiki} objects representing the project's wiki pages.
+ *
+ * @throws {Error} If the HTTP response is invalid or the response data cannot be parsed.
  */
 export async function fetchList(
   context: Context,

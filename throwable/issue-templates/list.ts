@@ -5,9 +5,12 @@ import { type Response_, responseSchema } from "./type.ts";
 import { assertResponse } from "../../error.ts";
 
 /**
- * Fetch list of issue templates
- * @params context Connection context object
- * @params projectId Project id or Project identifier
+ * Retrieves the list of issue templates for a specified project.
+ *
+ * @param projectId - The numeric ID or string identifier of the project whose issue templates are to be listed.
+ * @returns The parsed response containing the project's issue templates.
+ *
+ * @throws {Error} If the HTTP response is not successful or the response does not match the expected schema.
  */
 export async function list(
   context: Context,

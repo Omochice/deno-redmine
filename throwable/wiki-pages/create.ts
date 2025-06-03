@@ -5,12 +5,12 @@ import { makeWikiPutRequest } from "./validator.ts";
 import { sanitizeTitle, type WikiContent } from "./type.ts";
 
 /**
- * Create a wiki page in the project
- * This may throw `Error`
+ * Creates a wiki page within the specified project via the REST API.
  *
- * @param context REST endpoint context
- * @param projectId Project identifier
- * @param wiki Wiki page object
+ * @param projectId - Numeric identifier of the project in which to create the wiki page.
+ * @param wiki - Object representing the content and metadata of the wiki page.
+ *
+ * @throws {Error} If the HTTP request fails or the response is not successful.
  */
 export async function create(
   context: Context,

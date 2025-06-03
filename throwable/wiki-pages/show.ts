@@ -6,13 +6,14 @@ import { sanitizeTitle, type WikiDetail } from "./type.ts";
 import { wikiDetail } from "./validator.ts";
 
 /**
- * Show the wiki page in the project
- * This may throw `Error`
+ * Retrieves a wiki page from a project, optionally for a specific version.
  *
- * @param context REST endpoint context
- * @param projectId Project identifier
- * @param title Title for wiki page
- * @returns Wiki page object
+ * @param projectId - Numeric identifier of the project containing the wiki page.
+ * @param title - Title of the wiki page to fetch.
+ * @param version - Optional version number of the wiki page to retrieve.
+ * @returns A promise resolving to the validated wiki page details.
+ *
+ * @throws {Error} If the HTTP request fails or the response is invalid.
  */
 export async function show(
   context: Context,

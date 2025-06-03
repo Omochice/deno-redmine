@@ -7,6 +7,14 @@ export type ProjectUpdateInformation = Partial<
   Omit<ProjectRequest, "identifier">
 >;
 
+/**
+ * Updates an existing project's information via an HTTP PUT request.
+ *
+ * @param id - The unique identifier of the project to update.
+ * @param project - Partial project data to update, excluding the identifier.
+ *
+ * @throws {Error} If the HTTP response indicates a failure or cannot be verified by {@link assertResponse}.
+ */
 export async function update(
   context: Context,
   id: number,

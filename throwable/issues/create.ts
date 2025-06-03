@@ -57,10 +57,14 @@ const issueSchema = pipe(inputIssueSchema, normalizeIssue);
 export type Issue = InferInput<typeof issueSchema>;
 
 /**
- * Create issue
+ * Creates a new issue in the project management system using the provided context and issue data.
  *
- * @param context REST endpoint context
- * @return Promise of result-type
+ * Validates and transforms the issue input before sending a POST request to the API endpoint.
+ *
+ * @param issue - The issue data to be created.
+ *
+ * @remark
+ * Throws an error if the API response indicates failure.
  */
 export async function createIssue(
   context: Context,

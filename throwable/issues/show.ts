@@ -17,6 +17,13 @@ export type Include =
   | "watchers"
   | "allowed_statuses";
 
+/**
+ * Retrieves detailed information about a specific issue from the Redmine API.
+ *
+ * @param id - The unique identifier of the issue to fetch.
+ * @param includes - Optional list of related entities to include in the response, such as children, attachments, or relations.
+ * @returns The parsed issue object containing detailed information.
+ */
 export async function show(
   context: Context,
   id: number,

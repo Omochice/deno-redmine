@@ -8,6 +8,14 @@ const schema = object({
   project: projectSchema,
 });
 
+/**
+ * Retrieves a project by its ID from the remote API.
+ *
+ * @param id - The unique identifier of the project to retrieve.
+ * @returns The project corresponding to the given {@link id}.
+ *
+ * @throws {Error} If the HTTP request fails or the response does not match the expected schema.
+ */
 export async function show(
   context: Context,
   id: number,
