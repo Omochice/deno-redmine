@@ -6,4 +6,3 @@ export const show = ResultAsync.fromThrowable(
   showWithError,
   convertError("unknown error show an issue"),
 );
-
