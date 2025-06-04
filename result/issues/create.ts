@@ -10,5 +10,5 @@ import { convertError } from "../../error.ts";
  */
 export const createIssue = ResultAsync.fromThrowable(
   throwableCreateIssue,
-  convertError("uunknown error create an issue"),
+  convertError("unknown error create an issue"),
 );
