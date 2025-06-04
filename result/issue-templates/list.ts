@@ -9,5 +9,5 @@ import { convertError } from "../../error.ts";
  */
 export const list = ResultAsync.fromThrowable(
   throwableList,
-  convertError("unkown error fetching issue templates list"),
+  convertError("unknown error fetching issue templates list"),
 );
