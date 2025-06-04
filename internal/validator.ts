@@ -22,3 +22,7 @@ export const dateLikeString = pipe(
   }),
   transform((input) => new Date(input)),
 );
+
+export function toUndefined<T>(input: T | null | undefined): T | undefined {
+  return input ?? undefined;
+}

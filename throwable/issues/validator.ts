@@ -15,7 +15,11 @@ import {
   transform,
   union,
 } from "jsr:@valibot/valibot@1.1.0";
-import { dateLikeString, idName } from "../../internal/validator.ts";
+import {
+  dateLikeString,
+  idName,
+  toUndefined,
+} from "../../internal/validator.ts";
 import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.1.0";
 import type {
   Attachment,
@@ -39,10 +43,6 @@ export const issueStatus = pipe(
     return objectToCamel(input) satisfies IssueStatus;
   }),
 );
-
-function toUndefined<T>(input: T | null | undefined): T | undefined {
-  return input ?? undefined;
-}
 
 const customField = union([
   object({
