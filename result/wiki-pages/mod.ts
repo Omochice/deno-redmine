@@ -59,7 +59,7 @@ export class Client {
    * @param projectId The project ID
    * @param wiki wiki content object
    */
-  create(projectId: number, wiki: WikiContent): ReturnType<typeof update> {
+  create(projectId: number, wiki: WikiContent): ReturnType<typeof create> {
     return create(this.#context, projectId, wiki);
   }
 
