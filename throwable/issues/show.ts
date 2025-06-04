@@ -1,12 +1,9 @@
-import { object, parse } from "jsr:@valibot/valibot@1.1.0";
+import { parse } from "jsr:@valibot/valibot@1.1.0";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
-import { ShowIssue, showIssueSchema } from "./type.ts";
+import type { ShowIssue } from "./type.ts";
+import { showIssueSchema } from "./validator.ts";
 import type { Context } from "../../context.ts";
 import { assertResponse } from "../../error.ts";
-
-const schema = object({
-  issue: showIssueSchema,
-});
 
 export type Include =
   | "children"
@@ -35,5 +32,5 @@ export async function show(
     },
   });
   assertResponse(response);
-  return parse(schema, await response.json()).issue;
+  return parse(showIssueSchema, await response.json()).issue;
 }
