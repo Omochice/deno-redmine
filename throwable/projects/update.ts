@@ -1,10 +1,10 @@
 import { join } from "jsr:@std/path@1.1.0/posix/join";
 import type { Context } from "../../context.ts";
-import type { ProjectRequest } from "./type.ts";
+import type { ProjectQuery } from "./type.ts";
 import { assertResponse } from "../../error.ts";
 
 export type ProjectUpdateInformation = Partial<
-  Omit<ProjectRequest, "identifier">
+  Omit<ProjectQuery, "identifier">
 >;
 
 export async function update(

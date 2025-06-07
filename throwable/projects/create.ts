@@ -1,11 +1,11 @@
 import { join } from "jsr:@std/path@1.1.0/posix/join";
 import type { Context } from "../../context.ts";
-import type { ProjectRequest } from "./type.ts";
+import type { ProjectQuery } from "./type.ts";
 import { assertResponse } from "../../error.ts";
 
 export async function create(
   context: Context,
-  project: ProjectRequest,
+  project: ProjectQuery,
 ): Promise<void> {
   const url = new URL(join(context.endpoint, "projects.json"));
   assertResponse(

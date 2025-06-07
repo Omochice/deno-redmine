@@ -1,12 +1,9 @@
-import { array, object, parse } from "jsr:@valibot/valibot@1.1.0";
+import { parse } from "jsr:@valibot/valibot@1.1.0";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
-import { type Tracker, trackerSchema } from "./type.ts";
+import { type Tracker } from "./type.ts";
 import type { Context } from "../../context.ts";
 import { assertResponse } from "../../error.ts";
-
-const responseSchema = object({
-  trackers: array(trackerSchema),
-});
+import { listTrackerResponse } from "./validator.ts";
 
 /**
  * Fetch trackers
@@ -27,5 +24,5 @@ export async function fetchList(context: Context): Promise<Tracker[]> {
     },
   );
   assertResponse(response);
-  return parse(responseSchema, await response.json()).trackers;
+  return parse(listTrackerResponse, await response.json()).trackers;
 }

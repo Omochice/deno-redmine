@@ -1,7 +1,8 @@
 import type { Context } from "../../context.ts";
 import { parse } from "jsr:@valibot/valibot@1.1.0";
 import { join } from "jsr:@std/path@1.1.0/posix/join";
-import { type Response_, responseSchema } from "./type.ts";
+import type { Response_ } from "./type.ts";
+import { issueTemplateResponse } from "./validator.ts";
 import { assertResponse } from "../../error.ts";
 
 /**
@@ -30,5 +31,5 @@ export async function list(
     },
   );
   assertResponse(r);
-  return parse(responseSchema, await r.json());
+  return parse(issueTemplateResponse, await r.json());
 }
