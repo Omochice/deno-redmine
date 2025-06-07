@@ -22,7 +22,7 @@ export type Issue = {
   status: IssueStatus;
   priority: IdName;
   author: IdName;
-  assitnedTo?: IdName;
+  assignedTo?: IdName;
   category?: IdName;
   subject: string;
   description?: string;
