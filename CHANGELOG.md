@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.0](https://github.com/Omochice/deno-redmine/compare/v0.11.0...v1.0.0) (2025-06-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* return and accept camelCase ([#203](https://github.com/Omochice/deno-redmine/issues/203))
+* export as result and throwable ([#200](https://github.com/Omochice/deno-redmine/issues/200))
+
+### Features
+
+* export as result and throwable ([#200](https://github.com/Omochice/deno-redmine/issues/200)) ([8fb2dc9](https://github.com/Omochice/deno-redmine/commit/8fb2dc9ef4b97140ec27badee5dfe1dc980f3293))
+* return and accept camelCase ([#203](https://github.com/Omochice/deno-redmine/issues/203)) ([e7a04a8](https://github.com/Omochice/deno-redmine/commit/e7a04a89e1d483e70e6f7cc700bc5dbd28ddcf39))
+
 ## [0.11.0](https://github.com/Omochice/deno-redmine/compare/v0.10.0...v0.11.0) (2025-05-31)
 
 
