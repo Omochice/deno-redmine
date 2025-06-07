@@ -2,7 +2,7 @@ import type { Context } from "../../context.ts";
 import { fetchList } from "./list.ts";
 import { show } from "./show.ts";
 import { create } from "./create.ts";
-import type { ProjectRequest } from "./type.ts";
+import type { ProjectQuery } from "./type.ts";
 import { type ProjectUpdateInformation, update } from "./update.ts";
 import { deleteProject } from "./delete.ts";
 import { archive, unarchive } from "./archive.ts";
@@ -36,7 +36,7 @@ export class Client {
    *
    * @param project The project attributes
    */
-  create(project: ProjectRequest): ReturnType<typeof create> {
+  create(project: ProjectQuery): ReturnType<typeof create> {
     return create(this.#context, project);
   }
 
