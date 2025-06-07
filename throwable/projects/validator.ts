@@ -46,8 +46,8 @@ export const toProjectQuery = pipe(
   object({
     name: pipe(
       string(),
-      /** need match /[a-zA-Z0-9\-_]{1,100}/ */
-      regex(/[a-zA-Z0-9\-_]{1,100}/),
+      /** need match /^[a-zA-Z0-9\-_]{1,100}$/ */
+      regex(/^[a-zA-Z0-9\-_]{1,100}$/),
     ),
     identifier: string(),
     description: optional(string()),
