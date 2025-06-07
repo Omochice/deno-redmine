@@ -239,7 +239,7 @@ export const toCreateRequest = pipe(
     assignedToId: optional(number()),
     parentIssueId: optional(number()),
     watcherUserIds: optional(array(number())),
-    isPriavte: optional(boolean()),
+    isPrivate: optional(boolean()),
     estimatedHours: optional(number()),
     customFields: optional(array(object({}))),
   }),
