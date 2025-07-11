@@ -164,7 +164,10 @@ const journal = pipe(
   object({
     id: number(),
     user: idName,
-    notes: string(),
+    notes: pipe(
+      union([string(), null_()]),
+      transform(toUndefined),
+    ),
     created_on: dateLikeString,
     private_notes: boolean(),
     details: array(object({
@@ -174,7 +177,10 @@ const journal = pipe(
         union([string(), null_()]),
         transform(toUndefined),
       ),
-      new_value: string(),
+      new_value: pipe(
+        union([string(), null_()]),
+        transform(toUndefined),
+      ),
     })),
   }),
   transform((input) => {
