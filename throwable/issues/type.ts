@@ -63,14 +63,14 @@ export type Relation = {
 export type Journal = {
   id: number;
   user: IdName;
-  notes: string;
+  notes?: string;
   createdOn: Date;
   privateNotes: boolean;
   details: {
     property: string;
     name: string;
     oldValue?: string;
-    newValue: string;
+    newValue?: string;
   }[];
 };
 
