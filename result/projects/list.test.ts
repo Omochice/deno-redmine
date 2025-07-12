@@ -1,6 +1,6 @@
 import { fetchList } from "./list.ts";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
-import { setupServer } from "npm:msw@2.10.3/node";
+import { setupServer } from "npm:msw@2.10.4/node";
 import { assert } from "jsr:@std/assert@1.0.13";
 
 const server = setupServer();
