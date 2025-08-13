@@ -1,4 +1,4 @@
-import { join } from "jsr:@std/path@1.1.1/posix/join";
+import { join } from "jsr:@std/path@1.1.2/posix/join";
 import type { Context } from "../../context.ts";
 import type { Project } from "./type.ts";
 import { projectSchema } from "./validator.ts";

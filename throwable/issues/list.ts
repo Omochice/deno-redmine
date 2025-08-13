@@ -1,6 +1,6 @@
 import type { Context } from "../../context.ts";
 import { parse } from "jsr:@valibot/valibot@1.1.0";
-import { join } from "jsr:@std/path@1.1.1/posix/join";
+import { join } from "jsr:@std/path@1.1.2/posix/join";
 import type { Issue, ListIssueQuery } from "./type.ts";
 import { assertResponse } from "../../error.ts";
 import { listResponse, toListOption } from "./validator.ts";
