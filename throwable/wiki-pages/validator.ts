@@ -8,7 +8,7 @@ import {
   string,
   transform,
 } from "jsr:@valibot/valibot@1.1.0";
-import type { SnakeCasedProperties } from "npm:type-fest@4.41.0";
+import type { SnakeCasedProperties } from "npm:type-fest@5.0.0";
 import {
   sanitizeTitle,
   type Wiki,
