@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/Omochice/deno-redmine/compare/v1.0.0...v1.0.1) (2025-10-29)
+
+
+### Bug Fixes
+
+* coerce `null` to `undefined` ([#213](https://github.com/Omochice/deno-redmine/issues/213)) ([41acb00](https://github.com/Omochice/deno-redmine/commit/41acb0092a3322141e444f49910263b934a714a4))
+
 ## [1.0.0](https://github.com/Omochice/deno-redmine/compare/v0.11.0...v1.0.0) (2025-06-07)
 
 
