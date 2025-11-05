@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "npm:msw@2.11.6";
+import { http, HttpResponse } from "npm:msw@2.12.0";
 import { STATUS_CODE } from "jsr:@std/http@1.0.21/status";
 
 export const context = {
