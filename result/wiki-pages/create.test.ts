@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert } from "jsr:@std/assert@1.0.15";
+import { assert } from "jsr:@std/assert@1.0.16";
 import {
   context,
   invalidResponseHandlers,
