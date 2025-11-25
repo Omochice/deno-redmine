@@ -11,7 +11,7 @@ import {
   string,
   transform,
   unknown,
-} from "jsr:@valibot/valibot@1.1.0";
+} from "jsr:@valibot/valibot@1.2.0";
 import {
   dateLikeString,
   idName,

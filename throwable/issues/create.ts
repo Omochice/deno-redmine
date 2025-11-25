@@ -1,4 +1,4 @@
-import { parse } from "jsr:@valibot/valibot@1.1.0";
+import { parse } from "jsr:@valibot/valibot@1.2.0";
 import { join } from "jsr:@std/path@1.1.3/posix/join";
 import type { Context } from "../../context.ts";
 import { assertResponse } from "../../error.ts";
