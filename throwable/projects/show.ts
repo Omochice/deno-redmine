@@ -3,7 +3,7 @@ import type { Context } from "../../context.ts";
 import type { Project } from "./type.ts";
 import { projectSchema } from "./validator.ts";
 import { assertResponse } from "../../error.ts";
-import { object, parse } from "jsr:@valibot/valibot@1.1.0";
+import { object, parse } from "jsr:@valibot/valibot@1.2.0";
 
 const schema = object({
   project: projectSchema,
