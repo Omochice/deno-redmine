@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "exports": {
     ".": "./result/mod.ts",
-    "./result/": "./result/mod.ts",
+    "./result": "./result/mod.ts",
     "./result/projects": "./result/projects/mod.ts",
     "./result/projects/archive": "./result/projects/archive.ts",
     "./result/projects/create": "./result/projects/create.ts",
