@@ -63,49 +63,60 @@
             # keep-sorted end
           }
         );
-        runAs = name: script: {
-          type = "app";
-          program = script |> pkgs.writeShellScript name |> toString;
+        runAs =
+          name: runtimeInputs: text:
+          let
+            program = pkgs.writeShellApplication {
+              inherit name runtimeInputs text;
+            };
+          in
+          {
+            type = "app";
+            program = "${program}/bin/${name}";
+          };
+        devPackages = rec {
+          # keep-sorted start block=yes
+          actions = [
+            pkgs.actionlint
+            pkgs.ghalint
+            pkgs.zizmor
+          ];
+          deno = [ pkgs.deno ];
+          renovate = [
+            pkgs.renovate
+          ];
+          # keep-sorted end
+          default = actions ++ deno ++ renovate ++ [ treefmt.config.build.wrapper ];
         };
       in
       {
-        formatter = treefmt.config.build.wrapper;
+        # keep-sorted start block=yes
+        apps = {
+          check-actions = pkgs.lib.pipe ''
+            actionlint
+            ghalint run
+            zizmor ./.github/workflows
+          '' [ (runAs "check-actions" devPackages.actions) ];
+          check-renovate-config = pkgs.lib.pipe ''
+            renovate-config-validator renovate.json5 --strict
+          '' [ (runAs "check-renovate-config" devPackages.renovate) ];
+          check-deno = pkgs.lib.pipe ''
+            deno task check
+            deno task lint
+            deno task test
+          '' [ (runAs "check-deno" devPackages.deno) ];
+          test-coverage = pkgs.ib.pipe ''
+            deno task test:coverage
+          '' [ (runAs "test-coverage" devPackages.deno) ];
+        };
         checks = {
           formatting = treefmt.config.build.check self;
         };
-        apps = {
-          check-actions =
-            ''
-              set -e
-              ${pkgs.actionlint}/bin/actionlint --version
-              ${pkgs.actionlint}/bin/actionlint
-              ${pkgs.ghalint}/bin/ghalint --version
-              ${pkgs.ghalint}/bin/ghalint run
-              ${pkgs.zizmor}/bin/zizmor --version
-              ${pkgs.zizmor}/bin/zizmor ./.github/workflows
-            ''
-            |> runAs "check-actions";
-          check-renovate-config =
-            ''
-              set -e
-              ${pkgs.renovate}/bin/renovate-config-validator renovate.json5
-            ''
-            |> runAs "check-renovate-config";
-          check-deno =
-            ''
-              set -e
-              ${pkgs.deno}/bin/deno task check
-              ${pkgs.deno}/bin/deno task lint
-              ${pkgs.deno}/bin/deno task test
-            ''
-            |> runAs "check-deno";
-          test-coverage =
-            ''
-              set -e
-              ${pkgs.deno}/bin/deno task test:coverage
-            ''
-            |> runAs "test-coverage";
-        };
+        devShells = pkgs.lib.pipe devPackages [
+          (pkgs.lib.attrsets.mapAttrs (name: buildInputs: pkgs.mkShell { inherit buildInputs; }))
+        ];
+        formatter = treefmt.config.build.wrapper;
       }
     );
+  # keep-sorted end
 }
