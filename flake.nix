@@ -105,7 +105,7 @@
             deno task lint
             deno task test
           '' [ (runAs "check-deno" devPackages.deno) ];
-          test-coverage = pkgs.ib.pipe ''
+          test-coverage = pkgs.lib.pipe ''
             deno task test:coverage
           '' [ (runAs "test-coverage" devPackages.deno) ];
         };
