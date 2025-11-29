@@ -8,10 +8,22 @@
     enabled: true,
     automerge: true,
     schedule: [
-      "before 3:00am on sunday",
+      "before 3:00am",
     ],
   },
   nix: {
     enabled: true,
   },
+  packageRules: [
+    {
+      matchManagers: [
+        "nix",
+      ],
+      lockFileMaintenance: {
+        schedule: [
+          "before 3:00am on sunday",
+        ],
+      },
+    },
+  ],
 }
