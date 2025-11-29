@@ -14,4 +14,16 @@
   nix: {
     enabled: true,
   },
+  packageRules: [
+    {
+      matchManagers: [
+        "nix",
+      ],
+      lockFileMaintenance: {
+        schedule: [
+          "before 3:00am on sunday",
+        ],
+      },
+    },
+  ],
 }
