@@ -8,7 +8,7 @@
     enabled: true,
     automerge: true,
     schedule: [
-      "before 3:00am",
+      "before 3:00am every sunday",
     ],
   },
   nix: {
