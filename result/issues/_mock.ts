@@ -42,7 +42,7 @@ export const validHandlers = [
         author: { id: 1, name: "sample user" },
         assigned_to: undefined,
         category: undefined,
-        subject: "not asigned",
+        subject: "not assigned",
         description: "",
         start_date: "2023-10-09T00:00:00Z",
         due_date: null,

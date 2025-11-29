@@ -138,4 +138,4 @@ Redmine rest api wrapper for deno.
 ### extermal plugin
 
 - [x] [Issue Templates](https://www.redmine.org/plugins/redmine_issue_templates)
-  - Maybe work only partialy because of I created by observe actual befabior
+  - Maybe work only partially because of I created by observe actual befabior
