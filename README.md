@@ -135,7 +135,7 @@ Redmine rest api wrapper for deno.
   - Official Page is not found...:
     https://www.redmine.org/projects/redmine/wiki/Rest_Journals
 
-### extermal plugin
+### external plugin
 
 - [x] [Issue Templates](https://www.redmine.org/plugins/redmine_issue_templates)
-  - Maybe work only partialy because of I created by observe actual befabior
+  - May only work partially, as it was implemented by observing actual behavior.

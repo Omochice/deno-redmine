@@ -109,7 +109,7 @@ export type CreateIssueQuery = {
   assignedToId?: number;
   parentIssueId?: number;
   watcherUserIds?: number[];
-  isPriavte?: boolean;
+  isPrivate?: boolean;
   estimatedHours?: number;
   customFields?: Record<string, unknown>[];
 };

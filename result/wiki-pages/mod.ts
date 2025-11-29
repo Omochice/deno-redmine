@@ -26,7 +26,7 @@ export class Client {
    * Fetch a wiki page in the project
    *
    * @param projectId The project ID
-   * @param title The title for queriying
+   * @param title The title for querying
    * @returns Wiki page
    */
   show(projectId: number, title: string): ReturnType<typeof show>;
