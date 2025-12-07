@@ -2,7 +2,7 @@ import { archive, unarchive } from "./archive.ts";
 import { assert } from "jsr:@std/assert@1.0.16";
 
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
-import { setupServer } from "npm:msw@2.12.3/node";
+import { setupServer } from "npm:msw@2.12.4/node";
 
 const server = setupServer();
 server.listen();
