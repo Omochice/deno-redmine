@@ -1,4 +1,4 @@
-import { join } from "jsr:@std/path@1.1.3/posix/join";
+import { join } from "jsr:@std/path@1.1.4/posix/join";
 import type { Context } from "../../context.ts";
 import { assertResponse } from "../../error.ts";
 
