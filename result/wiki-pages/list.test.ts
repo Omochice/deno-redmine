@@ -1,5 +1,5 @@
 import { fetchList } from "./list.ts";
-import { assert } from "jsr:@std/assert@1.0.16";
+import { assert } from "jsr:@std/assert@1.0.18";
 
 import {
   context,
