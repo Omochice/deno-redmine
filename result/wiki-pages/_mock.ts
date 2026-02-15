@@ -86,6 +86,7 @@ export const validResponseHandelers = [
             errors: ["Comment is too long"],
           }
           : {},
+        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         { status: STATUS_CODE.OK },
       );
     },
@@ -107,6 +108,7 @@ export const validResponseHandelers = [
             errors: ["Comment is too long"],
           }
           : {},
+        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         { status: STATUS_CODE.OK },
       );
     },
@@ -128,6 +130,7 @@ export const invalidResponseHandlers = [
       return HttpResponse.json({
         errors: ["sample error"],
       }, {
+        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         status: STATUS_CODE.UnprocessableEntity,
         statusText: "Unprocessable Entity",
       });
@@ -139,6 +142,7 @@ export const invalidResponseHandlers = [
       return HttpResponse.json({
         errors: ["sample error"],
       }, {
+        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         status: STATUS_CODE.UnprocessableEntity,
         statusText: "Unprocessable Entity",
       });
@@ -150,6 +154,7 @@ export const invalidResponseHandlers = [
       return HttpResponse.json({
         errors: ["sample error"],
       }, {
+        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         status: 422,
         statusText: "Unprocessable Entity",
       });
@@ -167,6 +172,7 @@ export const invalidResponseHandlers = [
     `${context.endpoint}/projects/:id/wiki/forbidden.json`,
     () => {
       return HttpResponse.json({}, {
+        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         status: STATUS_CODE.Forbidden,
       });
     },
@@ -175,6 +181,7 @@ export const invalidResponseHandlers = [
     `${context.endpoint}/projects/:id/wiki/notfound.json`,
     () => {
       return HttpResponse.json({}, {
+        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         status: STATUS_CODE.NotFound,
       });
     },
