@@ -13,6 +13,18 @@ Deno.test("PUT /versions/:id.json", async (t) => {
     assert(e.isOk());
   });
 
+  await t.step("if got 204 with optional fields, should be success", async () => {
+    server.use(...validHandlers);
+    const e = await update(context, 1, {
+      name: "v1.1",
+      status: "locked",
+      dueDate: "2025-06-30",
+      wikiPageTitle: "Release_v1.1",
+      description: "updated description",
+    });
+    assert(e.isOk());
+  });
+
   await t.step(
     "if get invalid response with error object, should be err with error text",
     async () => {
