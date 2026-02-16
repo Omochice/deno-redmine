@@ -101,6 +101,25 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Validate renovate config
         run: nix run .#check-renovate-config
+  coverage:
+    needs: path-filter
+    if: needs.path-filter.outputs.deno == 'true' || needs.path-filter.outputs.flake == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: setup nix
+        uses: ./.github/actions/setup-nix
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: nix run .#test-coverage
+      - uses: k1LoW/octocov-action@73d561f65d59e66899ed5c87e4621a913b5d5c20 # v1.5.0
   status-check:
     timeout-minutes: 5
     runs-on: ubuntu-latest
@@ -109,6 +128,7 @@ jobs:
       - check-actions
       - check-deno
       - check-renovate-config
+      - coverage
     permissions: {}
     if: failure()
     steps:
