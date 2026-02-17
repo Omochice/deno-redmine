@@ -99,6 +99,7 @@ async function seedTestData(context: Context): Promise<void> {
           enabled_module_names: [
             "issue_tracking",
             "wiki",
+            "issue_templates",
           ],
         },
       }),
@@ -188,6 +189,13 @@ async function seedTestData(context: Context): Promise<void> {
       `Failed to create test wiki page (${wikiResponse.status}): ${body}`,
     );
   }
+
+  const issueTemplateScript = [
+    `tracker = Tracker.first`,
+    `IssueTemplate.create!(project_id: ${projectId}, tracker_id: tracker.id, title: "E2E Bug Template", issue_title: "Bug: ", description: "Template for bug reports", enabled: true)`,
+    `GlobalIssueTemplate.create!(tracker_id: tracker.id, title: "E2E Global Template", issue_title: "Global: ", description: "Global template description", enabled: true)`,
+  ].join("; ");
+  await runRailsRunner(issueTemplateScript);
 }
 
 if (import.meta.main) {
