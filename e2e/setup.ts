@@ -191,6 +191,8 @@ async function seedTestData(context: Context): Promise<void> {
   }
 
   const issueTemplateScript = [
+    `role = Role.non_member`,
+    `role.add_permission!(:show_issue_templates) unless role.has_permission?(:show_issue_templates)`,
     `author = User.find_by!(login: "admin")`,
     `tracker = Tracker.first`,
     `IssueTemplate.create!(project_id: ${projectId}, tracker_id: tracker.id, author_id: author.id, title: "E2E Bug Template", issue_title: "Bug: ", description: "Template for bug reports", enabled: true)`,
