@@ -1,6 +1,7 @@
 import type { Context } from "../context.ts";
 
-const REDMINE_CONTAINER_NAME = "e2e-redmine-1";
+const REDMINE_CONTAINER_NAME = Deno.env.get("REDMINE_CONTAINER_NAME") ??
+  "e2e-redmine-1";
 const TOKEN_OUTPUT_PREFIX = "E2E_API_KEY:";
 
 async function waitForRedmine(
