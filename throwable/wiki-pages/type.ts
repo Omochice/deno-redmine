@@ -13,7 +13,7 @@ export type WikiDetail = {
   version: number;
   text: string;
   author: Author;
-  comments: string;
+  comments?: string;
   createdOn: Date;
   updatedOn: Date;
   attachments?: Attachment[];

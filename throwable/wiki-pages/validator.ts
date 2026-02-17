@@ -1,6 +1,7 @@
 import {
   array,
   custom,
+  nullable,
   number,
   object,
   optional,
@@ -17,6 +18,7 @@ import {
 } from "./type.ts";
 // NOTE: replace valibot.toCamelCase when implements it
 import { objectToCamel } from "npm:ts-case-convert@2.1.0";
+import { toUndefined } from "../../internal/validator.ts";
 
 const dateLikeString = pipe(
   string(),
@@ -67,7 +69,7 @@ const inputWikiDetail = object({
     version: number(),
     text: string(),
     author: idName,
-    comments: string(),
+    comments: pipe(nullable(string()), transform(toUndefined)),
     created_on: dateLikeString,
     updated_on: dateLikeString,
     attachments: optional(
