@@ -8,6 +8,8 @@ import { fetchList as fetchProjects } from "../result/projects/list.ts";
 
 Deno.test({
   name: "E2E: Issues API",
+  // Library functions may not fully consume fetch response bodies, triggering
+  // Deno's resource sanitizer as a false positive.
   sanitizeResources: false,
   fn: async (t) => {
     await t.step("GET /issues.json should return issues", async () => {

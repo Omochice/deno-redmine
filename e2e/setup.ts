@@ -14,6 +14,7 @@ async function waitForRedmine(
   for (let i = 0; i < maxRetries; i++) {
     try {
       const response = await fetch(url);
+      // Deno leaks resources if the response body is not consumed or cancelled
       if (response.ok) {
         await response.body?.cancel();
         return;

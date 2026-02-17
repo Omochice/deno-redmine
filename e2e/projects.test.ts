@@ -9,6 +9,8 @@ import { archive, unarchive } from "../result/projects/archive.ts";
 
 Deno.test({
   name: "E2E: Projects API",
+  // Library functions may not fully consume fetch response bodies, triggering
+  // Deno's resource sanitizer as a false positive.
   sanitizeResources: false,
   fn: async (t) => {
     await t.step("GET /projects.json should return projects", async () => {
