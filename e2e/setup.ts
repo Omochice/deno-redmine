@@ -15,8 +15,10 @@ async function waitForRedmine(
     try {
       const response = await fetch(url);
       if (response.ok) {
+        await response.body?.cancel();
         return;
       }
+      await response.body?.cancel();
     } catch {
       // Redmine is not ready yet
     }
