@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/Omochice/deno-redmine/compare/v2.0.0...v2.0.1) (2026-02-17)
+
+
+### Bug Fixes
+
+* accept null comments in wiki page response ([#311](https://github.com/Omochice/deno-redmine/issues/311)) ([85bde74](https://github.com/Omochice/deno-redmine/commit/85bde745534853a65601293636fdc9c55a544db6))
+
 ## [2.0.0](https://github.com/Omochice/deno-redmine/compare/v1.0.0...v2.0.0) (2025-11-29)
 
 
