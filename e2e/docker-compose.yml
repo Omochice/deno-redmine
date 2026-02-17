@@ -24,6 +24,7 @@ services:
       REDMINE_DB_USERNAME: redmine
       REDMINE_DB_PASSWORD: redmine
       REDMINE_SECRET_KEY_BASE: e2e-test-secret-key-base
+      REDMINE_PLUGINS_MIGRATE: "true"
     ports:
       - "3000:3000"
     healthcheck:
