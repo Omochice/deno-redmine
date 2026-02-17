@@ -6,7 +6,7 @@
     "lint": "deno lint ./**/*.ts",
     "test": "deno test --unstable-broadcast-channel --location http://localhost --allow-env result/",
     "test:coverage": "mkdir coverage -p && deno test --unstable-broadcast-channel --location http://localhost --coverage=coverage/coverage --allow-env result/ && deno coverage coverage/coverage --lcov --output=coverage/lcov.info",
-    "test:e2e": "deno test --allow-net --allow-env --allow-run e2e/"
+    "test:e2e": "deno test --allow-net --allow-env e2e/"
   },
   "lock": false,
   "fmt": {
