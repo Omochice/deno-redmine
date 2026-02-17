@@ -20,7 +20,7 @@ async function waitForRedmine(
       }
       await response.body?.cancel();
     } catch {
-      // Redmine is not ready yet
+      // Connection errors are expected while Redmine is still booting
     }
     await new Promise((resolve) => setTimeout(resolve, intervalMs));
   }
@@ -56,15 +56,10 @@ async function setupRedmine(): Promise<string> {
   // 3. Creates API token for admin
   // 4. Outputs the token with a prefix marker to distinguish from Rails logs
   const script = [
-    // Enable REST API
     'Setting.where(name: "rest_api_enabled").first_or_initialize.tap { |s| s.value = "1"; s.save! }',
-    // Create default tracker if none exist
     'Tracker.create!(name: "Bug", default_status: IssueStatus.first || IssueStatus.create!(name: "New")) if Tracker.count == 0',
-    // Create default issue status if none exist
     'IssueStatus.create!(name: "New") if IssueStatus.count == 0',
-    // Create default priority if none exist
     'IssuePriority.create!(name: "Normal") if IssuePriority.count == 0',
-    // Create API token
     'user = User.find_by!(login: "admin")',
     'Token.where(user: user, action: "api").destroy_all',
     'token = Token.create!(user: user, action: "api")',
@@ -90,7 +85,6 @@ async function seedTestData(context: Context): Promise<void> {
     "X-Redmine-API-Key": context.apiKey,
   };
 
-  // Create a test project
   const projectResponse = await fetch(
     `${context.endpoint}/projects.json`,
     {
@@ -119,7 +113,6 @@ async function seedTestData(context: Context): Promise<void> {
   const projectData = await projectResponse.json();
   const projectId: number = projectData.project.id;
 
-  // Get tracker, status, and priority IDs
   const trackersResponse = await fetch(
     `${context.endpoint}/trackers.json`,
     { headers },
@@ -152,7 +145,6 @@ async function seedTestData(context: Context): Promise<void> {
   const prioritiesData = await prioritiesResponse.json();
   const priorityId: number = prioritiesData.issue_priorities[0].id;
 
-  // Create a test issue
   const issueResponse = await fetch(
     `${context.endpoint}/issues.json`,
     {
@@ -177,7 +169,6 @@ async function seedTestData(context: Context): Promise<void> {
     );
   }
 
-  // Create a wiki page
   const wikiResponse = await fetch(
     `${context.endpoint}/projects/${projectId}/wiki/E2ETestPage.json`,
     {
