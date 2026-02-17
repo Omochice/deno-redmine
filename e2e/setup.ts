@@ -191,9 +191,10 @@ async function seedTestData(context: Context): Promise<void> {
   }
 
   const issueTemplateScript = [
+    `author = User.find_by!(login: "admin")`,
     `tracker = Tracker.first`,
-    `IssueTemplate.create!(project_id: ${projectId}, tracker_id: tracker.id, title: "E2E Bug Template", issue_title: "Bug: ", description: "Template for bug reports", enabled: true)`,
-    `GlobalIssueTemplate.create!(tracker_id: tracker.id, title: "E2E Global Template", issue_title: "Global: ", description: "Global template description", enabled: true)`,
+    `IssueTemplate.create!(project_id: ${projectId}, tracker_id: tracker.id, author_id: author.id, title: "E2E Bug Template", issue_title: "Bug: ", description: "Template for bug reports", enabled: true)`,
+    `GlobalIssueTemplate.create!(tracker_id: tracker.id, author_id: author.id, title: "E2E Global Template", issue_title: "Global: ", description: "Global template description", enabled: true)`,
   ].join("; ");
   await runRailsRunner(issueTemplateScript);
 }
