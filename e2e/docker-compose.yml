@@ -11,7 +11,10 @@ services:
       retries: 10
 
   redmine:
-    image: redmine:${REDMINE_VERSION:-5.1}
+    build:
+      context: .
+      args:
+        REDMINE_VERSION: ${REDMINE_VERSION:-5.1}
     depends_on:
       postgres:
         condition: service_healthy
