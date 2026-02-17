@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:16-alpine@sha256:97ff59a4e30e08d1c11bdcd9455e7832368c0572b576c9092cde2df4ae5552a3
     environment:
       POSTGRES_DB: redmine
       POSTGRES_USER: redmine
@@ -11,7 +11,7 @@ services:
       retries: 10
 
   redmine:
-    image: redmine:6.0
+    image: redmine:6.0@sha256:f7e70b8c43a3e9113a70191908cc28e1dfd6e602eb97fda98e10cda8ce74b79e
     depends_on:
       postgres:
         condition: service_healthy
