@@ -130,6 +130,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions: {}
+    strategy:
+      fail-fast: false
+      matrix:
+        redmine-version: ["5.1", "6.0", "6.1"]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -137,6 +141,8 @@ jobs:
       - uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
       - name: Start Redmine
         run: docker compose -f e2e/docker-compose.yml up -d --wait
+        env:
+          REDMINE_VERSION: ${{ matrix.redmine-version }}
       - name: Setup Redmine
         id: setup-redmine
         run: |
