@@ -1,4 +1,4 @@
-import { assert } from "jsr:@std/assert@1.0.18";
+import { assert, assertEquals } from "jsr:@std/assert@1.0.18";
 import { e2eContext } from "./context.ts";
 import { list } from "../result/issue-templates/list.ts";
 
@@ -8,18 +8,26 @@ Deno.test("E2E: Issue Templates API", async (t) => {
     async () => {
       const result = await list(e2eContext, "e2e-test-project");
       assert(result.isOk());
-      assert(
-        result.value.issueTemplates.length > 0,
-        "Should have project-specific templates",
+
+      const { issueTemplates, globalIssueTemplates } = result.value;
+
+      assertEquals(issueTemplates.length, 1);
+      assertEquals(issueTemplates[0].title, "E2E Bug Template");
+      assertEquals(issueTemplates[0].issueTitle, "Bug: ");
+      assertEquals(issueTemplates[0].description, "Template for bug reports");
+      assertEquals(issueTemplates[0].enabled, true);
+      assertEquals(issueTemplates[0].trackerName, "Bug");
+      assert(issueTemplates[0].createdOn instanceof Date);
+      assert(issueTemplates[0].updatedOn instanceof Date);
+
+      assertEquals(globalIssueTemplates.length, 1);
+      assertEquals(globalIssueTemplates[0].title, "E2E Global Template");
+      assertEquals(globalIssueTemplates[0].issueTitle, "Global: ");
+      assertEquals(
+        globalIssueTemplates[0].description,
+        "Global template description",
       );
-      assert(
-        result.value.globalIssueTemplates.length > 0,
-        "Should have global templates",
-      );
-      const template = result.value.issueTemplates[0];
-      assert(typeof template.id === "number");
-      assert(typeof template.title === "string");
-      assert(typeof template.enabled === "boolean");
+      assertEquals(globalIssueTemplates[0].enabled, true);
     },
   );
 });
