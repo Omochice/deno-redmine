@@ -20,6 +20,7 @@ Deno.test({
     await t.step("GET /projects/:id.json should return a project", async () => {
       const listResult = await fetchList(e2eContext);
       assert(listResult.isOk());
+      assert(listResult.value.length > 0);
       const projectId = listResult.value[0].id;
 
       const result = await show(e2eContext, projectId);
