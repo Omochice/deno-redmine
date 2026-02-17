@@ -36,13 +36,10 @@ Deno.test({
     await t.step(
       "GET /projects/:id/wiki/:page.json should return a wiki page",
       async () => {
-        // Redmine returns comments: null for pages without comments,
-        // but the validator expects string. This is a known schema issue.
         const result = await show(e2eContext, projectId, "E2ETestPage");
-        assert(
-          result.isErr(),
-          "Expected Err due to comments:null schema mismatch",
-        );
+        assert(result.isOk());
+        assertEquals(result.value.title, "E2ETestPage");
+        assert(result.value.version >= 1);
       },
     );
 
