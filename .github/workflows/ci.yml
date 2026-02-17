@@ -149,6 +149,9 @@ jobs:
         run: deno task test:e2e
         env:
           REDMINE_URL: http://localhost:3000
+      - name: Capture logs on failure
+        if: failure()
+        run: docker compose -f e2e/docker-compose.yml logs
       - name: Cleanup
         if: always()
         run: docker compose -f e2e/docker-compose.yml down -v
