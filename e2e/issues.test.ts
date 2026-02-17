@@ -44,6 +44,7 @@ Deno.test({
         projectId: project.id,
       });
       assert(issuesBefore.isOk());
+      assert(issuesBefore.value.length > 0);
 
       const result = await createIssue(e2eContext, {
         projectId: project.id,
