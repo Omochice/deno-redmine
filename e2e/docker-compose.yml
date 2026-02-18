@@ -11,7 +11,10 @@ services:
       retries: 10
 
   redmine:
-    image: redmine:${REDMINE_VERSION:-5.1}
+    build:
+      context: .
+      args:
+        REDMINE_VERSION: ${REDMINE_VERSION:-5.1}
     depends_on:
       postgres:
         condition: service_healthy
@@ -21,6 +24,7 @@ services:
       REDMINE_DB_USERNAME: redmine
       REDMINE_DB_PASSWORD: redmine
       REDMINE_SECRET_KEY_BASE: e2e-test-secret-key-base
+      REDMINE_PLUGINS_MIGRATE: "true"
     ports:
       - "3000:3000"
     healthcheck:
