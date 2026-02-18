@@ -194,7 +194,7 @@ async function seedTestData(context: Context): Promise<void> {
     `role = Role.non_member`,
     `role.add_permission!(:show_issue_templates) unless role.has_permission?(:show_issue_templates)`,
     `author = User.find_by!(login: "admin")`,
-    `tracker = Tracker.first`,
+    `tracker = Tracker.first!`,
     `IssueTemplate.create!(project_id: ${projectId}, tracker_id: tracker.id, author_id: author.id, title: "E2E Bug Template", issue_title: "Bug: ", description: "Template for bug reports", enabled: true)`,
     `GlobalIssueTemplate.create!(tracker_id: tracker.id, author_id: author.id, project_ids: [${projectId}], title: "E2E Global Template", issue_title: "Global: ", description: "Global template description", enabled: true)`,
   ].join("; ");
