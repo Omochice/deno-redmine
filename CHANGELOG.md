@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/Omochice/deno-redmine/compare/v2.0.1...v2.1.0) (2026-02-18)
+
+
+### Features
+
+* add issue statuses API ([#313](https://github.com/Omochice/deno-redmine/issues/313)) ([ab60306](https://github.com/Omochice/deno-redmine/commit/ab6030674666f0e8ba5eb511f8871157c5f1cf56))
+
 ## [2.0.1](https://github.com/Omochice/deno-redmine/compare/v2.0.0...v2.0.1) (2026-02-17)
 
 
