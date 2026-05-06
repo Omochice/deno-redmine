@@ -8,7 +8,7 @@ import {
   pipe,
   string,
   transform,
-} from "jsr:@valibot/valibot@1.2.0";
+} from "jsr:@valibot/valibot@1.4.0";
 import type { SnakeCasedProperties } from "npm:type-fest@5.4.4";
 import {
   sanitizeTitle,

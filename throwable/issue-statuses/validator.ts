@@ -6,7 +6,7 @@ import {
   pipe,
   string,
   transform,
-} from "jsr:@valibot/valibot@1.2.0";
+} from "jsr:@valibot/valibot@1.4.0";
 import { IssueStatus } from "./type.ts";
 import { objectToCamel } from "npm:ts-case-convert@2.1.0";
 
