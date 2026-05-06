@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.18";
+import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/wiki-pages/list.ts";
 import { show } from "../result/wiki-pages/show.ts";

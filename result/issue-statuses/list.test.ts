@@ -1,5 +1,5 @@
 import { fetchList } from "./list.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.18";
+import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
 
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.12.10/node";
