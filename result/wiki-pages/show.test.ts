@@ -1,5 +1,5 @@
 import { show } from "./show.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.18";
+import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
 import {
   context,
   invalidResponseHandlers,

@@ -1,5 +1,5 @@
 import { deleteWiki } from "./delete.ts";
-import { assert } from "jsr:@std/assert@1.0.18";
+import { assert } from "jsr:@std/assert@1.0.19";
 import {
   context,
   invalidResponseHandlers,

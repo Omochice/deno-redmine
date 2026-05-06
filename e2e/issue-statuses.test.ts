@@ -1,4 +1,4 @@
-import { assert } from "jsr:@std/assert@1.0.18";
+import { assert } from "jsr:@std/assert@1.0.19";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/issue-statuses/list.ts";
 
