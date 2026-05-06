@@ -5,8 +5,8 @@ import {
   invalidResponseHandlers,
   validResponseHandelers,
 } from "./_mock.ts";
-import { http, HttpResponse } from "npm:msw@2.12.10";
-import { setupServer } from "npm:msw@2.12.10/node";
+import { http, HttpResponse } from "npm:msw@2.14.2";
+import { setupServer } from "npm:msw@2.14.2/node";
 
 const server = setupServer();
 server.listen();
