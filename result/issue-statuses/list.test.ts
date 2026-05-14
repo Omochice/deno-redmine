@@ -2,7 +2,7 @@ import { fetchList } from "./list.ts";
 import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
 
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
-import { setupServer } from "npm:msw@2.14.5/node";
+import { setupServer } from "npm:msw@2.14.6/node";
 
 const server = setupServer();
 server.listen();
