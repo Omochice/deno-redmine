@@ -17,7 +17,7 @@ import {
   idName,
   toUndefined,
 } from "../../internal/validator.ts";
-import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.1.0";
+import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.0";
 import type { Project, ProjectQuery } from "./type.ts";
 
 export const projectSchema = pipe(
