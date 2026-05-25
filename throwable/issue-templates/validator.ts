@@ -9,7 +9,7 @@ import {
 } from "jsr:@valibot/valibot@1.4.1";
 import { dateLikeString } from "../../internal/validator.ts";
 import type { IssueTemplate, Response_ } from "./type.ts";
-import { objectToCamel } from "npm:ts-case-convert@2.1.0";
+import { objectToCamel } from "npm:ts-case-convert@2.3.0";
 
 export const issueTemplate = pipe(
   object({
