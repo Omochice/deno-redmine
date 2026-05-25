@@ -1,7 +1,7 @@
 import { Context } from "../../context.ts";
 import { join } from "jsr:@std/path@1.1.4/posix/join";
 import { assertResponse } from "../../error.ts";
-import { parse } from "jsr:@valibot/valibot@1.4.0";
+import { parse } from "jsr:@valibot/valibot@1.4.1";
 import { sanitizeTitle, type WikiDetail } from "./type.ts";
 import { wikiDetail } from "./validator.ts";
 
