@@ -1,5 +1,5 @@
 import type { Context } from "../../context.ts";
-import { parse } from "jsr:@valibot/valibot@1.4.0";
+import { parse } from "jsr:@valibot/valibot@1.4.1";
 import { join } from "jsr:@std/path@1.1.4/posix/join";
 import type { Response_ } from "./type.ts";
 import { issueTemplateResponse } from "./validator.ts";
