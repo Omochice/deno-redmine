@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "npm:msw@2.14.6";
-import { STATUS_CODE } from "jsr:@std/http@1.1.0/status";
+import { STATUS_CODE } from "jsr:@std/http@1.1.1/status";
 
 export const context = {
   apiKey: "sample",
