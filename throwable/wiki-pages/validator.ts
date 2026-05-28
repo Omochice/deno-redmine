@@ -17,7 +17,7 @@ import {
   type WikiDetail,
 } from "./type.ts";
 // NOTE: replace valibot.toCamelCase when implements it
-import { objectToCamel } from "npm:ts-case-convert@2.3.0";
+import { objectToCamel } from "npm:ts-case-convert@2.3.1";
 import { toUndefined } from "../../internal/validator.ts";
 
 const dateLikeString = pipe(
