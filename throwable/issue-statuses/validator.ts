@@ -8,7 +8,7 @@ import {
   transform,
 } from "jsr:@valibot/valibot@1.4.1";
 import { IssueStatus } from "./type.ts";
-import { objectToCamel } from "npm:ts-case-convert@2.3.0";
+import { objectToCamel } from "npm:ts-case-convert@2.3.1";
 
 const issueStatusSchema = pipe(
   object({

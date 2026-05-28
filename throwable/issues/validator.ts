@@ -20,7 +20,7 @@ import {
   idName,
   toUndefined,
 } from "../../internal/validator.ts";
-import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.0";
+import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
 import type {
   Attachment,
   CreateIssueQuery,

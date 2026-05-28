@@ -9,7 +9,7 @@ import {
 } from "jsr:@valibot/valibot@1.4.1";
 import { Tracker } from "./type.ts";
 import { idName, toUndefined } from "../../internal/validator.ts";
-import { objectToCamel } from "npm:ts-case-convert@2.3.0";
+import { objectToCamel } from "npm:ts-case-convert@2.3.1";
 
 const trackerSchema = pipe(
   object({
