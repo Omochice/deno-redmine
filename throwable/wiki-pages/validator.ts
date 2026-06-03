@@ -9,7 +9,7 @@ import {
   string,
   transform,
 } from "jsr:@valibot/valibot@1.4.1";
-import type { SnakeCasedProperties } from "npm:type-fest@5.6.0";
+import type { SnakeCasedProperties } from "npm:type-fest@5.7.0";
 import {
   sanitizeTitle,
   type Wiki,
