@@ -5,7 +5,7 @@ import {
   pipe,
   string,
   transform,
-} from "jsr:@valibot/valibot@1.4.1";
+} from "jsr:@valibot/valibot@1.4.2";
 
 export const idName = object({
   id: number(),

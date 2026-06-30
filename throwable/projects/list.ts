@@ -1,4 +1,4 @@
-import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.1";
+import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { join } from "jsr:@std/path@1.1.5/posix/join";
 import { type Project } from "./type.ts";
 import { projectSchema } from "./validator.ts";

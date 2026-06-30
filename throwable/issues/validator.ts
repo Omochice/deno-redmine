@@ -14,7 +14,7 @@ import {
   string,
   transform,
   union,
-} from "jsr:@valibot/valibot@1.4.1";
+} from "jsr:@valibot/valibot@1.4.2";
 import {
   dateLikeString,
   idName,
