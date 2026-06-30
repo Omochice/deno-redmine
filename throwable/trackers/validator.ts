@@ -6,7 +6,7 @@ import {
   pipe,
   string,
   transform,
-} from "jsr:@valibot/valibot@1.4.1";
+} from "jsr:@valibot/valibot@1.4.2";
 import { Tracker } from "./type.ts";
 import { idName, toUndefined } from "../../internal/validator.ts";
 import { objectToCamel } from "npm:ts-case-convert@2.3.1";
