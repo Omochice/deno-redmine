@@ -1,5 +1,5 @@
 import { Context } from "../../context.ts";
-import { join } from "jsr:@std/path@1.1.5/posix/join";
+import { join } from "jsr:@std/path@1.1.6/posix/join";
 import { assertResponse } from "../../error.ts";
 import { parse } from "jsr:@valibot/valibot@1.4.2";
 import type { Wiki } from "./type.ts";
