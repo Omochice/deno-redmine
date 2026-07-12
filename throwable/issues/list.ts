@@ -5,11 +5,12 @@ import type { Issue, ListIssueQuery } from "./type.ts";
 import { assertResponse } from "../../error.ts";
 import { listResponse, toListOption } from "./validator.ts";
 
+const pageSize = 100;
+
 export async function listIssues(
   context: Context,
   option: Partial<ListIssueQuery> = {},
 ): Promise<Issue[]> {
-  const limit = 100;
   const opts: RequestInit = {
     method: "GET",
     headers: {
@@ -18,9 +19,8 @@ export async function listIssues(
     },
   };
   const convertedOption = parse(toListOption, option);
-  const n = await fetchNumberOfIssues(context, option);
-  const results: Response[] = [];
-  for (let offset = 0; offset < n; offset += limit) {
+
+  const fetchPage = async (limit: number, offset: number): Promise<Issue[]> => {
     const endpoint = new URL(join(context.endpoint, "issues.json"));
     endpoint.search = new URLSearchParams({
       limit: `${limit}`,
@@ -29,13 +29,34 @@ export async function listIssues(
     }).toString();
     const response = await fetch(endpoint, opts);
     assertResponse(response);
-    results.push(response);
-  }
-  const issues: Issue[] = [];
-  for (const response of results) {
     const json = await response.json();
-    const parsed = parse(listResponse, json);
-    issues.push(...parsed.issues);
+    return parse(listResponse, json).issues;
+  };
+
+  // When a limit is requested, the caller does not care about the server's
+  // total_count, so the extra count request that the unbounded path needs
+  // (to know how many pages to walk) is unnecessary and would over-fetch.
+  if (option.limit !== undefined) {
+    const limit = option.limit;
+    const issues: Issue[] = [];
+    let offset = 0;
+    while (issues.length < limit) {
+      const fetchSize = Math.min(pageSize, limit - issues.length);
+      const page = await fetchPage(fetchSize, offset);
+      issues.push(...page);
+      offset += fetchSize;
+      if (page.length < fetchSize) {
+        // Server ran out of issues before reaching the requested limit.
+        break;
+      }
+    }
+    return issues.slice(0, limit);
+  }
+
+  const n = await fetchNumberOfIssues(context, option);
+  const issues: Issue[] = [];
+  for (let offset = 0; offset < n; offset += pageSize) {
+    issues.push(...await fetchPage(pageSize, offset));
   }
   return issues;
 }
