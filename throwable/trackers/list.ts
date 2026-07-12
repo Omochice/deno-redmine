@@ -1,5 +1,5 @@
 import { parse } from "jsr:@valibot/valibot@1.4.2";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import { type Tracker } from "./type.ts";
 import type { Context } from "../../context.ts";
 import { assertResponse } from "../../error.ts";
@@ -12,7 +12,7 @@ import { listTrackerResponse } from "./validator.ts";
  * @return Array of Tracker
  */
 export async function fetchList(context: Context): Promise<Tracker[]> {
-  const endpoint = join(context.endpoint, "trackers.json");
+  const endpoint = buildUrl(context.endpoint, "trackers.json");
   const response = await fetch(
     endpoint,
     {

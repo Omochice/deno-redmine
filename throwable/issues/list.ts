@@ -1,6 +1,6 @@
 import type { Context } from "../../context.ts";
 import { parse } from "jsr:@valibot/valibot@1.4.2";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import type { Issue, ListIssueQuery } from "./type.ts";
 import { assertResponse } from "../../error.ts";
 import { listResponse, toListOption } from "./validator.ts";
@@ -21,7 +21,7 @@ export async function listIssues(
   const convertedOption = parse(toListOption, option);
 
   const fetchPage = async (limit: number, offset: number): Promise<Issue[]> => {
-    const endpoint = new URL(join(context.endpoint, "issues.json"));
+    const endpoint = buildUrl(context.endpoint, "issues.json");
     endpoint.search = new URLSearchParams({
       limit: `${limit}`,
       offset: `${offset}`,
@@ -62,7 +62,7 @@ async function fetchNumberOfIssues(
   context: Context,
   option: Partial<ListIssueQuery>,
 ): Promise<number> {
-  const endpoint = new URL(join(context.endpoint, "issues.json"));
+  const endpoint = buildUrl(context.endpoint, "issues.json");
   endpoint.search = new URLSearchParams({
     limit: "1",
     offset: "0",

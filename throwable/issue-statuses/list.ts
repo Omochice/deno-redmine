@@ -1,5 +1,5 @@
 import { parse } from "jsr:@valibot/valibot@1.4.2";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import { type IssueStatus } from "./type.ts";
 import type { Context } from "../../context.ts";
 import { assertResponse } from "../../error.ts";
@@ -12,7 +12,7 @@ import { listIssueStatusResponse } from "./validator.ts";
  * @return Array of IssueStatus
  */
 export async function fetchList(context: Context): Promise<IssueStatus[]> {
-  const endpoint = new URL(join(context.endpoint, "issue_statuses.json"));
+  const endpoint = buildUrl(context.endpoint, "issue_statuses.json");
   const response = await fetch(
     endpoint,
     {

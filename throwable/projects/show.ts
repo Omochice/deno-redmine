@@ -1,4 +1,4 @@
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import type { Context } from "../../context.ts";
 import type { Project } from "./type.ts";
 import { projectSchema } from "./validator.ts";
@@ -13,7 +13,7 @@ export async function show(
   context: Context,
   id: number,
 ): Promise<Project> {
-  const url = new URL(join(context.endpoint, "projects", `${id}.json`));
+  const url = buildUrl(context.endpoint, "projects", `${id}.json`);
   const response = await fetch(url, {
     method: "GET",
     headers: {

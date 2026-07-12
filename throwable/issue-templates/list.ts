@@ -1,6 +1,6 @@
 import type { Context } from "../../context.ts";
 import { parse } from "jsr:@valibot/valibot@1.4.2";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import type { Response_ } from "./type.ts";
 import { issueTemplateResponse } from "./validator.ts";
 import { assertResponse } from "../../error.ts";
@@ -14,7 +14,7 @@ export async function list(
   context: Context,
   projectId: number | string,
 ): Promise<Response_> {
-  const endpoint = join(
+  const endpoint = buildUrl(
     context.endpoint,
     "projects",
     `${projectId}`,

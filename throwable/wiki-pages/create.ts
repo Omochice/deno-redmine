@@ -1,5 +1,5 @@
 import { Context } from "../../context.ts";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import { assertResponse } from "../../error.ts";
 import { makeWikiPutRequest } from "./validator.ts";
 import { sanitizeTitle, type WikiContent } from "./type.ts";
@@ -26,14 +26,12 @@ export async function create(
     },
     body: JSON.stringify(body),
   } as const satisfies RequestInit;
-  const url = new URL(
-    join(
-      context.endpoint,
-      "projects",
-      `${projectId}`,
-      "wiki",
-      `${sanitizeTitle(wiki.title)}.json`,
-    ),
+  const url = buildUrl(
+    context.endpoint,
+    "projects",
+    `${projectId}`,
+    "wiki",
+    `${sanitizeTitle(wiki.title)}.json`,
   );
   assertResponse(await fetch(url, opts));
 }

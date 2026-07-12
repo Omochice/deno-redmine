@@ -1,6 +1,6 @@
 import { Context } from "../../context.ts";
 import { UpdateIssueQuery } from "./type.ts";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import { assertResponse } from "../../error.ts";
 import { parse } from "jsr:@valibot/valibot@1.4.2";
 import { toUpdateRequest } from "./validator.ts";
@@ -10,7 +10,7 @@ export async function update(
   id: number,
   issue: UpdateIssueQuery,
 ): Promise<void> {
-  const url = new URL(join(context.endpoint, "issues", `${id}.json`));
+  const url = buildUrl(context.endpoint, "issues", `${id}.json`);
   const response = await fetch(url, {
     method: "PUT",
     headers: {

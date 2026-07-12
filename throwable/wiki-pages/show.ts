@@ -1,5 +1,5 @@
 import { Context } from "../../context.ts";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import { assertResponse } from "../../error.ts";
 import { parse } from "jsr:@valibot/valibot@1.4.2";
 import { sanitizeTitle, type WikiDetail } from "./type.ts";
@@ -27,24 +27,22 @@ export async function show(
       "X-Redmine-API-Key": context.apiKey,
     },
   } as const satisfies RequestInit;
-  const url = new URL(
-    version == null
-      ? join(
-        context.endpoint,
-        "projects",
-        `${projectId}`,
-        "wiki",
-        `${sanitizeTitle(title)}.json`,
-      )
-      : join(
-        context.endpoint,
-        "projects",
-        `${projectId}`,
-        "wiki",
-        sanitizeTitle(title),
-        `${version}.json`,
-      ),
-  );
+  const url = version == null
+    ? buildUrl(
+      context.endpoint,
+      "projects",
+      `${projectId}`,
+      "wiki",
+      `${sanitizeTitle(title)}.json`,
+    )
+    : buildUrl(
+      context.endpoint,
+      "projects",
+      `${projectId}`,
+      "wiki",
+      sanitizeTitle(title),
+      `${version}.json`,
+    );
 
   const r = await fetch(url, opts);
   assertResponse(r);
