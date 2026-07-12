@@ -30,6 +30,12 @@
     "./result/issues/show": "./result/issues/show.ts",
     "./result/issues/update": "./result/issues/update.ts",
     "./result/issues/delete": "./result/issues/delete.ts",
+    "./result/versions": "./result/versions/mod.ts",
+    "./result/versions/create": "./result/versions/create.ts",
+    "./result/versions/list": "./result/versions/list.ts",
+    "./result/versions/show": "./result/versions/show.ts",
+    "./result/versions/update": "./result/versions/update.ts",
+    "./result/versions/delete": "./result/versions/delete.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -67,7 +73,15 @@
     "./throwable/issues/show": "./throwable/issues/show.ts",
     "./throwable/issues/update": "./throwable/issues/update.ts",
     "./throwable/issues/delete": "./throwable/issues/delete.ts",
-    "./throwable/issues/validator": "./throwable/issues/validator.ts"
+    "./throwable/issues/validator": "./throwable/issues/validator.ts",
+    "./throwable/versions": "./throwable/versions/mod.ts",
+    "./throwable/versions/type": "./throwable/versions/type.ts",
+    "./throwable/versions/create": "./throwable/versions/create.ts",
+    "./throwable/versions/list": "./throwable/versions/list.ts",
+    "./throwable/versions/show": "./throwable/versions/show.ts",
+    "./throwable/versions/update": "./throwable/versions/update.ts",
+    "./throwable/versions/delete": "./throwable/versions/delete.ts",
+    "./throwable/versions/validator": "./throwable/versions/validator.ts"
   },
   "publish": {
     "include": [
