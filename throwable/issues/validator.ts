@@ -1,6 +1,7 @@
 import {
   array,
   boolean,
+  date,
   literal,
   null_,
   number,
@@ -221,11 +222,27 @@ export const showIssueSchema = object({
   issue: showIssue,
 });
 
+// Redmine expects dates as YYYY-MM-DD strings; the UTC date part is used so
+// the serialized value matches the calendar day the Date instance represents.
+const toRedmineDate = pipe(
+  date(),
+  transform((input: Date) => input.toISOString().slice(0, 10)),
+);
+
+// The schema keys are camelCase to match the public UpdateIssueQuery input.
+// valibot's object() strips unknown keys, so a snake_case schema would drop
+// every camelCase-only field before objectToSnake could convert it.
 export const toUpdateRequest = pipe(
   partial(object({
-    ...issueSchema.entries,
+    subject: string(),
+    description: string(),
     notes: string(),
     privateNotes: boolean(),
+    doneRatio: number(),
+    isPrivate: boolean(),
+    estimatedHours: number(),
+    startDate: toRedmineDate,
+    dueDate: toRedmineDate,
   })),
   transform((input) => {
     return objectToSnake(input);
