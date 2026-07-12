@@ -25,8 +25,7 @@ Deno.test("GET /projects/issues.json", async (t) => {
   );
 });
 
-// deno-lint-ignore no-explicit-any
-function sampleIssue(id: number): any {
+function sampleIssue(id: number): Record<string, unknown> {
   return {
     id,
     project: { id: 1, name: "hi" },
