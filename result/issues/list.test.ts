@@ -129,4 +129,30 @@ Deno.test("listIssues limit option", async (t) => {
       ]);
     },
   );
+
+  await t.step(
+    "rejects a non-integer limit without requesting the server",
+    async () => {
+      const requests: RecordedRequest[] = [];
+      server.resetHandlers(pagingHandler(5, requests));
+
+      const e = await listIssues(context, { limit: 1.5 });
+
+      assert(e.isErr());
+      assertEquals(requests.length, 0);
+    },
+  );
+
+  await t.step(
+    "rejects a limit below one without requesting the server",
+    async () => {
+      const requests: RecordedRequest[] = [];
+      server.resetHandlers(pagingHandler(5, requests));
+
+      const e = await listIssues(context, { limit: -1 });
+
+      assert(e.isErr());
+      assertEquals(requests.length, 0);
+    },
+  );
 });
