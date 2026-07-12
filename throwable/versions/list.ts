@@ -1,4 +1,4 @@
-import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
+import { array, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { join } from "jsr:@std/path@1.1.6/posix/join";
 import type { Context } from "../../context.ts";
 import type { Version } from "./type.ts";
@@ -7,7 +7,6 @@ import { assertResponse } from "../../error.ts";
 
 const responseSchema = object({
   versions: array(versionSchema),
-  total_count: number(),
 });
 
 /**
