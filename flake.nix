@@ -94,8 +94,10 @@
             deno-check = {
               enable = true;
               name = "deno check";
-              entry = "${pkgs.deno}/bin/deno check ./**/*.ts";
-              files = "\\.ts$";
+              # Reuse the deno.jsonc task so the glob is expanded by deno's task
+              # runner and stays aligned with CI. No files filter: type checking
+              # must run on every push, even when only non-TS files change.
+              entry = "${pkgs.lib.getExe pkgs.deno} task check";
               pass_filenames = false;
               stages = [ "pre-push" ];
             };
