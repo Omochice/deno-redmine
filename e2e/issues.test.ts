@@ -148,6 +148,60 @@ Deno.test({
       );
     });
 
+    await t.step(
+      "GET /issues.json with limit: 1 should return exactly one issue",
+      async () => {
+        const projectsResult = await fetchProjects(e2eContext);
+        assert(projectsResult.isOk());
+        const project = projectsResult.value.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        assert(project !== undefined);
+
+        const issuesInProject = await listIssues(e2eContext, {
+          projectId: project.id,
+        });
+        assert(issuesInProject.isOk());
+        assert(issuesInProject.value.length > 0);
+
+        // Ensure at least two issues exist on the server so that a
+        // `limit: 1` result can only be explained by the limit being
+        // honored, not by there happening to be a single issue.
+        const subject = "E2E Limit Test Issue";
+        const created = await createIssue(e2eContext, {
+          projectId: project.id,
+          trackerId: issuesInProject.value[0].tracker.id,
+          statusId: issuesInProject.value[0].status.id,
+          priorityId: issuesInProject.value[0].priority.id,
+          subject,
+          description: "Created by E2E test to exercise listIssues limit",
+        });
+        assert(created.isOk());
+
+        // Cleanup looks the issue up by subject because createIssue does
+        // not return the created id.
+        try {
+          const result = await listIssues(e2eContext, { limit: 1 });
+          assert(result.isOk());
+          assertEquals(result.value.length, 1);
+        } finally {
+          const cleanupList = await listIssues(e2eContext, {
+            projectId: project.id,
+          });
+          assert(cleanupList.isOk(), "cleanup listing must succeed");
+          // Delete every match, not just one: runs that predate this
+          // cleanup left issues with the same subject behind.
+          const leftovers = cleanupList.value.filter((i) =>
+            i.subject === subject
+          );
+          for (const leftover of leftovers) {
+            const deleted = await deleteIssue(e2eContext, leftover.id);
+            assert(deleted.isOk(), `cleanup must delete issue ${leftover.id}`);
+          }
+        }
+      },
+    );
+
     await t.step("DELETE /issues/:id.json should delete an issue", async () => {
       const listResult = await listIssues(e2eContext, {});
       assert(listResult.isOk());
