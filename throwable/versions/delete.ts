@@ -2,6 +2,13 @@ import { join } from "jsr:@std/path@1.1.6/posix/join";
 import type { Context } from "../../context.ts";
 import { assertResponse } from "../../error.ts";
 
+/**
+ * Delete the version of given id
+ * This may throw `Error`
+ *
+ * @param context REST endpoint context
+ * @param id Version identifier
+ */
 export async function deleteVersion(
   context: Context,
   id: number,

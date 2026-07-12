@@ -5,6 +5,14 @@ import type { UpdateVersionQuery } from "./type.ts";
 import { toUpdateVersionQuery } from "./validator.ts";
 import { assertResponse } from "../../error.ts";
 
+/**
+ * Update the version of given id
+ * This may throw `Error`
+ *
+ * @param context REST endpoint context
+ * @param id Version identifier
+ * @param version Version attributes to update it
+ */
 export async function update(
   context: Context,
   id: number,

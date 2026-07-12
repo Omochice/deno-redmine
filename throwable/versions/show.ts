@@ -9,6 +9,14 @@ const schema = object({
   version: versionSchema,
 });
 
+/**
+ * Show the version of given id
+ * This may throw `Error`
+ *
+ * @param context REST endpoint context
+ * @param id Version identifier
+ * @returns Version object
+ */
 export async function show(
   context: Context,
   id: number,
