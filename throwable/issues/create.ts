@@ -15,7 +15,7 @@ export async function createIssue(
   context: Context,
   issue: CreateIssueQuery,
 ): Promise<void> {
-  const url = join(context.endpoint, "issues.json");
+  const url = new URL(join(context.endpoint, "issues.json"));
   const response = await fetch(url, {
     method: "POST",
     headers: {

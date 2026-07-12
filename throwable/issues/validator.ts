@@ -257,6 +257,14 @@ export const toUpdateRequest = pipe(
   }),
 );
 
+// object({}) has no entries, so valibot strips every key from each element
+// (see the bug this schema fixes: id/value were silently dropped, sending
+// custom_fields: [{}] to Redmine). List the fields explicitly instead.
+const createCustomField = object({
+  id: number(),
+  value: union([string(), array(string())]),
+});
+
 export const toCreateRequest = pipe(
   object({
     projectId: number(),
@@ -272,7 +280,7 @@ export const toCreateRequest = pipe(
     watcherUserIds: optional(array(number())),
     isPrivate: optional(boolean()),
     estimatedHours: optional(number()),
-    customFields: optional(array(object({}))),
+    customFields: optional(array(createCustomField)),
   }),
   transform((input: CreateIssueQuery) => {
     return { issue: objectToSnake(input) };
