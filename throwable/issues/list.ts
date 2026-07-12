@@ -39,12 +39,10 @@ export async function listIssues(
   if (option.limit !== undefined) {
     const limit = option.limit;
     const issues: Issue[] = [];
-    let offset = 0;
     while (issues.length < limit) {
       const fetchSize = Math.min(pageSize, limit - issues.length);
-      const page = await fetchPage(fetchSize, offset);
+      const page = await fetchPage(fetchSize, issues.length);
       issues.push(...page);
-      offset += fetchSize;
       if (page.length < fetchSize) {
         break;
       }
