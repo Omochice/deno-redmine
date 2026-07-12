@@ -18,7 +18,7 @@ export type CreateVersionQuery = {
   status?: "open" | "locked" | "closed";
   sharing?: "none" | "descendants" | "hierarchy" | "tree" | "system";
   description?: string;
-  dueDate?: string;
+  dueDate?: Date;
   wikiPageTitle?: string;
 };
 

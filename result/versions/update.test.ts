@@ -44,7 +44,7 @@ Deno.test("PUT /versions/:id.json", async (t) => {
         ),
       );
       const e = await update(context, 3, {
-        dueDate: "2026-09-01",
+        dueDate: new Date("2026-09-01"),
         wikiPageTitle: "Plan",
       });
       assert(e.isOk());

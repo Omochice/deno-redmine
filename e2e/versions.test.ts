@@ -28,7 +28,7 @@ Deno.test({
           status: "open",
           sharing: "none",
           description: "Created by E2E test",
-          dueDate: "2026-08-01",
+          dueDate: new Date("2026-08-01"),
         });
         assert(result.isOk());
       },

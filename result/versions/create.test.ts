@@ -50,7 +50,7 @@ Deno.test("POST /projects/:project_id/versions.json", async (t) => {
         name: "v1.0",
         status: "open",
         sharing: "none",
-        dueDate: "2026-08-01",
+        dueDate: new Date("2026-08-01"),
         wikiPageTitle: "Roadmap",
       });
       assert(e.isOk());
