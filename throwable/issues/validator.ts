@@ -222,8 +222,12 @@ export const showIssueSchema = object({
   issue: showIssue,
 });
 
-// Redmine expects dates as YYYY-MM-DD strings; the UTC date part is used so
-// the serialized value matches the calendar day the Date instance represents.
+// Redmine expects dates as YYYY-MM-DD strings. The UTC date part is used
+// rather than the local calendar fields because dateLikeString parses
+// Redmine's date-only strings as UTC midnight, so only UTC keeps a
+// show() -> update() round-trip on the same calendar day. The trade-off:
+// a Date built from local calendar fields (e.g. new Date(2026, 6, 1) in
+// UTC+9) serializes to the previous day.
 const toRedmineDate = pipe(
   date(),
   transform((input: Date) => input.toISOString().slice(0, 10)),
