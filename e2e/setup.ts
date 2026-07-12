@@ -54,13 +54,18 @@ async function setupRedmine(): Promise<string> {
   // Single rails runner call that:
   // 1. Enables REST API
   // 2. Creates default tracker, status, and priority if missing
-  // 3. Creates API token for admin
-  // 4. Outputs the token with a prefix marker to distinguish from Rails logs
+  // 3. Creates an issue custom field usable by every tracker (needed by the
+  //    custom-field round-trip e2e test; find_or_create_by! keeps this safe
+  //    to run against an environment that already has it)
+  // 4. Creates API token for admin
+  // 5. Outputs the token with a prefix marker to distinguish from Rails logs
   const script = [
     'Setting.where(name: "rest_api_enabled").first_or_initialize.tap { |s| s.value = "1"; s.save! }',
     'Tracker.create!(name: "Bug", default_status: IssueStatus.first || IssueStatus.create!(name: "New")) if Tracker.count == 0',
     'IssueStatus.create!(name: "New") if IssueStatus.count == 0',
     'IssuePriority.create!(name: "Normal") if IssuePriority.count == 0',
+    'cf = IssueCustomField.find_or_create_by!(name: "E2E CF") { |f| f.field_format = "string"; f.is_for_all = true }',
+    "cf.update!(trackers: Tracker.all)",
     'user = User.find_by!(login: "admin")',
     'Token.where(user: user, action: "api").destroy_all',
     'token = Token.create!(user: user, action: "api")',
