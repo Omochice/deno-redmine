@@ -1,7 +1,8 @@
 import { update } from "./update.ts";
-import { assert } from "jsr:@std/assert@1.0.19";
+import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
+import { http, HttpResponse } from "npm:msw@2.15.0";
 
 const server = setupServer();
 server.listen();
@@ -27,4 +28,77 @@ Deno.test("PUT /projects/issues/:id.json", async (t) => {
     const e = await update(context, 404, { notes: "sample" });
     assert(e.isErr());
   });
+
+  await t.step(
+    "should send camelCase fields as snake_case in the request body",
+    async () => {
+      let capturedBody: { issue: Record<string, unknown> } | undefined;
+      server.resetHandlers(
+        http.put(
+          `${context.endpoint}/issues/:id.json`,
+          async ({ request }) => {
+            capturedBody = await request.json() as {
+              issue: Record<string, unknown>;
+            };
+            return HttpResponse.json({});
+          },
+        ),
+      );
+
+      const e = await update(context, 1, {
+        subject: "updated subject",
+        notes: "a note",
+        privateNotes: true,
+        doneRatio: 90,
+        isPrivate: true,
+        estimatedHours: 8,
+        startDate: new Date("2026-07-01"),
+        dueDate: new Date("2026-07-31"),
+      });
+      assert(e.isOk());
+
+      assert(capturedBody !== undefined);
+      const { issue } = capturedBody;
+      assertEquals(issue.subject, "updated subject");
+      assertEquals(issue.notes, "a note");
+      assertEquals(issue.private_notes, true);
+      assertEquals(issue.done_ratio, 90);
+      assertEquals(issue.is_private, true);
+      assertEquals(issue.estimated_hours, 8);
+      assertEquals(issue.start_date, "2026-07-01");
+      assertEquals(issue.due_date, "2026-07-31");
+    },
+  );
+
+  await t.step(
+    "should keep custom field values in the request body",
+    async () => {
+      let capturedBody: { issue: Record<string, unknown> } | undefined;
+      server.resetHandlers(
+        http.put(
+          `${context.endpoint}/issues/:id.json`,
+          async ({ request }) => {
+            capturedBody = await request.json() as {
+              issue: Record<string, unknown>;
+            };
+            return HttpResponse.json({});
+          },
+        ),
+      );
+
+      const e = await update(context, 1, {
+        customFields: [
+          { id: 1, name: "text field", value: "hello" },
+          { id: 2, name: "list field", multiple: true, value: ["a", "b"] },
+        ],
+      });
+      assert(e.isOk());
+
+      assert(capturedBody !== undefined);
+      assertEquals(capturedBody.issue.custom_fields, [
+        { id: 1, value: "hello" },
+        { id: 2, value: ["a", "b"] },
+      ]);
+    },
+  );
 });

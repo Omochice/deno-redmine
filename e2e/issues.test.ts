@@ -70,12 +70,22 @@ Deno.test({
 
       const result = await update(e2eContext, issue.id, {
         subject: "E2E Updated Issue",
+        doneRatio: 90,
+        isPrivate: true,
+        startDate: new Date("2026-07-01"),
       });
       assert(result.isOk());
 
       const showResult = await show(e2eContext, issue.id);
       assert(showResult.isOk());
       assertEquals(showResult.value.subject, "E2E Updated Issue");
+      assertEquals(showResult.value.doneRatio, 90);
+      assertEquals(showResult.value.isPrivate, true);
+      assert(showResult.value.startDate !== undefined);
+      assertEquals(
+        showResult.value.startDate?.toISOString().slice(0, 10),
+        "2026-07-01",
+      );
     });
 
     await t.step("DELETE /issues/:id.json should delete an issue", async () => {
