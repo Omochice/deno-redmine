@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.1.0](https://github.com/Omochice/deno-redmine/compare/v2.0.1...v2.1.0) (2026-07-12)
+
+
+### Features
+
+* add issue delete operation ([#388](https://github.com/Omochice/deno-redmine/issues/388)) ([4d54b3b](https://github.com/Omochice/deno-redmine/commit/4d54b3b668bcd3d57135e5cce998366627d4ec19))
+* add issue statuses API ([#313](https://github.com/Omochice/deno-redmine/issues/313)) ([ab60306](https://github.com/Omochice/deno-redmine/commit/ab6030674666f0e8ba5eb511f8871157c5f1cf56))
+* implement version resources ([#397](https://github.com/Omochice/deno-redmine/issues/397)) ([12d6537](https://github.com/Omochice/deno-redmine/commit/12d6537487178b32fc2b080739c87f86e1642659))
+
+
+### Bug Fixes
+
+* honor the limit option in listIssues ([#394](https://github.com/Omochice/deno-redmine/issues/394)) ([ecf1c61](https://github.com/Omochice/deno-redmine/commit/ecf1c61a425f2da157c13e48d1fc5080221b3c99))
+* send camelCase issue update fields as snake_case ([#391](https://github.com/Omochice/deno-redmine/issues/391)) ([19c3055](https://github.com/Omochice/deno-redmine/commit/19c30556599abbfb28f2bf6917ec4181c0a1c064))
+* serialize project attributes to snake_case on create and update ([#393](https://github.com/Omochice/deno-redmine/issues/393)) ([14b4d28](https://github.com/Omochice/deno-redmine/commit/14b4d287237186fd6fd2d3b4e96279f674389296))
+
 ## [2.0.1](https://github.com/Omochice/deno-redmine/compare/v2.0.0...v2.0.1) (2026-02-17)
 
 
