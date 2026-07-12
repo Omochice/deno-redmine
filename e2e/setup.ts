@@ -55,8 +55,10 @@ async function setupRedmine(): Promise<string> {
   // 1. Enables REST API
   // 2. Creates default tracker, status, and priority if missing
   // 3. Creates an issue custom field usable by every tracker (needed by the
-  //    custom-field round-trip e2e test; find_or_create_by! keeps this safe
-  //    to run against an environment that already has it)
+  //    custom-field round-trip e2e test). A pre-existing "E2E CF" with
+  //    drifted attributes is destroyed and recreated instead of updated in
+  //    place, because Redmine silently ignores field_format assignment on
+  //    persisted custom fields.
   // 4. Creates API token for admin
   // 5. Outputs the token with a prefix marker to distinguish from Rails logs
   const script = [
@@ -64,7 +66,9 @@ async function setupRedmine(): Promise<string> {
     'Tracker.create!(name: "Bug", default_status: IssueStatus.first || IssueStatus.create!(name: "New")) if Tracker.count == 0',
     'IssueStatus.create!(name: "New") if IssueStatus.count == 0',
     'IssuePriority.create!(name: "Normal") if IssuePriority.count == 0',
-    'cf = IssueCustomField.find_or_create_by!(name: "E2E CF") { |f| f.field_format = "string"; f.is_for_all = true }',
+    'cf = IssueCustomField.find_by(name: "E2E CF")',
+    '(cf.destroy; cf = nil) if cf && (cf.field_format != "string" || !cf.is_for_all)',
+    'cf ||= IssueCustomField.create!(name: "E2E CF", field_format: "string", is_for_all: true)',
     "cf.update!(trackers: Tracker.all)",
     'user = User.find_by!(login: "admin")',
     'Token.where(user: user, action: "api").destroy_all',
