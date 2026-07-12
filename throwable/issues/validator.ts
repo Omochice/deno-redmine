@@ -243,6 +243,10 @@ export const toUpdateRequest = pipe(
     estimatedHours: number(),
     startDate: toRedmineDate,
     dueDate: toRedmineDate,
+    customFields: array(object({
+      id: number(),
+      value: optional(union([string(), array(string())])),
+    })),
   })),
   transform((input) => {
     return objectToSnake(input);
