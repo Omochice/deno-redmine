@@ -3,8 +3,7 @@ import { join } from "jsr:@std/path@1.1.6/posix/join";
 /**
  * Build a request URL by appending path segments to the endpoint's path.
  *
- * @param endpoint Base REST endpoint, which may include a base path for
- * subpath installations (e.g. `https://example.com/redmine`)
+ * @param endpoint Base REST endpoint, which may include a base path for subpath installations (e.g. `https://example.com/redmine`)
  * @param segments Path segments to append
  * @returns The resolved URL
  *
