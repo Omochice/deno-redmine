@@ -140,7 +140,7 @@ jobs:
           persist-credentials: false
       - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
       - name: Start Redmine
-        run: docker compose -f e2e/docker-compose.yml up -d --wait
+        run: docker compose -f e2e/compose.yaml up -d --wait
         env:
           REDMINE_VERSION: ${{ matrix.redmine-version }}
       - name: Setup Redmine
@@ -157,10 +157,10 @@ jobs:
           REDMINE_URL: http://localhost:3000
       - name: Capture logs on failure
         if: failure()
-        run: docker compose -f e2e/docker-compose.yml logs
+        run: docker compose -f e2e/compose.yaml logs
       - name: Cleanup
         if: always()
-        run: docker compose -f e2e/docker-compose.yml down -v
+        run: docker compose -f e2e/compose.yaml down -v
   status-check:
     timeout-minutes: 5
     runs-on: ubuntu-latest
