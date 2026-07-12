@@ -46,7 +46,6 @@ export async function listIssues(
       issues.push(...page);
       offset += fetchSize;
       if (page.length < fetchSize) {
-        // Server ran out of issues before reaching the requested limit.
         break;
       }
     }

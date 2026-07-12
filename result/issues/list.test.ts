@@ -123,7 +123,6 @@ Deno.test("listIssues limit option", async (t) => {
 
       assert(e.isOk());
       assertEquals(e.value.length, 150);
-      // one count request (limit=1) followed by two full pages (limit=100 each)
       assertEquals(requests, [
         { limit: "1", offset: "0" },
         { limit: "100", offset: "0" },
