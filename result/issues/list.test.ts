@@ -155,4 +155,17 @@ Deno.test("listIssues limit option", async (t) => {
       assertEquals(requests.length, 0);
     },
   );
+
+  await t.step(
+    "rejects a zero limit without requesting the server",
+    async () => {
+      const requests: RecordedRequest[] = [];
+      server.resetHandlers(pagingHandler(5, requests));
+
+      const e = await listIssues(context, { limit: 0 });
+
+      assert(e.isErr());
+      assertEquals(requests.length, 0);
+    },
+  );
 });
