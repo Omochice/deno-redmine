@@ -20,11 +20,9 @@ import { join } from "jsr:@std/path@1.1.6/posix/join";
  */
 export function buildUrl(endpoint: string, ...segments: string[]): URL {
   const url = new URL(endpoint);
-  // `join` is applied to `pathname` alone rather than the whole endpoint so
-  // that the scheme and host are never touched. Joining the full URL string
-  // would collapse `https://` to `https:/` and only work because http/https
-  // are special schemes that `new URL()` re-normalizes; a base path such as
-  // `/redmine` also survives correctly this way.
+  // Join only the pathname: joining the whole endpoint collapses `https://`
+  // to `https:/`, which merely works by relying on `new URL()` re-normalizing
+  // the special scheme back.
   url.pathname = join(url.pathname, ...segments);
   return url;
 }
