@@ -69,4 +69,36 @@ Deno.test("PUT /projects/issues/:id.json", async (t) => {
       assertEquals(issue.due_date, "2026-07-31");
     },
   );
+
+  await t.step(
+    "should keep custom field values in the request body",
+    async () => {
+      let capturedBody: { issue: Record<string, unknown> } | undefined;
+      server.resetHandlers(
+        http.put(
+          `${context.endpoint}/issues/:id.json`,
+          async ({ request }) => {
+            capturedBody = await request.json() as {
+              issue: Record<string, unknown>;
+            };
+            return HttpResponse.json({});
+          },
+        ),
+      );
+
+      const e = await update(context, 1, {
+        customFields: [
+          { id: 1, name: "text field", value: "hello" },
+          { id: 2, name: "list field", multiple: true, value: ["a", "b"] },
+        ],
+      });
+      assert(e.isOk());
+
+      assert(capturedBody !== undefined);
+      assertEquals(capturedBody.issue.custom_fields, [
+        { id: 1, value: "hello" },
+        { id: 2, value: ["a", "b"] },
+      ]);
+    },
+  );
 });
