@@ -69,9 +69,9 @@ Deno.test({
         });
         assert(createResult.isOk());
 
-        // Cleanup wraps everything after the create succeeds, and re-resolves
-        // the project by identifier itself: reusing an id resolved inside the
-        // try block would skip deletion when the lookup is what failed.
+        // Cleanup re-resolves the project by identifier instead of reusing
+        // an id from the try block: that id is unavailable exactly when the
+        // lookup is the step that failed.
         try {
           const listResult = await fetchList(e2eContext);
           assert(listResult.isOk());
