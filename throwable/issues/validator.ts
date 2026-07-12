@@ -2,7 +2,9 @@ import {
   array,
   boolean,
   date,
+  integer,
   literal,
+  minValue,
   null_,
   number,
   object,
@@ -301,7 +303,7 @@ export const listResponse = pipe(
 
 const listIssueQuery = partial(
   object({
-    limit: number(),
+    limit: pipe(number(), integer(), minValue(1)),
     include: picklist(["attachment", "relations"]),
     issueId: union([array(number()), number()]),
     projectId: number(),
