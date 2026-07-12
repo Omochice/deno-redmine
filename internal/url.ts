@@ -10,7 +10,7 @@ import { join } from "jsr:@std/path@1.1.6/posix/join";
  * @example Usage
  * ```ts
  * import { buildUrl } from "./url.ts";
- * import { assertEquals } from "jsr:@std/assert";
+ * import { assertEquals } from "jsr:@std/assert@1.0.19";
  *
  * assertEquals(
  *   buildUrl("https://example.com/redmine", "projects", "1.json").href,
