@@ -69,14 +69,17 @@ Deno.test({
         });
         assert(createResult.isOk());
 
-        const listResult = await fetchList(e2eContext);
-        assert(listResult.isOk());
-        const created = listResult.value.find((p) =>
-          p.identifier === identifier
-        );
-        assert(created !== undefined);
-
+        // Cleanup wraps everything after the create succeeds, and re-resolves
+        // the project by identifier itself: reusing an id resolved inside the
+        // try block would skip deletion when the lookup is what failed.
         try {
+          const listResult = await fetchList(e2eContext);
+          assert(listResult.isOk());
+          const created = listResult.value.find((p) =>
+            p.identifier === identifier
+          );
+          assert(created !== undefined);
+
           const createdShow = await show(e2eContext, created.id);
           assert(createdShow.isOk());
           assertEquals(
@@ -98,7 +101,15 @@ Deno.test({
             "update must flip is_public on the server",
           );
         } finally {
-          await deleteProject(e2eContext, created.id);
+          const cleanupList = await fetchList(e2eContext);
+          if (cleanupList.isOk()) {
+            const leftover = cleanupList.value.find((p) =>
+              p.identifier === identifier
+            );
+            if (leftover !== undefined) {
+              await deleteProject(e2eContext, leftover.id);
+            }
+          }
         }
       },
     );
