@@ -97,6 +97,14 @@ export type UpdateOption = {
 
 export type UpdateIssueQuery = Partial<Issue & UpdateOption>;
 
+// Redmine accepts a single string for single-value custom fields and a
+// string array for multi-value ones; both are set through the same "value"
+// key on create, unlike the read-side CustomField which also carries "name".
+export type CustomFieldInput = {
+  id: number;
+  value: string | string[];
+};
+
 export type CreateIssueQuery = {
   projectId: number;
   trackerId: number;
@@ -111,7 +119,7 @@ export type CreateIssueQuery = {
   watcherUserIds?: number[];
   isPrivate?: boolean;
   estimatedHours?: number;
-  customFields?: Record<string, unknown>[];
+  customFields?: CustomFieldInput[];
 };
 
 export type ListIssueQuery = {
