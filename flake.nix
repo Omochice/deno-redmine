@@ -8,6 +8,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nur = {
       url = "github:Omochice/nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -20,6 +24,7 @@
       nixpkgs,
       treefmt-nix,
       flake-utils,
+      git-hooks,
       nur,
     }:
     flake-utils.lib.eachDefaultSystem (
@@ -64,6 +69,38 @@
             # keep-sorted end
           }
         );
+        gitHooks = git-hooks.lib.${system}.run {
+          src = self;
+          default_stages = [
+            "pre-commit"
+            "pre-push"
+          ];
+          hooks = {
+            treefmt = {
+              enable = true;
+              packageOverrides.treefmt = treefmt.config.build.wrapper;
+              stages = [ "pre-commit" ];
+              # formatjson5 rewrites files unconditionally, updating their mtime
+              # even when the content is unchanged, which trips treefmt's
+              # mtime-based --fail-on-change. Let treefmt only format and rely on
+              # pre-commit's own content-based change detection to block commits.
+              settings.fail-on-change = false;
+            };
+            denolint = {
+              enable = true;
+              package = pkgs.deno;
+              stages = [ "pre-commit" ];
+            };
+            deno-check = {
+              enable = true;
+              name = "deno check";
+              entry = "${pkgs.deno}/bin/deno check ./**/*.ts";
+              files = "\\.ts$";
+              pass_filenames = false;
+              stages = [ "pre-push" ];
+            };
+          };
+        };
         runAs =
           name: runtimeInputs: text:
           let
@@ -112,9 +149,20 @@
         };
         checks = {
           formatting = treefmt.config.build.check self;
+          git-hooks = gitHooks;
         };
         devShells = pkgs.lib.pipe devPackages [
           (pkgs.lib.attrsets.mapAttrs (name: buildInputs: pkgs.mkShell { inherit buildInputs; }))
+          (
+            shells:
+            shells
+            // {
+              default = pkgs.mkShell {
+                buildInputs = devPackages.default ++ gitHooks.enabledPackages;
+                inherit (gitHooks) shellHook;
+              };
+            }
+          )
         ];
         formatter = treefmt.config.build.wrapper;
       }
