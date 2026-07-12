@@ -188,15 +188,15 @@ Deno.test({
           const cleanupList = await listIssues(e2eContext, {
             projectId: project.id,
           });
-          if (cleanupList.isOk()) {
-            // Delete every match, not just one: runs that predate this
-            // cleanup left issues with the same subject behind.
-            const leftovers = cleanupList.value.filter((i) =>
-              i.subject === subject
-            );
-            for (const leftover of leftovers) {
-              await deleteIssue(e2eContext, leftover.id);
-            }
+          assert(cleanupList.isOk(), "cleanup listing must succeed");
+          // Delete every match, not just one: runs that predate this
+          // cleanup left issues with the same subject behind.
+          const leftovers = cleanupList.value.filter((i) =>
+            i.subject === subject
+          );
+          for (const leftover of leftovers) {
+            const deleted = await deleteIssue(e2eContext, leftover.id);
+            assert(deleted.isOk(), `cleanup must delete issue ${leftover.id}`);
           }
         }
       },
