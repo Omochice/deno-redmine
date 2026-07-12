@@ -29,6 +29,7 @@
     "./result/issues/list": "./result/issues/list.ts",
     "./result/issues/show": "./result/issues/show.ts",
     "./result/issues/update": "./result/issues/update.ts",
+    "./result/issues/delete": "./result/issues/delete.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -65,6 +66,7 @@
     "./throwable/issues/list": "./throwable/issues/list.ts",
     "./throwable/issues/show": "./throwable/issues/show.ts",
     "./throwable/issues/update": "./throwable/issues/update.ts",
+    "./throwable/issues/delete": "./throwable/issues/delete.ts",
     "./throwable/issues/validator": "./throwable/issues/validator.ts"
   },
   "publish": {

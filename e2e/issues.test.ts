@@ -4,6 +4,7 @@ import { listIssues } from "../result/issues/list.ts";
 import { show } from "../result/issues/show.ts";
 import { createIssue } from "../result/issues/create.ts";
 import { update } from "../result/issues/update.ts";
+import { deleteIssue } from "../result/issues/delete.ts";
 import { fetchList as fetchProjects } from "../result/projects/list.ts";
 
 Deno.test({
@@ -75,6 +76,21 @@ Deno.test({
       const showResult = await show(e2eContext, issue.id);
       assert(showResult.isOk());
       assertEquals(showResult.value.subject, "E2E Updated Issue");
+    });
+
+    await t.step("DELETE /issues/:id.json should delete an issue", async () => {
+      const listResult = await listIssues(e2eContext, {});
+      assert(listResult.isOk());
+      const issue = listResult.value.find((i) =>
+        i.subject === "E2E Updated Issue"
+      );
+      assert(issue !== undefined);
+
+      const result = await deleteIssue(e2eContext, issue.id);
+      assert(result.isOk());
+
+      const showResult = await show(e2eContext, issue.id);
+      assert(showResult.isErr());
     });
   },
 });

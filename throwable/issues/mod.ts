@@ -8,6 +8,7 @@ import { listIssues } from "./list.ts";
 import { type Include, show } from "./show.ts";
 import { update } from "./update.ts";
 import { createIssue } from "./create.ts";
+import { deleteIssue } from "./delete.ts";
 
 export class Client {
   readonly #context: Context;
@@ -55,5 +56,14 @@ export class Client {
    */
   create(issue: CreateIssueQuery): ReturnType<typeof createIssue> {
     return createIssue(this.#context, issue);
+  }
+
+  /**
+   * Deletes the issue of given id.
+   *
+   * @param id The issue id
+   */
+  delete(id: number): ReturnType<typeof deleteIssue> {
+    return deleteIssue(this.#context, id);
   }
 }
