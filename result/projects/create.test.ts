@@ -54,11 +54,13 @@ Deno.test("POST /projects.json", async (t) => {
         isPublic: false,
         parentId: 42,
         inheritMembers: true,
+        trackerIds: [1, 2],
       });
       assert(e.isOk());
       assertEquals(captured?.is_public, false);
       assertEquals(captured?.parent_id, 42);
       assertEquals(captured?.inherit_members, true);
+      assertEquals(captured?.tracker_ids, [1, 2]);
     },
   );
 
