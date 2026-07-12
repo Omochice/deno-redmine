@@ -167,19 +167,38 @@ Deno.test({
         // Ensure at least two issues exist on the server so that a
         // `limit: 1` result can only be explained by the limit being
         // honored, not by there happening to be a single issue.
+        const subject = "E2E Limit Test Issue";
         const created = await createIssue(e2eContext, {
           projectId: project.id,
           trackerId: issuesInProject.value[0].tracker.id,
           statusId: issuesInProject.value[0].status.id,
           priorityId: issuesInProject.value[0].priority.id,
-          subject: "E2E Limit Test Issue",
+          subject,
           description: "Created by E2E test to exercise listIssues limit",
         });
         assert(created.isOk());
 
-        const result = await listIssues(e2eContext, { limit: 1 });
-        assert(result.isOk());
-        assertEquals(result.value.length, 1);
+        // Cleanup looks the issue up by subject because createIssue does
+        // not return the created id.
+        try {
+          const result = await listIssues(e2eContext, { limit: 1 });
+          assert(result.isOk());
+          assertEquals(result.value.length, 1);
+        } finally {
+          const cleanupList = await listIssues(e2eContext, {
+            projectId: project.id,
+          });
+          if (cleanupList.isOk()) {
+            // Delete every match, not just one: runs that predate this
+            // cleanup left issues with the same subject behind.
+            const leftovers = cleanupList.value.filter((i) =>
+              i.subject === subject
+            );
+            for (const leftover of leftovers) {
+              await deleteIssue(e2eContext, leftover.id);
+            }
+          }
+        }
       },
     );
 
