@@ -59,6 +59,62 @@ Deno.test({
     });
 
     await t.step(
+      "snake_case attributes reach the server on create and update",
+      async () => {
+        const identifier = `e2e-serialization-${Date.now()}`;
+        const createResult = await create(e2eContext, {
+          name: "E2E Serialization Project",
+          identifier,
+          isPublic: false,
+        });
+        assert(createResult.isOk());
+
+        // Cleanup re-resolves the project by identifier instead of reusing
+        // an id from the try block: that id is unavailable exactly when the
+        // lookup is the step that failed.
+        try {
+          const listResult = await fetchList(e2eContext);
+          assert(listResult.isOk());
+          const created = listResult.value.find((p) =>
+            p.identifier === identifier
+          );
+          assert(created !== undefined);
+
+          const createdShow = await show(e2eContext, created.id);
+          assert(createdShow.isOk());
+          assertEquals(
+            createdShow.value.isPublic,
+            false,
+            "isPublic:false must be stored as private on the server",
+          );
+
+          const updateResult = await update(e2eContext, created.id, {
+            isPublic: true,
+          });
+          assert(updateResult.isOk());
+
+          const updatedShow = await show(e2eContext, created.id);
+          assert(updatedShow.isOk());
+          assertEquals(
+            updatedShow.value.isPublic,
+            true,
+            "update must flip is_public on the server",
+          );
+        } finally {
+          const cleanupList = await fetchList(e2eContext);
+          if (cleanupList.isOk()) {
+            const leftover = cleanupList.value.find((p) =>
+              p.identifier === identifier
+            );
+            if (leftover !== undefined) {
+              await deleteProject(e2eContext, leftover.id);
+            }
+          }
+        }
+      },
+    );
+
+    await t.step(
       "PUT /projects/:id/archive.json should archive and unarchive",
       async () => {
         const listResult = await fetchList(e2eContext);

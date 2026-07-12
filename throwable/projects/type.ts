@@ -27,7 +27,7 @@ export type ProjectQuery = {
   inheritMembers?: boolean;
   defaultAssignedToId?: number;
   defaultVersionId?: string;
-  trackerids?: number[];
+  trackerIds?: number[];
   enableModuleNames?: string[];
   issueCustomFieldIds?: string[];
   customFieldValues?: Record<string, unknown>;

@@ -4,10 +4,11 @@ import {
   nullish,
   number,
   object,
+  omit,
   optional,
+  partial,
   pipe,
   record,
-  regex,
   string,
   transform,
   unknown,
@@ -42,27 +43,32 @@ export const projectSchema = pipe(
   }),
 );
 
+const projectQuerySchema = object({
+  name: string(),
+  identifier: string(),
+  description: optional(string()),
+  homepage: optional(string()),
+  isPublic: optional(boolean()),
+  parentId: optional(number()),
+  inheritMembers: optional(boolean()),
+  defaultAssignedToId: optional(number()),
+  defaultVersionId: optional(string()),
+  trackerIds: optional(array(number())),
+  enableModuleNames: optional(array(string())),
+  issueCustomFieldIds: optional(array(string())),
+  customFieldValues: optional(record(string(), unknown())),
+});
+
 export const toProjectQuery = pipe(
-  object({
-    name: pipe(
-      string(),
-      /** need match /^[a-zA-Z0-9\-_]{1,100}$/ */
-      regex(/^[a-zA-Z0-9\-_]{1,100}$/),
-    ),
-    identifier: string(),
-    description: optional(string()),
-    homepage: optional(string()),
-    isPublic: optional(boolean()),
-    parentId: optional(number()),
-    inheritMembers: optional(boolean()),
-    defaultAssignedToId: optional(number()),
-    defaultVersionId: optional(string()),
-    trackerIds: optional(array(number())),
-    enableModuleNames: optional(array(string())),
-    issueCustomFieldIds: optional(array(string())),
-    customFieldValues: optional(record(string(), unknown())),
-  }),
+  projectQuerySchema,
   transform((input: ProjectQuery) => {
+    return objectToSnake(input);
+  }),
+);
+
+export const toProjectUpdateQuery = pipe(
+  partial(omit(projectQuerySchema, ["identifier"])),
+  transform((input) => {
     return objectToSnake(input);
   }),
 );
