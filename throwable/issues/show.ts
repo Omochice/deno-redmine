@@ -1,5 +1,5 @@
 import { parse } from "jsr:@valibot/valibot@1.4.2";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import type { ShowIssue } from "./type.ts";
 import { showIssueSchema } from "./validator.ts";
 import type { Context } from "../../context.ts";
@@ -19,7 +19,7 @@ export async function show(
   id: number,
   includes?: Include[],
 ): Promise<ShowIssue> {
-  const url = new URL(join(context.endpoint, "issues", `${id}.json`));
+  const url = buildUrl(context.endpoint, "issues", `${id}.json`);
   if (includes !== undefined) {
     url.search = new URLSearchParams({ include: includes.join(",") })
       .toString();

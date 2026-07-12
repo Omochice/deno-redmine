@@ -1,5 +1,5 @@
 import { parse } from "jsr:@valibot/valibot@1.4.2";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import type { Context } from "../../context.ts";
 import type { UpdateVersionQuery } from "./type.ts";
 import { toUpdateVersionQuery } from "./validator.ts";
@@ -18,7 +18,7 @@ export async function update(
   id: number,
   version: UpdateVersionQuery,
 ): Promise<void> {
-  const url = new URL(join(context.endpoint, "versions", `${id}.json`));
+  const url = buildUrl(context.endpoint, "versions", `${id}.json`);
   const response = await fetch(url, {
     method: "PUT",
     headers: {

@@ -1,5 +1,5 @@
 import { parse } from "jsr:@valibot/valibot@1.4.2";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import type { Context } from "../../context.ts";
 import type { CreateVersionQuery } from "./type.ts";
 import { toCreateVersionQuery } from "./validator.ts";
@@ -18,8 +18,11 @@ export async function create(
   projectId: number,
   version: CreateVersionQuery,
 ): Promise<void> {
-  const url = new URL(
-    join(context.endpoint, "projects", `${projectId}`, "versions.json"),
+  const url = buildUrl(
+    context.endpoint,
+    "projects",
+    `${projectId}`,
+    "versions.json",
   );
   assertResponse(
     await fetch(url, {

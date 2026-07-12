@@ -1,4 +1,4 @@
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import type { Context } from "../../context.ts";
 import type { Version } from "./type.ts";
 import { versionSchema } from "./validator.ts";
@@ -21,7 +21,7 @@ export async function show(
   context: Context,
   id: number,
 ): Promise<Version> {
-  const url = new URL(join(context.endpoint, "versions", `${id}.json`));
+  const url = buildUrl(context.endpoint, "versions", `${id}.json`);
   const response = await fetch(url, {
     method: "GET",
     headers: {

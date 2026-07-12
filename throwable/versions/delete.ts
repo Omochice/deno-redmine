@@ -1,4 +1,4 @@
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import type { Context } from "../../context.ts";
 import { assertResponse } from "../../error.ts";
 
@@ -13,7 +13,7 @@ export async function deleteVersion(
   context: Context,
   id: number,
 ): Promise<void> {
-  const url = new URL(join(context.endpoint, "versions", `${id}.json`));
+  const url = buildUrl(context.endpoint, "versions", `${id}.json`);
   assertResponse(
     await fetch(url, {
       method: "DELETE",

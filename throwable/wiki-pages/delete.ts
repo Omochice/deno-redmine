@@ -1,5 +1,5 @@
 import { Context } from "../../context.ts";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import { assertResponse } from "../../error.ts";
 import { sanitizeTitle } from "./type.ts";
 
@@ -23,14 +23,12 @@ export async function deleteWiki(
       "X-Redmine-API-Key": context.apiKey,
     },
   } as const satisfies RequestInit;
-  const url = new URL(
-    join(
-      context.endpoint,
-      "projects",
-      `${projectId}`,
-      "wiki",
-      `${sanitizeTitle(title)}.json`,
-    ),
+  const url = buildUrl(
+    context.endpoint,
+    "projects",
+    `${projectId}`,
+    "wiki",
+    `${sanitizeTitle(title)}.json`,
   );
   assertResponse(await fetch(url, opts));
 }

@@ -1,4 +1,4 @@
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import type { Context } from "../../context.ts";
 import { assertResponse } from "../../error.ts";
 
@@ -7,9 +7,7 @@ async function internal(
   id: number,
   method: "archive" | "unarchive",
 ): Promise<void> {
-  const url = new URL(
-    join(context.endpoint, "projects", `${id}`, `${method}.json`),
-  );
+  const url = buildUrl(context.endpoint, "projects", `${id}`, `${method}.json`);
   const response = await fetch(url, {
     method: "PUT",
     headers: {

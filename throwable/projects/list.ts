@@ -1,5 +1,5 @@
 import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
-import { join } from "jsr:@std/path@1.1.6/posix/join";
+import { buildUrl } from "../../internal/url.ts";
 import { type Project } from "./type.ts";
 import { projectSchema } from "./validator.ts";
 import type { Context } from "../../context.ts";
@@ -24,7 +24,7 @@ export async function fetchList(context: Context): Promise<Project[]> {
   const n = await fetchNumberOfProjects(context);
   const promises: Promise<Response>[] = [];
   for (let i = 0; i < n; i += limit) {
-    const endpoint = new URL(join(context.endpoint, "projects.json"));
+    const endpoint = buildUrl(context.endpoint, "projects.json");
     endpoint.search = new URLSearchParams({
       limit: `${limit}`,
       offset: `${i}`,
@@ -41,7 +41,7 @@ export async function fetchList(context: Context): Promise<Project[]> {
 }
 
 async function fetchNumberOfProjects(context: Context): Promise<number> {
-  const endpoint = new URL(join(context.endpoint, "projects.json"));
+  const endpoint = buildUrl(context.endpoint, "projects.json");
   endpoint.search = new URLSearchParams({
     limit: "1",
     offset: "0",
