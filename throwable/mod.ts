@@ -13,6 +13,7 @@ import { Client as Query } from "./queries/mod.ts";
 import { Client as News } from "./news/mod.ts";
 import { Client as User } from "./users/mod.ts";
 import { Client as TimeEntry } from "./time-entries/mod.ts";
+import { Client as IssueCategory } from "./issue-categories/mod.ts";
 
 export class Redmine {
   readonly #context: Context;
@@ -30,6 +31,7 @@ export class Redmine {
   readonly news: News;
   readonly user: User;
   readonly timeEntry: TimeEntry;
+  readonly issueCategory: IssueCategory;
 
   constructor(context: Context) {
     this.#context = context;
@@ -47,5 +49,6 @@ export class Redmine {
     this.news = new News(this.#context);
     this.user = new User(this.#context);
     this.timeEntry = new TimeEntry(this.#context);
+    this.issueCategory = new IssueCategory(this.#context);
   }
 }

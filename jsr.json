@@ -60,6 +60,12 @@
     "./result/time-entries/show": "./result/time-entries/show.ts",
     "./result/time-entries/update": "./result/time-entries/update.ts",
     "./result/time-entries/delete": "./result/time-entries/delete.ts",
+    "./result/issue-categories": "./result/issue-categories/mod.ts",
+    "./result/issue-categories/create": "./result/issue-categories/create.ts",
+    "./result/issue-categories/list": "./result/issue-categories/list.ts",
+    "./result/issue-categories/show": "./result/issue-categories/show.ts",
+    "./result/issue-categories/update": "./result/issue-categories/update.ts",
+    "./result/issue-categories/delete": "./result/issue-categories/delete.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -143,7 +149,15 @@
     "./throwable/time-entries/show": "./throwable/time-entries/show.ts",
     "./throwable/time-entries/update": "./throwable/time-entries/update.ts",
     "./throwable/time-entries/delete": "./throwable/time-entries/delete.ts",
-    "./throwable/time-entries/validator": "./throwable/time-entries/validator.ts"
+    "./throwable/time-entries/validator": "./throwable/time-entries/validator.ts",
+    "./throwable/issue-categories": "./throwable/issue-categories/mod.ts",
+    "./throwable/issue-categories/type": "./throwable/issue-categories/type.ts",
+    "./throwable/issue-categories/create": "./throwable/issue-categories/create.ts",
+    "./throwable/issue-categories/list": "./throwable/issue-categories/list.ts",
+    "./throwable/issue-categories/show": "./throwable/issue-categories/show.ts",
+    "./throwable/issue-categories/update": "./throwable/issue-categories/update.ts",
+    "./throwable/issue-categories/delete": "./throwable/issue-categories/delete.ts",
+    "./throwable/issue-categories/validator": "./throwable/issue-categories/validator.ts"
   },
   "publish": {
     "include": [
