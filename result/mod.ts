@@ -10,6 +10,7 @@ import { Client as Role } from "./roles/mod.ts";
 import { Client as Enumeration } from "./enumerations/mod.ts";
 import { Client as CustomField } from "./custom-fields/mod.ts";
 import { Client as Query } from "./queries/mod.ts";
+import { Client as News } from "./news/mod.ts";
 
 export class Redmine {
   readonly #context: Context;
@@ -24,6 +25,7 @@ export class Redmine {
   readonly enumeration: Enumeration;
   readonly customField: CustomField;
   readonly query: Query;
+  readonly news: News;
 
   constructor(context: Context) {
     this.#context = context;
@@ -38,5 +40,6 @@ export class Redmine {
     this.enumeration = new Enumeration(this.#context);
     this.customField = new CustomField(this.#context);
     this.query = new Query(this.#context);
+    this.news = new News(this.#context);
   }
 }
