@@ -9,6 +9,8 @@ import { type Include, show } from "./show.ts";
 import { update } from "./update.ts";
 import { createIssue } from "./create.ts";
 import { deleteIssue } from "./delete.ts";
+import { addWatcher } from "./add-watcher.ts";
+import { removeWatcher } from "./remove-watcher.ts";
 
 export class Client {
   readonly #context: Context;
@@ -65,5 +67,31 @@ export class Client {
    */
   delete(id: number): ReturnType<typeof deleteIssue> {
     return deleteIssue(this.#context, id);
+  }
+
+  /**
+   * Adds a watcher to the issue of given id.
+   *
+   * @param issueId The issue id
+   * @param userId The id of the user to add as a watcher
+   */
+  addWatcher(
+    issueId: number,
+    userId: number,
+  ): ReturnType<typeof addWatcher> {
+    return addWatcher(this.#context, issueId, userId);
+  }
+
+  /**
+   * Removes a watcher from the issue of given id.
+   *
+   * @param issueId The issue id
+   * @param userId The id of the user to remove from watchers
+   */
+  removeWatcher(
+    issueId: number,
+    userId: number,
+  ): ReturnType<typeof removeWatcher> {
+    return removeWatcher(this.#context, issueId, userId);
   }
 }
