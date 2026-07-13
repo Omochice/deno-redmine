@@ -7,6 +7,7 @@ import { Client as IssueTemplate } from "./issue-templates/mod.ts";
 import { Client as Wiki } from "./wiki-pages/mod.ts";
 import { Client as Version } from "./versions/mod.ts";
 import { Client as Role } from "./roles/mod.ts";
+import { Client as Enumeration } from "./enumerations/mod.ts";
 
 export class Redmine {
   readonly #context: Context;
@@ -18,6 +19,7 @@ export class Redmine {
   readonly wiki: Wiki;
   readonly version: Version;
   readonly role: Role;
+  readonly enumeration: Enumeration;
 
   constructor(context: Context) {
     this.#context = context;
@@ -29,5 +31,6 @@ export class Redmine {
     this.wiki = new Wiki(this.#context);
     this.version = new Version(this.#context);
     this.role = new Role(this.#context);
+    this.enumeration = new Enumeration(this.#context);
   }
 }
