@@ -43,6 +43,8 @@
     "./result/roles/show": "./result/roles/show.ts",
     "./result/custom-fields": "./result/custom-fields/mod.ts",
     "./result/custom-fields/list": "./result/custom-fields/list.ts",
+    "./result/queries": "./result/queries/mod.ts",
+    "./result/queries/list": "./result/queries/list.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -101,7 +103,11 @@
     "./throwable/custom-fields": "./throwable/custom-fields/mod.ts",
     "./throwable/custom-fields/type": "./throwable/custom-fields/type.ts",
     "./throwable/custom-fields/list": "./throwable/custom-fields/list.ts",
-    "./throwable/custom-fields/validator": "./throwable/custom-fields/validator.ts"
+    "./throwable/custom-fields/validator": "./throwable/custom-fields/validator.ts",
+    "./throwable/queries": "./throwable/queries/mod.ts",
+    "./throwable/queries/type": "./throwable/queries/type.ts",
+    "./throwable/queries/list": "./throwable/queries/list.ts",
+    "./throwable/queries/validator": "./throwable/queries/validator.ts"
   },
   "publish": {
     "include": [
