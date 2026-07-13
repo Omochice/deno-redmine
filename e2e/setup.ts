@@ -53,7 +53,9 @@ async function runRailsRunner(script: string): Promise<string> {
 async function setupRedmine(): Promise<string> {
   // Single rails runner call that:
   // 1. Enables REST API
-  // 2. Creates default tracker, status, and priority if missing
+  // 2. Creates default tracker, status, priority, and a givable role if missing
+  //    (the role lets the Roles e2e test exercise the show endpoint, since a
+  //    freshly provisioned Redmine loads no default roles)
   // 3. Creates an issue custom field usable by every tracker (needed by the
   //    custom-field round-trip e2e test). A pre-existing "E2E CF" with
   //    drifted attributes is destroyed and recreated instead of updated in
@@ -66,6 +68,7 @@ async function setupRedmine(): Promise<string> {
     'Tracker.create!(name: "Bug", default_status: IssueStatus.first || IssueStatus.create!(name: "New")) if Tracker.count == 0',
     'IssueStatus.create!(name: "New") if IssueStatus.count == 0',
     'IssuePriority.create!(name: "Normal") if IssuePriority.count == 0',
+    'Role.create!(name: "E2E Role") if Role.givable.count == 0',
     'cf = IssueCustomField.find_by(name: "E2E CF")',
     '(cf.destroy; cf = nil) if cf && (cf.field_format != "string" || !cf.is_for_all)',
     'cf ||= IssueCustomField.create!(name: "E2E CF", field_format: "string", is_for_all: true)',

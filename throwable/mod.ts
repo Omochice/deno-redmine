@@ -6,6 +6,7 @@ import { Client as Tracker } from "./trackers/mod.ts";
 import { Client as IssueTemplate } from "./issue-templates/mod.ts";
 import { Client as Wiki } from "./wiki-pages/mod.ts";
 import { Client as Version } from "./versions/mod.ts";
+import { Client as Role } from "./roles/mod.ts";
 
 export class Redmine {
   readonly #context: Context;
@@ -16,6 +17,7 @@ export class Redmine {
   readonly issueTemplate: IssueTemplate;
   readonly wiki: Wiki;
   readonly version: Version;
+  readonly role: Role;
 
   constructor(context: Context) {
     this.#context = context;
@@ -26,5 +28,6 @@ export class Redmine {
     this.issueTemplate = new IssueTemplate(this.#context);
     this.wiki = new Wiki(this.#context);
     this.version = new Version(this.#context);
+    this.role = new Role(this.#context);
   }
 }
