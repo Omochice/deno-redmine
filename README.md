@@ -103,7 +103,7 @@ Redmine rest api wrapper for deno.
 - [x] [Roles](https://www.redmine.org/projects/redmine/wiki/Rest_Roles)
   - [x] [`/roles.:format`](https://www.redmine.org/projects/redmine/wiki/Rest_Roles#rolesformat)
     - [x] [`GET`](https://www.redmine.org/projects/redmine/wiki/Rest_Roles#GET)
-  - [x] [`/roles/[id].:format`](https://www.redmine.org/projects/redmine/wiki/Rest_Roles#rolesidformat)
+  - [x] [`/roles/:id.:format`](https://www.redmine.org/projects/redmine/wiki/Rest_Roles#rolesidformat)
     - [x] [`GET`](https://www.redmine.org/projects/redmine/wiki/Rest_Roles#GET-2)
 - [ ] [Groups](https://www.redmine.org/projects/redmine/wiki/Rest_Groups)
   - [ ] [`/groups.:format`](https://www.redmine.org/projects/redmine/wiki/Rest_Groups#groupsformat)
