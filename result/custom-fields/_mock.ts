@@ -21,8 +21,8 @@ export const validHandlers = [
           multiple: true,
           visible: false,
           possible_values: [
-            { value: "0.5.x" },
-            { value: "0.6.x" },
+            { value: "0.5.x", label: "v0.5.x" },
+            { value: "0.6.x", label: null },
           ],
           trackers: [{ id: 1, name: "Bug" }],
           roles: [{ id: 3, name: "Manager" }],

@@ -4,7 +4,6 @@ import {
   nullish,
   number,
   object,
-  optional,
   pipe,
   string,
   transform,
@@ -21,7 +20,7 @@ const possibleValueEntry = union([
   pipe(string(), transform((value) => ({ value }))),
   object({
     value: string(),
-    label: optional(string()),
+    label: pipe(nullish(string()), transform(toUndefined)),
   }),
 ]);
 

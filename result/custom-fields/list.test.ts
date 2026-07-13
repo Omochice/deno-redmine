@@ -32,8 +32,9 @@ Deno.test("GET /custom_fields.json", async (t) => {
         multiple: true,
         visible: false,
         possibleValues: [
-          { value: "0.5.x" },
-          { value: "0.6.x" },
+          { value: "0.5.x", label: "v0.5.x" },
+          // Redmine may send an explicit null label; it normalizes to undefined.
+          { value: "0.6.x", label: undefined },
         ],
         trackers: [{ id: 1, name: "Bug" }],
         roles: [{ id: 3, name: "Manager" }],
