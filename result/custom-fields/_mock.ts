@@ -52,7 +52,6 @@ export const validHandlers = [
           searchable: false,
           multiple: false,
           visible: true,
-          // Older Redmine renders list possible values as plain strings.
           possible_values: ["a", "b"],
         },
       ],

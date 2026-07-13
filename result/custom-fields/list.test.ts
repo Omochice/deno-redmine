@@ -57,7 +57,6 @@ Deno.test("GET /custom_fields.json", async (t) => {
         multiple: false,
         visible: true,
       });
-      // Legacy string possible_values normalize to `{ value }` objects.
       assertEquals(e.value[2].possibleValues, [
         { value: "a" },
         { value: "b" },
