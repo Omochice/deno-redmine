@@ -9,10 +9,13 @@ Deno.test("E2E: Queries API", async (t) => {
       const result = await fetchList(e2eContext);
       assert(result.isOk());
       assert(Array.isArray(result.value));
-      assert(result.value.length > 0, "Redmine should have default queries");
-      assert(typeof result.value[0].id === "number");
-      assert(typeof result.value[0].name === "string");
-      assert(typeof result.value[0].isPublic === "boolean");
+      // Saved queries are user-created, so a freshly provisioned Redmine has
+      // none; assert the shape and only inspect fields when one exists.
+      if (result.value.length > 0) {
+        assert(typeof result.value[0].id === "number");
+        assert(typeof result.value[0].name === "string");
+        assert(typeof result.value[0].isPublic === "boolean");
+      }
     },
   );
 });
