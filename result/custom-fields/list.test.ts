@@ -20,7 +20,7 @@ Deno.test("GET /custom_fields.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await fetchList(context);
       assert(e.isOk());
-      assertEquals(e.value.length, 2);
+      assertEquals(e.value.length, 3);
       assertEquals(e.value[0], {
         id: 1,
         name: "Affected version",
@@ -57,6 +57,11 @@ Deno.test("GET /custom_fields.json", async (t) => {
         multiple: false,
         visible: true,
       });
+      // Legacy string possible_values normalize to `{ value }` objects.
+      assertEquals(e.value[2].possibleValues, [
+        { value: "a" },
+        { value: "b" },
+      ]);
     },
   );
 

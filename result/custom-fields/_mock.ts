@@ -42,6 +42,19 @@ export const validHandlers = [
           default_value: null,
           visible: true,
         },
+        {
+          id: 3,
+          name: "Legacy list",
+          customized_type: "issue",
+          field_format: "list",
+          is_required: false,
+          is_filter: false,
+          searchable: false,
+          multiple: false,
+          visible: true,
+          // Older Redmine renders list possible values as plain strings.
+          possible_values: ["a", "b"],
+        },
       ],
     });
   }),
