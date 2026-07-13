@@ -72,6 +72,9 @@
     "./result/memberships/show": "./result/memberships/show.ts",
     "./result/memberships/update": "./result/memberships/update.ts",
     "./result/memberships/delete": "./result/memberships/delete.ts",
+    "./result/my-account": "./result/my-account/mod.ts",
+    "./result/my-account/show": "./result/my-account/show.ts",
+    "./result/my-account/update": "./result/my-account/update.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -171,7 +174,12 @@
     "./throwable/memberships/show": "./throwable/memberships/show.ts",
     "./throwable/memberships/update": "./throwable/memberships/update.ts",
     "./throwable/memberships/delete": "./throwable/memberships/delete.ts",
-    "./throwable/memberships/validator": "./throwable/memberships/validator.ts"
+    "./throwable/memberships/validator": "./throwable/memberships/validator.ts",
+    "./throwable/my-account": "./throwable/my-account/mod.ts",
+    "./throwable/my-account/type": "./throwable/my-account/type.ts",
+    "./throwable/my-account/show": "./throwable/my-account/show.ts",
+    "./throwable/my-account/update": "./throwable/my-account/update.ts",
+    "./throwable/my-account/validator": "./throwable/my-account/validator.ts"
   },
   "publish": {
     "include": [
