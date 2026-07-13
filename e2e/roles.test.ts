@@ -28,10 +28,11 @@ Deno.test({
         const listResult = await fetchList(e2eContext);
         assert(listResult.isOk());
         const role = listResult.value[0];
-        // The e2e Redmine is provisioned without loading Redmine's default
-        // data, so the REST roles listing can be empty; only exercise show
-        // when a givable role actually exists.
+        // e2e/setup.ts seeds a role so this normally runs. A freshly
+        // provisioned Redmine loads no default roles, so guard the listing
+        // being empty, but surface it rather than passing silently.
         if (role === undefined) {
+          console.warn("No roles available; skipping the role show assertions");
           return;
         }
 
