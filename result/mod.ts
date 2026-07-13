@@ -12,6 +12,7 @@ import { Client as CustomField } from "./custom-fields/mod.ts";
 import { Client as Query } from "./queries/mod.ts";
 import { Client as News } from "./news/mod.ts";
 import { Client as User } from "./users/mod.ts";
+import { Client as TimeEntry } from "./time-entries/mod.ts";
 
 export class Redmine {
   readonly #context: Context;
@@ -28,6 +29,7 @@ export class Redmine {
   readonly query: Query;
   readonly news: News;
   readonly user: User;
+  readonly timeEntry: TimeEntry;
 
   constructor(context: Context) {
     this.#context = context;
@@ -44,5 +46,6 @@ export class Redmine {
     this.query = new Query(this.#context);
     this.news = new News(this.#context);
     this.user = new User(this.#context);
+    this.timeEntry = new TimeEntry(this.#context);
   }
 }
