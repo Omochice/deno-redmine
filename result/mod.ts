@@ -8,6 +8,7 @@ import { Client as Wiki } from "./wiki-pages/mod.ts";
 import { Client as Version } from "./versions/mod.ts";
 import { Client as Role } from "./roles/mod.ts";
 import { Client as Enumeration } from "./enumerations/mod.ts";
+import { Client as CustomField } from "./custom-fields/mod.ts";
 
 export class Redmine {
   readonly #context: Context;
@@ -20,6 +21,7 @@ export class Redmine {
   readonly version: Version;
   readonly role: Role;
   readonly enumeration: Enumeration;
+  readonly customField: CustomField;
 
   constructor(context: Context) {
     this.#context = context;
@@ -32,5 +34,6 @@ export class Redmine {
     this.version = new Version(this.#context);
     this.role = new Role(this.#context);
     this.enumeration = new Enumeration(this.#context);
+    this.customField = new CustomField(this.#context);
   }
 }

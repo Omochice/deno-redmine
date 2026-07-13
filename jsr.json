@@ -41,6 +41,8 @@
     "./result/roles": "./result/roles/mod.ts",
     "./result/roles/list": "./result/roles/list.ts",
     "./result/roles/show": "./result/roles/show.ts",
+    "./result/custom-fields": "./result/custom-fields/mod.ts",
+    "./result/custom-fields/list": "./result/custom-fields/list.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -95,7 +97,11 @@
     "./throwable/roles/type": "./throwable/roles/type.ts",
     "./throwable/roles/list": "./throwable/roles/list.ts",
     "./throwable/roles/show": "./throwable/roles/show.ts",
-    "./throwable/roles/validator": "./throwable/roles/validator.ts"
+    "./throwable/roles/validator": "./throwable/roles/validator.ts",
+    "./throwable/custom-fields": "./throwable/custom-fields/mod.ts",
+    "./throwable/custom-fields/type": "./throwable/custom-fields/type.ts",
+    "./throwable/custom-fields/list": "./throwable/custom-fields/list.ts",
+    "./throwable/custom-fields/validator": "./throwable/custom-fields/validator.ts"
   },
   "publish": {
     "include": [
