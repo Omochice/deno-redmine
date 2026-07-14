@@ -48,6 +48,12 @@
     "./result/news": "./result/news/mod.ts",
     "./result/news/list": "./result/news/list.ts",
     "./result/news/list-by-project": "./result/news/list-by-project.ts",
+    "./result/users": "./result/users/mod.ts",
+    "./result/users/create": "./result/users/create.ts",
+    "./result/users/list": "./result/users/list.ts",
+    "./result/users/show": "./result/users/show.ts",
+    "./result/users/update": "./result/users/update.ts",
+    "./result/users/delete": "./result/users/delete.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -115,7 +121,15 @@
     "./throwable/news/type": "./throwable/news/type.ts",
     "./throwable/news/list": "./throwable/news/list.ts",
     "./throwable/news/list-by-project": "./throwable/news/list-by-project.ts",
-    "./throwable/news/validator": "./throwable/news/validator.ts"
+    "./throwable/news/validator": "./throwable/news/validator.ts",
+    "./throwable/users": "./throwable/users/mod.ts",
+    "./throwable/users/type": "./throwable/users/type.ts",
+    "./throwable/users/create": "./throwable/users/create.ts",
+    "./throwable/users/list": "./throwable/users/list.ts",
+    "./throwable/users/show": "./throwable/users/show.ts",
+    "./throwable/users/update": "./throwable/users/update.ts",
+    "./throwable/users/delete": "./throwable/users/delete.ts",
+    "./throwable/users/validator": "./throwable/users/validator.ts"
   },
   "publish": {
     "include": [
