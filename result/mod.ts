@@ -15,6 +15,7 @@ import { Client as User } from "./users/mod.ts";
 import { Client as TimeEntry } from "./time-entries/mod.ts";
 import { Client as IssueCategory } from "./issue-categories/mod.ts";
 import { Client as Membership } from "./memberships/mod.ts";
+import { Client as MyAccount } from "./my-account/mod.ts";
 
 export class Redmine {
   readonly #context: Context;
@@ -34,6 +35,7 @@ export class Redmine {
   readonly timeEntry: TimeEntry;
   readonly issueCategory: IssueCategory;
   readonly membership: Membership;
+  readonly myAccount: MyAccount;
 
   constructor(context: Context) {
     this.#context = context;
@@ -53,5 +55,6 @@ export class Redmine {
     this.timeEntry = new TimeEntry(this.#context);
     this.issueCategory = new IssueCategory(this.#context);
     this.membership = new Membership(this.#context);
+    this.myAccount = new MyAccount(this.#context);
   }
 }

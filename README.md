@@ -127,10 +127,10 @@ Redmine rest api wrapper for deno.
   - [ ] [`/projects/:project_id/files.:format`](https://www.redmine.org/projects/redmine/wiki/Rest_Files#projectsproject_idfilesformat)
     - [ ] [`GET`](https://www.redmine.org/projects/redmine/wiki/Rest_Files#GET)
     - [ ] [`POST`](https://www.redmine.org/projects/redmine/wiki/Rest_Files#POST)
-- [ ] [My account](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount)
-  - [ ] [`/my/account.:format`](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount#myaccountformat)
-    - [ ] [`GET`](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount#GET)
-    - [ ] [`PUT`](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount#PUT)
+- [x] [My account](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount)
+  - [x] [`/my/account.:format`](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount#myaccountformat)
+    - [x] [`GET`](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount#GET)
+    - [x] [`PUT`](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount#PUT)
 - [ ] [Journals](https://www.redmine.org/projects/redmine/wiki/Rest_Journals)
   - Official Page is not found...:
     https://www.redmine.org/projects/redmine/wiki/Rest_Journals
