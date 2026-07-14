@@ -87,8 +87,13 @@ export const toListTimeEntryQuery = pipe(
     return objectToSnake(input);
   }),
   transform((input) => {
+    // Drop keys an explicit `undefined` left behind; otherwise they would
+    // serialize to the literal string "undefined" (e.g. `project_id=undefined`)
+    // and Redmine would reject the request.
     return Object.fromEntries(
-      Object.entries(input).map(([key, value]) => [key, `${value}`]),
+      Object.entries(input)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => [key, `${value}`]),
     );
   }),
 );

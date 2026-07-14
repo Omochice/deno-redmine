@@ -78,4 +78,26 @@ Deno.test("GET /time_entries.json", async (t) => {
       assertEquals(captured?.get("to"), "2026-07-31");
     },
   );
+
+  await t.step(
+    "should omit filters passed as explicit undefined",
+    async () => {
+      let captured: URLSearchParams | undefined;
+      server.use(
+        http.get(`${context.endpoint}/time_entries.json`, ({ request }) => {
+          captured = new URL(request.url).searchParams;
+          return HttpResponse.json({
+            time_entries: [],
+            total_count: 0,
+            offset: 0,
+            limit: 25,
+          });
+        }),
+      );
+      const e = await fetchList(context, { projectId: undefined });
+      assert(e.isOk());
+      assertEquals(captured?.has("project_id"), false);
+      assert(!captured?.toString().includes("undefined"));
+    },
+  );
 });
