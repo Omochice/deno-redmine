@@ -123,6 +123,15 @@ export const validHandlers = [
   http.delete(`${context.endpoint}/issues/:id.json`, () => {
     return HttpResponse.json({});
   }),
+  http.post(`${context.endpoint}/issues/:id/watchers.json`, () => {
+    return HttpResponse.json({});
+  }),
+  http.delete(
+    `${context.endpoint}/issues/:id/watchers/:userId.json`,
+    () => {
+      return HttpResponse.json({});
+    },
+  ),
 ];
 
 export const invalidHandlers = [
@@ -169,6 +178,36 @@ export const invalidHandlers = [
     });
   }),
   http.delete(`${context.endpoint}/issues/404.json`, () => {
+    return HttpResponse.json({}, {
+      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+      status: STATUS_CODE.NotFound,
+    });
+  }),
+  http.post(`${context.endpoint}/issues/422/watchers.json`, () => {
+    return HttpResponse.json({
+      errors: ["sample error"],
+    }, {
+      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+      status: STATUS_CODE.UnprocessableEntity,
+      statusText: "Unprocessable Entity",
+    });
+  }),
+  http.post(`${context.endpoint}/issues/404/watchers.json`, () => {
+    return HttpResponse.json({}, {
+      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+      status: STATUS_CODE.NotFound,
+    });
+  }),
+  http.delete(`${context.endpoint}/issues/422/watchers/:userId.json`, () => {
+    return HttpResponse.json({
+      errors: ["sample error"],
+    }, {
+      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+      status: STATUS_CODE.UnprocessableEntity,
+      statusText: "Unprocessable Entity",
+    });
+  }),
+  http.delete(`${context.endpoint}/issues/404/watchers/:userId.json`, () => {
     return HttpResponse.json({}, {
       // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
       status: STATUS_CODE.NotFound,

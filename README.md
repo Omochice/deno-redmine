@@ -4,14 +4,14 @@ Redmine rest api wrapper for deno.
 
 ## Implementation Status
 
-- [ ] [Issues](https://www.redmine.org/projects/redmine/wiki/Rest_Issues)
+- [x] [Issues](https://www.redmine.org/projects/redmine/wiki/Rest_Issues)
   - [x] [Listing issues](https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Listing-issues)
   - [x] [Showing an issue](https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Showing-an-issue)
   - [x] [Creating an issue](https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Creating-an-issue)
   - [x] [Updating an issue](https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Updating-an-issue)
   - [x] [Deleting an issue](https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Deleting-an-issue)
-  - [ ] [Adding a watcher](https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Adding-a-watcher)
-  - [ ] [Removing a watcher](https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Removing-a-watcher)
+  - [x] [Adding a watcher](https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Adding-a-watcher)
+  - [x] [Removing a watcher](https://www.redmine.org/projects/redmine/wiki/Rest_Issues#Removing-a-watcher)
 - [x] [Projects](https://www.redmine.org/projects/redmine/wiki/Rest_Projects)
   - [x] [Listing projects](https://www.redmine.org/projects/redmine/wiki/Rest_Projects#Listing-projects)
   - [x] [Showing a project](https://www.redmine.org/projects/redmine/wiki/Rest_Projects#Showing-a-project)
