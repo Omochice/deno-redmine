@@ -15,6 +15,10 @@ export type Membership = {
 };
 
 export type CreateMembershipQuery = {
+  /**
+   * The member's id. Redmine's field is `user_id`, but it accepts a group id
+   * here too, so pass a group's id to create a group membership.
+   */
   userId: number;
   roleIds: number[];
 };
