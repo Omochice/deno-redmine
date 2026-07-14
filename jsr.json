@@ -77,6 +77,14 @@
     "./result/my-account": "./result/my-account/mod.ts",
     "./result/my-account/show": "./result/my-account/show.ts",
     "./result/my-account/update": "./result/my-account/update.ts",
+    "./result/groups": "./result/groups/mod.ts",
+    "./result/groups/create": "./result/groups/create.ts",
+    "./result/groups/list": "./result/groups/list.ts",
+    "./result/groups/show": "./result/groups/show.ts",
+    "./result/groups/update": "./result/groups/update.ts",
+    "./result/groups/delete": "./result/groups/delete.ts",
+    "./result/groups/add-user": "./result/groups/add-user.ts",
+    "./result/groups/remove-user": "./result/groups/remove-user.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -183,7 +191,17 @@
     "./throwable/my-account/type": "./throwable/my-account/type.ts",
     "./throwable/my-account/show": "./throwable/my-account/show.ts",
     "./throwable/my-account/update": "./throwable/my-account/update.ts",
-    "./throwable/my-account/validator": "./throwable/my-account/validator.ts"
+    "./throwable/my-account/validator": "./throwable/my-account/validator.ts",
+    "./throwable/groups": "./throwable/groups/mod.ts",
+    "./throwable/groups/type": "./throwable/groups/type.ts",
+    "./throwable/groups/create": "./throwable/groups/create.ts",
+    "./throwable/groups/list": "./throwable/groups/list.ts",
+    "./throwable/groups/show": "./throwable/groups/show.ts",
+    "./throwable/groups/update": "./throwable/groups/update.ts",
+    "./throwable/groups/delete": "./throwable/groups/delete.ts",
+    "./throwable/groups/add-user": "./throwable/groups/add-user.ts",
+    "./throwable/groups/remove-user": "./throwable/groups/remove-user.ts",
+    "./throwable/groups/validator": "./throwable/groups/validator.ts"
   },
   "publish": {
     "include": [
