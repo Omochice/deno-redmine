@@ -66,6 +66,12 @@
     "./result/issue-categories/show": "./result/issue-categories/show.ts",
     "./result/issue-categories/update": "./result/issue-categories/update.ts",
     "./result/issue-categories/delete": "./result/issue-categories/delete.ts",
+    "./result/memberships": "./result/memberships/mod.ts",
+    "./result/memberships/create": "./result/memberships/create.ts",
+    "./result/memberships/list": "./result/memberships/list.ts",
+    "./result/memberships/show": "./result/memberships/show.ts",
+    "./result/memberships/update": "./result/memberships/update.ts",
+    "./result/memberships/delete": "./result/memberships/delete.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -157,7 +163,15 @@
     "./throwable/issue-categories/show": "./throwable/issue-categories/show.ts",
     "./throwable/issue-categories/update": "./throwable/issue-categories/update.ts",
     "./throwable/issue-categories/delete": "./throwable/issue-categories/delete.ts",
-    "./throwable/issue-categories/validator": "./throwable/issue-categories/validator.ts"
+    "./throwable/issue-categories/validator": "./throwable/issue-categories/validator.ts",
+    "./throwable/memberships": "./throwable/memberships/mod.ts",
+    "./throwable/memberships/type": "./throwable/memberships/type.ts",
+    "./throwable/memberships/create": "./throwable/memberships/create.ts",
+    "./throwable/memberships/list": "./throwable/memberships/list.ts",
+    "./throwable/memberships/show": "./throwable/memberships/show.ts",
+    "./throwable/memberships/update": "./throwable/memberships/update.ts",
+    "./throwable/memberships/delete": "./throwable/memberships/delete.ts",
+    "./throwable/memberships/validator": "./throwable/memberships/validator.ts"
   },
   "publish": {
     "include": [

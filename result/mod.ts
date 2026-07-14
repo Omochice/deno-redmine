@@ -14,6 +14,7 @@ import { Client as News } from "./news/mod.ts";
 import { Client as User } from "./users/mod.ts";
 import { Client as TimeEntry } from "./time-entries/mod.ts";
 import { Client as IssueCategory } from "./issue-categories/mod.ts";
+import { Client as Membership } from "./memberships/mod.ts";
 
 export class Redmine {
   readonly #context: Context;
@@ -32,6 +33,7 @@ export class Redmine {
   readonly user: User;
   readonly timeEntry: TimeEntry;
   readonly issueCategory: IssueCategory;
+  readonly membership: Membership;
 
   constructor(context: Context) {
     this.#context = context;
@@ -50,5 +52,6 @@ export class Redmine {
     this.user = new User(this.#context);
     this.timeEntry = new TimeEntry(this.#context);
     this.issueCategory = new IssueCategory(this.#context);
+    this.membership = new Membership(this.#context);
   }
 }
