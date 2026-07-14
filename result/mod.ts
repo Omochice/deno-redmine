@@ -17,6 +17,7 @@ import { Client as IssueCategory } from "./issue-categories/mod.ts";
 import { Client as Membership } from "./memberships/mod.ts";
 import { Client as MyAccount } from "./my-account/mod.ts";
 import { Client as Group } from "./groups/mod.ts";
+import { Client as IssueRelation } from "./issue-relations/mod.ts";
 
 export class Redmine {
   readonly #context: Context;
@@ -38,6 +39,7 @@ export class Redmine {
   readonly membership: Membership;
   readonly myAccount: MyAccount;
   readonly group: Group;
+  readonly issueRelation: IssueRelation;
 
   constructor(context: Context) {
     this.#context = context;
@@ -59,5 +61,6 @@ export class Redmine {
     this.membership = new Membership(this.#context);
     this.myAccount = new MyAccount(this.#context);
     this.group = new Group(this.#context);
+    this.issueRelation = new IssueRelation(this.#context);
   }
 }
