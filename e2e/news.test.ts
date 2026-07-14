@@ -1,4 +1,4 @@
-import { assert } from "jsr:@std/assert@1.0.19";
+import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/news/list.ts";
 import { fetchListByProject } from "../result/news/list-by-project.ts";
@@ -17,20 +17,32 @@ Deno.test({
     );
     assert(project !== undefined);
 
-    await t.step("GET /news.json should return an array of news", async () => {
+    await t.step("GET /news.json should return the seeded news", async () => {
       const result = await fetchList(e2eContext);
       assert(result.isOk());
-      assert(Array.isArray(result.value));
+      const seeded = result.value.find((n) => n.title === "E2E News");
+      assert(seeded !== undefined);
+      assertEquals(seeded.summary, "E2E news summary");
+      assertEquals(seeded.description, "E2E news description");
+      assert(seeded.project !== undefined);
+      assert(seeded.author !== undefined);
+      assert(seeded.createdOn instanceof Date);
     });
 
     await t.step(
-      "GET /projects/:project_id/news.json should return an array of news",
+      "GET /projects/:project_id/news.json should return the project news",
       async () => {
-        // The seeded e2e project may have zero news items, so only the
-        // response shape is asserted rather than its length.
         const result = await fetchListByProject(e2eContext, project.id);
         assert(result.isOk());
-        assert(Array.isArray(result.value));
+        const seeded = result.value.find((n) => n.title === "E2E News");
+        assert(seeded !== undefined);
+        // A news created without a summary is rendered as an empty string
+        // (not null), which is why the schema keeps `summary` a required string.
+        const noSummary = result.value.find((n) =>
+          n.title === "E2E News Without Summary"
+        );
+        assert(noSummary !== undefined);
+        assertEquals(noSummary.summary, "");
       },
     );
   },
