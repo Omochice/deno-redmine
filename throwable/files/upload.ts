@@ -28,7 +28,10 @@ export async function upload(
       "Content-Type": "application/octet-stream",
       "X-Redmine-API-Key": context.apiKey,
     },
-    body: data,
+    // Cast to BodyInit: TS 5.7+ types a plain Uint8Array as
+    // `Uint8Array<ArrayBufferLike>`, which newer Deno lib types reject as a
+    // fetch body even though it is a valid one at runtime.
+    body: data as BodyInit,
   });
   assertResponse(response);
   return parse(uploadResponseSchema, await response.json()).upload.token;
