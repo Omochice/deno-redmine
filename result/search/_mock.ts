@@ -30,7 +30,6 @@ export const validHandlers = [
         title: "Project: E2E sample",
         type: "project",
         url: "http://redmine.example.com/projects/1",
-        // Redmine returns null when the matched object has no description.
         description: null,
         datetime: "2026-07-11T00:00:00.000Z",
       },
