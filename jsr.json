@@ -94,6 +94,10 @@
     "./result/attachments/show": "./result/attachments/show.ts",
     "./result/attachments/update": "./result/attachments/update.ts",
     "./result/attachments/delete": "./result/attachments/delete.ts",
+    "./result/files": "./result/files/mod.ts",
+    "./result/files/list": "./result/files/list.ts",
+    "./result/files/create": "./result/files/create.ts",
+    "./result/files/upload": "./result/files/upload.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -223,7 +227,13 @@
     "./throwable/attachments/show": "./throwable/attachments/show.ts",
     "./throwable/attachments/update": "./throwable/attachments/update.ts",
     "./throwable/attachments/delete": "./throwable/attachments/delete.ts",
-    "./throwable/attachments/validator": "./throwable/attachments/validator.ts"
+    "./throwable/attachments/validator": "./throwable/attachments/validator.ts",
+    "./throwable/files": "./throwable/files/mod.ts",
+    "./throwable/files/type": "./throwable/files/type.ts",
+    "./throwable/files/list": "./throwable/files/list.ts",
+    "./throwable/files/create": "./throwable/files/create.ts",
+    "./throwable/files/upload": "./throwable/files/upload.ts",
+    "./throwable/files/validator": "./throwable/files/validator.ts"
   },
   "publish": {
     "include": [
