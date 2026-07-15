@@ -10,7 +10,7 @@ export async function create(
   project: ProjectQuery,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "projects.json");
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "POST",
       headers: {

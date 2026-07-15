@@ -29,5 +29,5 @@ export async function update(
       issue_category: parse(toUpdateIssueCategoryQuery, issueCategory),
     }),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

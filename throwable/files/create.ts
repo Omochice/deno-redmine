@@ -24,7 +24,7 @@ export async function create(
     `${projectId}`,
     "files.json",
   );
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "POST",
       headers: {

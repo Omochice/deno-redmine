@@ -25,6 +25,6 @@ export async function fetchList(context: Context): Promise<CustomField[]> {
       },
     },
   );
-  assertResponse(response);
+  await assertResponse(response);
   return parse(listCustomFieldResponse, await response.json()).custom_fields;
 }

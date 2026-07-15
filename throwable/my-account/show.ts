@@ -28,6 +28,6 @@ export async function show(
     },
   });
 
-  assertResponse(response);
+  await assertResponse(response);
   return parse(schema, await response.json()).user;
 }

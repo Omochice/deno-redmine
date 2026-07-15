@@ -27,7 +27,7 @@ async function fetchEnumerations(
       },
     },
   );
-  assertResponse(response);
+  await assertResponse(response);
   return await response.json();
 }
 

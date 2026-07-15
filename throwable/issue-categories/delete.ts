@@ -21,7 +21,7 @@ export async function deleteIssueCategory(
   if (reassignToId !== undefined) {
     url.searchParams.set("reassign_to_id", `${reassignToId}`);
   }
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {

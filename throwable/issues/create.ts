@@ -24,5 +24,5 @@ export async function createIssue(
     },
     body: JSON.stringify(parse(toCreateRequest, issue)),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

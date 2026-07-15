@@ -24,7 +24,7 @@ export async function create(
     `${projectId}`,
     "issue_categories.json",
   );
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "POST",
       headers: {

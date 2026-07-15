@@ -23,6 +23,6 @@ export async function fetchList(context: Context): Promise<IssueStatus[]> {
       },
     },
   );
-  assertResponse(response);
+  await assertResponse(response);
   return parse(listIssueStatusResponse, await response.json()).issue_statuses;
 }

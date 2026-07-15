@@ -14,7 +14,7 @@ export async function deleteTimeEntry(
   id: number,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "time_entries", `${id}.json`);
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {

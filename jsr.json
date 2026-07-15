@@ -4,6 +4,7 @@
   "version": "2.1.0",
   "exports": {
     ".": "./result/mod.ts",
+    "./error": "./error.ts",
     "./result": "./result/mod.ts",
     "./result/projects": "./result/projects/mod.ts",
     "./result/projects/archive": "./result/projects/archive.ts",

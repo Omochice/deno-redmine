@@ -14,7 +14,7 @@ export async function deleteAttachment(
   id: number,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "attachments", `${id}.json`);
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {

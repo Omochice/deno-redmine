@@ -33,6 +33,6 @@ export async function upload(
     // fetch body even though it is a valid one at runtime.
     body: data as BodyInit,
   });
-  assertResponse(response);
+  await assertResponse(response);
   return parse(uploadResponseSchema, await response.json()).upload.token;
 }

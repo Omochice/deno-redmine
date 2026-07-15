@@ -46,7 +46,7 @@ export async function fetchList(
       offset: `${offset}`,
     }).toString();
     const response = await fetch(url, opts);
-    assertResponse(response);
+    await assertResponse(response);
     return parse(responseSchema, await response.json());
   };
 

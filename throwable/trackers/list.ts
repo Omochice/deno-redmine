@@ -23,6 +23,6 @@ export async function fetchList(context: Context): Promise<Tracker[]> {
       },
     },
   );
-  assertResponse(response);
+  await assertResponse(response);
   return parse(listTrackerResponse, await response.json()).trackers;
 }

@@ -27,5 +27,5 @@ export async function update(
     },
     body: JSON.stringify({ group: parse(toUpdateGroupQuery, group) }),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

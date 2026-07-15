@@ -21,7 +21,7 @@ export async function removeWatcher(
     "watchers",
     `${userId}.json`,
   );
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {

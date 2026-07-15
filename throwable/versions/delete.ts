@@ -14,7 +14,7 @@ export async function deleteVersion(
   id: number,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "versions", `${id}.json`);
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {

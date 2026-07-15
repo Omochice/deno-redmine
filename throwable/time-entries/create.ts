@@ -17,7 +17,7 @@ export async function create(
   timeEntry: CreateTimeEntryQuery,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "time_entries.json");
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "POST",
       headers: {

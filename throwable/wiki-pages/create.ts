@@ -33,5 +33,5 @@ export async function create(
     "wiki",
     `${sanitizeTitle(wiki.title)}.json`,
   );
-  assertResponse(await fetch(url, opts));
+  await assertResponse(await fetch(url, opts));
 }

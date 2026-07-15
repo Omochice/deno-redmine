@@ -14,7 +14,7 @@ export async function deleteMembership(
   id: number,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "memberships", `${id}.json`);
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {

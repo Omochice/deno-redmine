@@ -45,6 +45,6 @@ export async function show(
     );
 
   const r = await fetch(url, opts);
-  assertResponse(r);
+  await assertResponse(r);
   return parse(wikiDetail, await r.json());
 }

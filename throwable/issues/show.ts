@@ -31,6 +31,6 @@ export async function show(
       "X-Redmine-API-Key": context.apiKey,
     },
   });
-  assertResponse(response);
+  await assertResponse(response);
   return parse(showIssueSchema, await response.json()).issue;
 }

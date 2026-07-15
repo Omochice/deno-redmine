@@ -29,5 +29,5 @@ export async function update(
       attachment: parse(toUpdateAttachmentQuery, attachment),
     }),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

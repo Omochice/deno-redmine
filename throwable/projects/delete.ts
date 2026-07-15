@@ -7,7 +7,7 @@ export async function deleteProject(
   id: number,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "projects", `${id}.json`);
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {
