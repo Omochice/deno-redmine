@@ -30,5 +30,5 @@ export async function deleteWiki(
     "wiki",
     `${sanitizeTitle(title)}.json`,
   );
-  assertResponse(await fetch(url, opts));
+  await assertResponse(await fetch(url, opts));
 }

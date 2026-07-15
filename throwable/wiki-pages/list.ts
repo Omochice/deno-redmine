@@ -33,6 +33,6 @@ export async function fetchList(
   );
 
   const r = await fetch(url, opts);
-  assertResponse(r);
+  await assertResponse(r);
   return parse(wikis, await r.json());
 }

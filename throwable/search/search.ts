@@ -46,7 +46,7 @@ export async function search(
   const responses = await Promise.all(promises);
   const results: SearchResult[][] = [];
   for (const response of responses) {
-    assertResponse(response);
+    await assertResponse(response);
     results.push(parse(responseSchema, await response.json()).results);
   }
   return results.flat();
@@ -64,6 +64,6 @@ async function fetchNumberOfResults(
   endpoint.search = params.toString();
 
   const response = await fetch(endpoint, opts);
-  assertResponse(response);
+  await assertResponse(response);
   return parse(responseSchema, await response.json()).total_count;
 }

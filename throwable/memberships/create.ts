@@ -24,7 +24,7 @@ export async function create(
     `${projectId}`,
     "memberships.json",
   );
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "POST",
       headers: {

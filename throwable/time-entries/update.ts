@@ -29,5 +29,5 @@ export async function update(
       time_entry: parse(toUpdateTimeEntryQuery, timeEntry),
     }),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

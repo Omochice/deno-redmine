@@ -21,6 +21,6 @@ export async function fetchList(context: Context): Promise<IdName[]> {
       "X-Redmine-API-Key": context.apiKey,
     },
   });
-  assertResponse(response);
+  await assertResponse(response);
   return parse(roleListResponse, await response.json()).roles;
 }

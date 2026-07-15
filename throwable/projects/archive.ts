@@ -15,7 +15,7 @@ async function internal(
       "X-Redmine-API-Key": context.apiKey,
     },
   });
-  assertResponse(response);
+  await assertResponse(response);
 }
 
 export async function archive(context: Context, id: number): Promise<void> {

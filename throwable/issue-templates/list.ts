@@ -30,6 +30,6 @@ export async function list(
       },
     },
   );
-  assertResponse(r);
+  await assertResponse(r);
   return parse(issueTemplateResponse, await r.json());
 }

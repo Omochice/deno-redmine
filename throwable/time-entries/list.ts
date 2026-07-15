@@ -47,7 +47,7 @@ export async function fetchList(
   const responses = await Promise.all(promises);
   const results: TimeEntry[][] = [];
   for (const response of responses) {
-    assertResponse(response);
+    await assertResponse(response);
     results.push(parse(responseSchema, await response.json()).time_entries);
   }
   return results.flat();
@@ -71,6 +71,6 @@ async function fetchNumberOfTimeEntries(
       "X-Redmine-API-Key": context.apiKey,
     },
   });
-  assertResponse(response);
+  await assertResponse(response);
   return parse(responseSchema, await response.json()).total_count;
 }

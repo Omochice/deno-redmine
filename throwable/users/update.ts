@@ -27,5 +27,5 @@ export async function update(
     },
     body: JSON.stringify({ user: parse(toUpdateUserQuery, user) }),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

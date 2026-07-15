@@ -34,7 +34,7 @@ export async function fetchList(context: Context): Promise<Project[]> {
   const responses = await Promise.all(promises);
   const results: Project[][] = [];
   for (const response of responses) {
-    assertResponse(response);
+    await assertResponse(response);
     results.push(parse(responseSchema, await response.json()).projects);
   }
   return results.flat();
@@ -54,6 +54,6 @@ async function fetchNumberOfProjects(context: Context): Promise<number> {
       "X-Redmine-API-Key": context.apiKey,
     },
   });
-  assertResponse(response);
+  await assertResponse(response);
   return parse(responseSchema, await response.json()).total_count;
 }

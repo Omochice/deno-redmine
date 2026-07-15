@@ -34,6 +34,6 @@ export async function fetchList(
       "X-Redmine-API-Key": context.apiKey,
     },
   });
-  assertResponse(response);
+  await assertResponse(response);
   return parse(responseSchema, await response.json()).files;
 }

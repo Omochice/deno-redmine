@@ -22,7 +22,7 @@ export async function removeUser(
     "users",
     `${userId}.json`,
   );
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {

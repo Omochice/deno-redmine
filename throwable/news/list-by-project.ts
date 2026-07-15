@@ -32,6 +32,6 @@ export async function fetchListByProject(
       },
     },
   );
-  assertResponse(response);
+  await assertResponse(response);
   return parse(listNewsResponse, await response.json()).news;
 }

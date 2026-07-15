@@ -28,5 +28,5 @@ export async function addWatcher(
     },
     body: JSON.stringify({ user_id: userId }),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

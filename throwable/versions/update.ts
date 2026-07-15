@@ -27,5 +27,5 @@ export async function update(
     },
     body: JSON.stringify({ version: parse(toUpdateVersionQuery, version) }),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

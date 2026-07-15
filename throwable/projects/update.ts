@@ -23,5 +23,5 @@ export async function update(
     },
     body: JSON.stringify({ project: parse(toProjectUpdateQuery, project) }),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

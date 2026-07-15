@@ -28,7 +28,7 @@ export async function listIssues(
       ...convertedOption,
     }).toString();
     const response = await fetch(endpoint, opts);
-    assertResponse(response);
+    await assertResponse(response);
     const json = await response.json();
     return parse(listResponse, json).issues;
   };
@@ -77,6 +77,6 @@ async function fetchNumberOfIssues(
     },
   });
 
-  assertResponse(response);
+  await assertResponse(response);
   return parse(listResponse, await response.json()).totalCount;
 }

@@ -14,7 +14,7 @@ export async function deleteRelation(
   id: number,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "relations", `${id}.json`);
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {

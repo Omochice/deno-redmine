@@ -17,7 +17,7 @@ export async function create(
   user: CreateUserQuery,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "users.json");
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "POST",
       headers: {

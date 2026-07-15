@@ -29,5 +29,5 @@ export async function update(
       membership: parse(toUpdateMembershipQuery, membership),
     }),
   });
-  assertResponse(response);
+  await assertResponse(response);
 }

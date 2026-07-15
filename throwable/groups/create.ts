@@ -17,7 +17,7 @@ export async function create(
   group: CreateGroupQuery,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "groups.json");
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "POST",
       headers: {

@@ -14,7 +14,7 @@ export async function deleteGroup(
   id: number,
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "groups", `${id}.json`);
-  assertResponse(
+  await assertResponse(
     await fetch(url, {
       method: "DELETE",
       headers: {
