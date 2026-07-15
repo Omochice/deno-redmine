@@ -29,17 +29,17 @@ export const searchResultSchema = pipe(
 /**
  * Build the query string parameters for a search request.
  *
- * The pagination controls (`offset`, `limit`) are excluded because
- * {@link search} owns pagination and sets them per page. Boolean flags follow
- * Redmine's convention of `"1"` for enabled and being omitted otherwise, except
+ * {@link search} owns pagination and sets `offset`/`limit` per page, so they
+ * are not part of {@link SearchQuery}. Boolean flags follow Redmine's
+ * convention of `"1"` for enabled and being omitted otherwise, except
  * `attachments`, which Redmine treats as a tri-state scope and therefore
  * serializes to `"1"`/`"0"` for booleans or passes a raw string through.
  *
  * @param query The search query
- * @returns The query parameters without `offset`/`limit`
+ * @returns The query parameters (pagination is added later by {@link search})
  */
 export function toSearchParams(query: SearchQuery): URLSearchParams {
-  const { q, offset: _offset, limit: _limit, attachments, ...flags } = query;
+  const { q, attachments, ...flags } = query;
   const params = new URLSearchParams({ q });
   if (attachments !== undefined) {
     params.set(

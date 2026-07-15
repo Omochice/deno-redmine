@@ -9,8 +9,6 @@ export type SearchResult = {
 
 export type SearchQuery = {
   q: string;
-  offset?: number;
-  limit?: number;
   scope?: string;
   allWords?: boolean;
   titlesOnly?: boolean;
