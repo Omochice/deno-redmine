@@ -16,7 +16,9 @@ export class RedmineResponseError extends Error {
   readonly body: string;
 
   constructor(status: number, statusText: string, body: string) {
-    super(statusText);
+    // HTTP/2 drops the reason phrase, leaving statusText empty; fall back to
+    // the status code so the message is never blank.
+    super(statusText || `HTTP ${status}`);
     this.name = "RedmineResponseError";
     this.status = status;
     this.statusText = statusText;

@@ -21,6 +21,13 @@ Deno.test("RedmineResponseError.fromResponse captures status, statusText and bod
   assertEquals(error.message, "Unprocessable Entity");
 });
 
+Deno.test("RedmineResponseError falls back to the status code when statusText is empty", async () => {
+  const response = new Response("boom", { status: 500, statusText: "" });
+  const error = await RedmineResponseError.fromResponse(response);
+
+  assertEquals(error.message, "HTTP 500");
+});
+
 Deno.test("RedmineResponseError does not populate cause", async () => {
   const response = new Response("boom", {
     status: 500,
