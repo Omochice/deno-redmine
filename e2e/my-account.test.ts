@@ -16,8 +16,9 @@ Deno.test({
         async () => {
           const result = await show(e2eContext);
           assert(result.isOk());
-          assert(typeof result.value.login === "string");
-          assert(typeof result.value.mail === "string");
+          // e2e/setup.ts authenticates as the "admin" user, so the account
+          // returned here is always that user.
+          assertEquals(result.value.login, "admin");
         },
       );
 
