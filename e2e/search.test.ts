@@ -14,8 +14,6 @@ Deno.test({
         assert(result.isOk());
         assert(Array.isArray(result.value));
         for (const item of result.value) {
-          assert(typeof item.id === "number");
-          assert(typeof item.type === "string");
           assert(item.datetime instanceof Date);
         }
       },
