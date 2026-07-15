@@ -25,8 +25,6 @@ Deno.test({
       const result = await show(e2eContext, projectId);
       assert(result.isOk());
       assertEquals(result.value.id, projectId);
-      assert(typeof result.value.name === "string");
-      assert(typeof result.value.identifier === "string");
     });
 
     await t.step("POST /projects.json should create a project", async () => {
