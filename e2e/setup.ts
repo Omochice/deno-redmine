@@ -115,6 +115,7 @@ async function seedTestData(context: Context): Promise<void> {
             "issue_templates",
             "news",
             "time_tracking",
+            "files",
           ],
         },
       }),
