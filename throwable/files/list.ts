@@ -1,7 +1,7 @@
 import { array, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../../internal/url.ts";
 import type { Context } from "../../context.ts";
-import type { File } from "./type.ts";
+import type { ProjectFile } from "./type.ts";
 import { fileSchema } from "./validator.ts";
 import { assertResponse } from "../../error.ts";
 
@@ -20,7 +20,7 @@ const responseSchema = object({
 export async function fetchList(
   context: Context,
   projectId: number,
-): Promise<File[]> {
+): Promise<ProjectFile[]> {
   const url = buildUrl(
     context.endpoint,
     "projects",

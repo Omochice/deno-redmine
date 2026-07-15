@@ -13,7 +13,7 @@ import {
   toUndefined,
 } from "../../internal/validator.ts";
 import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
-import type { File } from "./type.ts";
+import type { ProjectFile } from "./type.ts";
 
 export const fileSchema = pipe(
   object({
@@ -30,7 +30,7 @@ export const fileSchema = pipe(
     created_on: dateLikeString,
   }),
   transform((input) => {
-    return objectToCamel(input) satisfies File;
+    return objectToCamel(input) satisfies ProjectFile;
   }),
 );
 

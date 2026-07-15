@@ -1,6 +1,6 @@
 import type { IdName } from "../../internal/type.ts";
 
-export type File = {
+export type ProjectFile = {
   id: number;
   filename: string;
   filesize: number;
