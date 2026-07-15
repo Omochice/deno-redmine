@@ -1,11 +1,12 @@
 import {
+  nullish,
   number,
   object,
   pipe,
   string,
   transform,
 } from "jsr:@valibot/valibot@1.4.2";
-import { dateLikeString } from "../../internal/validator.ts";
+import { dateLikeString, toUndefined } from "../../internal/validator.ts";
 import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
 import type { SearchQuery, SearchResult } from "./type.ts";
 
@@ -15,7 +16,9 @@ export const searchResultSchema = pipe(
     title: string(),
     type: string(),
     url: string(),
-    description: string(),
+    // Redmine returns `null` here for results whose object has no description
+    // (e.g. a project without one).
+    description: pipe(nullish(string()), transform(toUndefined)),
     datetime: dateLikeString,
   }),
   transform((input) => {

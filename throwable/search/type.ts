@@ -3,7 +3,7 @@ export type SearchResult = {
   title: string;
   type: string;
   url: string;
-  description: string;
+  description?: string;
   datetime: Date;
 };
 

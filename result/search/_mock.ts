@@ -25,6 +25,15 @@ export const validHandlers = [
         description: "E2E sample wiki description",
         datetime: "2026-07-12T00:00:00.000Z",
       },
+      {
+        id: 3,
+        title: "Project: E2E sample",
+        type: "project",
+        url: "http://redmine.example.com/projects/1",
+        // Redmine returns null when the matched object has no description.
+        description: null,
+        datetime: "2026-07-11T00:00:00.000Z",
+      },
     ] as const;
     return HttpResponse.json({
       results,

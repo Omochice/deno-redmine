@@ -20,10 +20,13 @@ Deno.test("GET /search.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await search(context, { q: "E2E" });
       assert(e.isOk());
-      assertEquals(e.value.length, 2);
+      assertEquals(e.value.length, 3);
       assertEquals(e.value[0].id, 1);
       assertEquals(e.value[0].type, "issue");
       assert(e.value[0].datetime instanceof Date);
+      // A null description from Redmine normalizes to undefined.
+      assertEquals(e.value[2].type, "project");
+      assertEquals(e.value[2].description, undefined);
     },
   );
 
