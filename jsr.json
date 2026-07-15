@@ -90,6 +90,10 @@
     "./result/issue-relations/list": "./result/issue-relations/list.ts",
     "./result/issue-relations/show": "./result/issue-relations/show.ts",
     "./result/issue-relations/delete": "./result/issue-relations/delete.ts",
+    "./result/attachments": "./result/attachments/mod.ts",
+    "./result/attachments/show": "./result/attachments/show.ts",
+    "./result/attachments/update": "./result/attachments/update.ts",
+    "./result/attachments/delete": "./result/attachments/delete.ts",
     "./throwable": "./throwable/mod.ts",
     "./throwable/projects": "./throwable/projects/mod.ts",
     "./throwable/projects/archive": "./throwable/projects/archive.ts",
@@ -213,7 +217,13 @@
     "./throwable/issue-relations/list": "./throwable/issue-relations/list.ts",
     "./throwable/issue-relations/show": "./throwable/issue-relations/show.ts",
     "./throwable/issue-relations/delete": "./throwable/issue-relations/delete.ts",
-    "./throwable/issue-relations/validator": "./throwable/issue-relations/validator.ts"
+    "./throwable/issue-relations/validator": "./throwable/issue-relations/validator.ts",
+    "./throwable/attachments": "./throwable/attachments/mod.ts",
+    "./throwable/attachments/type": "./throwable/attachments/type.ts",
+    "./throwable/attachments/show": "./throwable/attachments/show.ts",
+    "./throwable/attachments/update": "./throwable/attachments/update.ts",
+    "./throwable/attachments/delete": "./throwable/attachments/delete.ts",
+    "./throwable/attachments/validator": "./throwable/attachments/validator.ts"
   },
   "publish": {
     "include": [
