@@ -78,4 +78,37 @@ Deno.test("GET /search.json", async (t) => {
     const e = await search(context, { q: "404" });
     assert(e.isErr());
   });
+
+  await t.step(
+    "should fetch every page when results span multiple pages",
+    async () => {
+      const total = 30;
+      const all = Array.from({ length: total }, (_, i) => ({
+        id: i + 1,
+        title: `Result ${i + 1}`,
+        type: "issue",
+        url: `http://redmine.example.com/issues/${i + 1}`,
+        description: "d",
+        datetime: "2026-07-13T00:00:00.000Z",
+      }));
+      server.resetHandlers(
+        http.get(`${context.endpoint}/search.json`, ({ request }) => {
+          const params = new URL(request.url).searchParams;
+          const offset = Number(params.get("offset"));
+          const limit = Number(params.get("limit"));
+          return HttpResponse.json({
+            results: all.slice(offset, offset + limit),
+            total_count: total,
+            offset,
+            limit,
+          });
+        }),
+      );
+      const e = await search(context, { q: "E2E" });
+      assert(e.isOk());
+      assertEquals(e.value.length, total);
+      assertEquals(e.value[0].id, 1);
+      assertEquals(e.value[total - 1].id, total);
+    },
+  );
 });
