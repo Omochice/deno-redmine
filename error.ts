@@ -10,7 +10,7 @@ export function convertError(
   };
 }
 
-export class UnprocessableEntityError extends Error {
+export class RedmineResponseError extends Error {
   constructor(response: Response) {
     super(response.statusText, { cause: response });
   }
@@ -20,6 +20,6 @@ export function assertResponse(
   response: Response,
 ): asserts response is Response & { ok: true } {
   if (!response.ok) {
-    throw new UnprocessableEntityError(response);
+    throw new RedmineResponseError(response);
   }
 }
