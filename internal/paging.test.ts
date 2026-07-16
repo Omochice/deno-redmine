@@ -38,7 +38,6 @@ Deno.test("returns an empty result without fetching data pages when the total is
     { pageSize: 10 },
   );
   assertEquals(result, []);
-  // Only the count probe runs; there are no pages to walk.
   assertEquals(offsets, [0]);
 });
 
@@ -73,8 +72,33 @@ Deno.test("never exceeds the concurrency bound for data pages", async () => {
     { pageSize: 10, concurrency: 3 },
   );
   assertEquals(result, range(0, 100));
-  // Ten data pages would all run at once without the bound.
   assertEquals(maxInFlight, 3);
+});
+
+Deno.test("fetches a single page when the total fits within one page", async () => {
+  const calls: Array<{ limit: number; offset: number }> = [];
+  const result = await fetchAllPages(
+    (limit, offset) => {
+      calls.push({ limit, offset });
+      return Promise.resolve({
+        items: range(offset, Math.min(offset + limit, 5)),
+        totalCount: 5,
+      });
+    },
+    { pageSize: 10 },
+  );
+  assertEquals(result, range(0, 5));
+  assertEquals(calls, [{ limit: 10, offset: 0 }]);
+});
+
+Deno.test("clamps a non-positive concurrency to at least one", async () => {
+  // Without clamping, zero workers would silently drop every page after the
+  // first, and a negative value would throw on `Array.from`.
+  const result = await fetchAllPages(finiteSource(30), {
+    pageSize: 10,
+    concurrency: 0,
+  });
+  assertEquals(result, range(0, 30));
 });
 
 Deno.test("stops at the requested limit and slices off the over-fetch", async () => {

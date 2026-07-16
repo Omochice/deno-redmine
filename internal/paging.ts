@@ -49,8 +49,9 @@ const DEFAULT_CONCURRENCY = 6;
  * in page order.
  *
  * With `options.limit` set the walk is sequential and stops once enough items
- * are collected. Without it, the total count is probed first and the remaining
- * pages are fetched with bounded parallelism.
+ * are collected. Without it, the first page is fetched (its reported total
+ * drives how many pages remain) and the rest are fetched with bounded
+ * parallelism.
  *
  * @typeParam T Element type of the list
  * @param fetchPage Fetches and parses a single page
@@ -67,7 +68,7 @@ export async function fetchAllPages<T>(
   return await collectAll(
     fetchPage,
     options.pageSize,
-    options.concurrency ?? DEFAULT_CONCURRENCY,
+    Math.max(1, options.concurrency ?? DEFAULT_CONCURRENCY),
   );
 }
 
@@ -95,9 +96,14 @@ async function collectAll<T>(
   pageSize: number,
   concurrency: number,
 ): Promise<T[]> {
-  const { totalCount } = await fetchPage(1, 0);
+  // The first full page also reports total_count, so no separate probe request
+  // is needed.
+  const first = await fetchPage(pageSize, 0);
+  if (first.totalCount <= pageSize) {
+    return first.items;
+  }
   const offsets: number[] = [];
-  for (let offset = 0; offset < totalCount; offset += pageSize) {
+  for (let offset = pageSize; offset < first.totalCount; offset += pageSize) {
     offsets.push(offset);
   }
   // Results are written back at their page index so aggregation order is
@@ -116,5 +122,5 @@ async function collectAll<T>(
     () => worker(),
   );
   await Promise.all(workers);
-  return pages.flat();
+  return [first.items, ...pages].flat();
 }
