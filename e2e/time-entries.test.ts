@@ -10,9 +10,6 @@ import { listIssues } from "../result/issues/list.ts";
 
 Deno.test({
   name: "E2E: Time Entries API",
-  // Library functions may not fully consume fetch response bodies, triggering
-  // Deno's resource sanitizer as a false positive.
-  sanitizeResources: false,
   fn: async (t) => {
     const projectsResult = await fetchProjects(e2eContext);
     assert(projectsResult.isOk());

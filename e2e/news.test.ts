@@ -6,9 +6,6 @@ import { fetchList as fetchProjects } from "../result/projects/list.ts";
 
 Deno.test({
   name: "E2E: News API",
-  // Library functions may not fully consume fetch response bodies, triggering
-  // Deno's resource sanitizer as a false positive.
-  sanitizeResources: false,
   fn: async (t) => {
     const projectsResult = await fetchProjects(e2eContext);
     assert(projectsResult.isOk());

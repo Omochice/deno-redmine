@@ -28,9 +28,6 @@ async function currentUserId(): Promise<number | undefined> {
 
 Deno.test({
   name: "E2E: Groups API",
-  // Library functions may not fully consume fetch response bodies, triggering
-  // Deno's resource sanitizer as a false positive.
-  sanitizeResources: false,
   fn: async (t) => {
     // A unique name avoids clashing with groups left over from prior runs.
     const groupName = `E2E Group ${Date.now()}`;

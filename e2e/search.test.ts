@@ -4,9 +4,6 @@ import { search } from "../result/search/search.ts";
 
 Deno.test({
   name: "E2E: Search API",
-  // Library functions may not fully consume fetch response bodies, triggering
-  // Deno's resource sanitizer as a false positive.
-  sanitizeResources: false,
   fn: async (t) => {
     await t.step(
       "GET /search.json should return an array of results",

@@ -86,9 +86,6 @@ async function findAttachmentId(issueId: number): Promise<number | undefined> {
 
 Deno.test({
   name: "E2E: Attachments API",
-  // Library functions may not fully consume fetch response bodies, triggering
-  // Deno's resource sanitizer as a false positive.
-  sanitizeResources: false,
   fn: async (t) => {
     const issueId = await findSeededIssueId();
     if (issueId === undefined) {

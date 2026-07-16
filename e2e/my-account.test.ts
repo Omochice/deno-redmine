@@ -5,9 +5,6 @@ import { update } from "../result/my-account/update.ts";
 
 Deno.test({
   name: "E2E: My Account API",
-  // Library functions may not fully consume fetch response bodies, triggering
-  // Deno's resource sanitizer as a false positive.
-  sanitizeResources: false,
   fn: async (t) => {
     const initialResult = await show(e2eContext);
     assert(initialResult.isOk());

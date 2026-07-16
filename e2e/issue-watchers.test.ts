@@ -21,9 +21,6 @@ async function fetchCurrentUserId(): Promise<number | undefined> {
 
 Deno.test({
   name: "E2E: Issue watchers API",
-  // Library functions may not fully consume fetch response bodies, triggering
-  // Deno's resource sanitizer as a false positive.
-  sanitizeResources: false,
   fn: async (t) => {
     const issuesResult = await listIssues(e2eContext, { limit: 1 });
     assert(issuesResult.isOk());
