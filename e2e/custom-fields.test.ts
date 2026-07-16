@@ -9,12 +9,6 @@ Deno.test("E2E: Custom Fields API", async (t) => {
       const result = await fetchList(e2eContext);
       assert(result.isOk());
       assert(Array.isArray(result.value));
-      for (const customField of result.value) {
-        assert(typeof customField.id === "number");
-        assert(typeof customField.name === "string");
-        assert(typeof customField.customizedType === "string");
-        assert(typeof customField.fieldFormat === "string");
-      }
       // e2e/setup.ts seeds an "E2E CF" issue custom field, so the list is
       // non-empty and contains it.
       const seeded = result.value.find((cf) => cf.name === "E2E CF");

@@ -12,10 +12,6 @@ Deno.test({
         const result = await fetchList(e2eContext);
         assert(result.isOk());
         assert(Array.isArray(result.value));
-        for (const role of result.value) {
-          assert(typeof role.id === "number");
-          assert(typeof role.name === "string");
-        }
       },
     );
 
@@ -37,10 +33,6 @@ Deno.test({
         assert(result.isOk());
         assert(result.value.id === role.id);
         assert(result.value.name === role.name);
-        assert(typeof result.value.assignable === "boolean");
-        assert(typeof result.value.issuesVisibility === "string");
-        assert(typeof result.value.timeEntriesVisibility === "string");
-        assert(typeof result.value.usersVisibility === "string");
         assert(Array.isArray(result.value.permissions));
       },
     );

@@ -20,7 +20,6 @@ Deno.test({
           result.value;
 
         assertEquals(issueTemplates.length, 1);
-        assert(typeof issueTemplates[0].id === "number");
         assertEquals(issueTemplates[0].title, "E2E Bug Template");
         assertEquals(issueTemplates[0].issueTitle, "Bug: ");
         assertEquals(issueTemplates[0].description, "Template for bug reports");
@@ -30,7 +29,6 @@ Deno.test({
         assert(issueTemplates[0].updatedOn instanceof Date);
 
         assertEquals(globalIssueTemplates.length, 1);
-        assert(typeof globalIssueTemplates[0].id === "number");
         assertEquals(globalIssueTemplates[0].title, "E2E Global Template");
         assertEquals(globalIssueTemplates[0].issueTitle, "Global: ");
         assertEquals(

@@ -58,7 +58,7 @@ Deno.test({
         const result = await show(e2eContext, projectId, "E2ECreatedPage");
         assert(result.isOk());
         assertEquals(result.value.title, "E2ECreatedPage");
-        assert(typeof result.value.text === "string");
+        assertEquals(result.value.text, "Created by E2E test");
         assert(result.value.version >= 1);
       },
     );

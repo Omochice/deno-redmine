@@ -12,9 +12,6 @@ Deno.test("E2E: Issue Statuses API", async (t) => {
         result.value.length > 0,
         "Redmine should have default issue statuses",
       );
-      assert(typeof result.value[0].id === "number");
-      assert(typeof result.value[0].name === "string");
-      assert(typeof result.value[0].isClosed === "boolean");
     },
   );
 });

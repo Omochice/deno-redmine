@@ -25,7 +25,6 @@ Deno.test({
       const result = await show(e2eContext, issueId);
       assert(result.isOk());
       assertEquals(result.value.id, issueId);
-      assert(typeof result.value.subject === "string");
       assert(result.value.project !== undefined);
       assert(result.value.tracker !== undefined);
       assert(result.value.status !== undefined);

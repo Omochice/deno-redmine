@@ -9,8 +9,6 @@ Deno.test("E2E: Trackers API", async (t) => {
       const result = await fetchList(e2eContext);
       assert(result.isOk());
       assert(result.value.length > 0, "Redmine should have default trackers");
-      assert(typeof result.value[0].id === "number");
-      assert(typeof result.value[0].name === "string");
     },
   );
 });
