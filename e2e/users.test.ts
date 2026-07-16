@@ -8,9 +8,6 @@ import { deleteUser } from "../result/users/delete.ts";
 
 Deno.test({
   name: "E2E: Users API",
-  // Library functions may not fully consume fetch response bodies, triggering
-  // Deno's resource sanitizer as a false positive.
-  sanitizeResources: false,
   fn: async (t) => {
     // Unique per run so repeated E2E executions never collide on login/mail.
     const unique = Date.now();

@@ -4,7 +4,6 @@ import { list } from "../result/issue-templates/list.ts";
 
 Deno.test({
   name: "E2E: Issue Templates API",
-  sanitizeResources: false,
   fn: async (t) => {
     await t.step(
       "GET /projects/:id/issue_templates.json should return templates",

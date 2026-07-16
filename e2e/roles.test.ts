@@ -5,9 +5,6 @@ import { show } from "../result/roles/show.ts";
 
 Deno.test({
   name: "E2E: Roles API",
-  // Library functions may not fully consume fetch response bodies, triggering
-  // Deno's resource sanitizer as a false positive.
-  sanitizeResources: false,
   fn: async (t) => {
     await t.step(
       "GET /roles.json should return a list of roles",
