@@ -1,5 +1,6 @@
 import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../../internal/url.ts";
+import { fetchAllPages } from "../../internal/paging.ts";
 import type { Context } from "../../context.ts";
 import type { SearchQuery, SearchResult } from "./type.ts";
 import { searchResultSchema, toSearchParams } from "./validator.ts";
@@ -24,46 +25,22 @@ export async function search(
   context: Context,
   query: SearchQuery,
 ): Promise<SearchResult[]> {
-  const limit = 25;
-  const opts: RequestInit = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Redmine-API-Key": context.apiKey,
-    },
-  };
   const base = toSearchParams(query);
-  const n = await fetchNumberOfResults(context, base, opts);
-  const promises: Promise<Response>[] = [];
-  for (let i = 0; i < n; i += limit) {
+  return await fetchAllPages(async (limit, offset) => {
     const endpoint = buildUrl(context.endpoint, "search.json");
     const params = new URLSearchParams(base);
     params.set("limit", `${limit}`);
-    params.set("offset", `${i}`);
+    params.set("offset", `${offset}`);
     endpoint.search = params.toString();
-    promises.push(fetch(endpoint, opts));
-  }
-  const responses = await Promise.all(promises);
-  const results: SearchResult[][] = [];
-  for (const response of responses) {
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Redmine-API-Key": context.apiKey,
+      },
+    });
     await assertResponse(response);
-    results.push(parse(responseSchema, await response.json()).results);
-  }
-  return results.flat();
-}
-
-async function fetchNumberOfResults(
-  context: Context,
-  base: URLSearchParams,
-  opts: RequestInit,
-): Promise<number> {
-  const endpoint = buildUrl(context.endpoint, "search.json");
-  const params = new URLSearchParams(base);
-  params.set("limit", "1");
-  params.set("offset", "0");
-  endpoint.search = params.toString();
-
-  const response = await fetch(endpoint, opts);
-  await assertResponse(response);
-  return parse(responseSchema, await response.json()).total_count;
+    const parsed = parse(responseSchema, await response.json());
+    return { items: parsed.results, totalCount: parsed.total_count };
+  }, { pageSize: 25 });
 }

@@ -1,5 +1,6 @@
 import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../../internal/url.ts";
+import { fetchAllPages } from "../../internal/paging.ts";
 import type { Context } from "../../context.ts";
 import type { ListTimeEntryQuery, TimeEntry } from "./type.ts";
 import { timeEntrySchema, toListTimeEntryQuery } from "./validator.ts";
@@ -24,53 +25,23 @@ export async function fetchList(
   context: Context,
   filter: Partial<ListTimeEntryQuery> = {},
 ): Promise<TimeEntry[]> {
-  const limit = 25;
   const query = parse(toListTimeEntryQuery, filter);
-  const opts: RequestInit = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Redmine-API-Key": context.apiKey,
-    },
-  };
-  const n = await fetchNumberOfTimeEntries(context, query);
-  const promises: Promise<Response>[] = [];
-  for (let i = 0; i < n; i += limit) {
+  return await fetchAllPages(async (limit, offset) => {
     const endpoint = buildUrl(context.endpoint, "time_entries.json");
     endpoint.search = new URLSearchParams({
       limit: `${limit}`,
-      offset: `${i}`,
+      offset: `${offset}`,
       ...query,
     }).toString();
-    promises.push(fetch(endpoint, opts));
-  }
-  const responses = await Promise.all(promises);
-  const results: TimeEntry[][] = [];
-  for (const response of responses) {
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Redmine-API-Key": context.apiKey,
+      },
+    });
     await assertResponse(response);
-    results.push(parse(responseSchema, await response.json()).time_entries);
-  }
-  return results.flat();
-}
-
-async function fetchNumberOfTimeEntries(
-  context: Context,
-  query: Record<string, string>,
-): Promise<number> {
-  const endpoint = buildUrl(context.endpoint, "time_entries.json");
-  endpoint.search = new URLSearchParams({
-    limit: "1",
-    offset: "0",
-    ...query,
-  }).toString();
-
-  const response = await fetch(endpoint, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Redmine-API-Key": context.apiKey,
-    },
-  });
-  await assertResponse(response);
-  return parse(responseSchema, await response.json()).total_count;
+    const parsed = parse(responseSchema, await response.json());
+    return { items: parsed.time_entries, totalCount: parsed.total_count };
+  }, { pageSize: 25 });
 }
