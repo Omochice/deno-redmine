@@ -17,7 +17,7 @@ Deno.test({
       const project = projectsResult._unsafeUnwrap().find((p) =>
         p.identifier === "e2e-test-project"
       );
-      expect(project !== undefined).toBe(true);
+      expect(project).toBeDefined();
       projectId = project!.id;
     });
 
@@ -26,7 +26,7 @@ Deno.test({
       async () => {
         const result = await fetchList(e2eContext, projectId);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().length > 0).toBe(true);
+        expect(result._unsafeUnwrap().length).toBeGreaterThan(0);
       },
     );
 
@@ -35,8 +35,8 @@ Deno.test({
       async () => {
         const result = await show(e2eContext, projectId, "E2ETestPage");
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().title).toEqual("E2ETestPage");
-        expect(result._unsafeUnwrap().version >= 1).toBe(true);
+        expect(result._unsafeUnwrap().title).toStrictEqual("E2ETestPage");
+        expect(result._unsafeUnwrap().version).toBeGreaterThanOrEqual(1);
       },
     );
 
@@ -57,9 +57,12 @@ Deno.test({
       async () => {
         const result = await show(e2eContext, projectId, "E2ECreatedPage");
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().title).toEqual("E2ECreatedPage");
-        expect(result._unsafeUnwrap().text).toEqual("Created by E2E test");
-        expect(result._unsafeUnwrap().version >= 1).toBe(true);
+        const page = result._unsafeUnwrap();
+        expect(page.title).toStrictEqual("E2ECreatedPage");
+        expect(page.text).toStrictEqual(
+          "Created by E2E test",
+        );
+        expect(page.version).toBeGreaterThanOrEqual(1);
       },
     );
 

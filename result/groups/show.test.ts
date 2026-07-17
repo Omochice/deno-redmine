@@ -11,11 +11,12 @@ Deno.test("GET /groups/:id.json", async (t) => {
     server.resetHandlers(...validHandlers);
     const e = await show(context, 20);
     expect(e.isOk()).toBe(true);
-    expect(e._unsafeUnwrap().id).toEqual(20);
-    expect(e._unsafeUnwrap().name).toEqual("Developers");
-    expect(e._unsafeUnwrap().users !== undefined).toBe(true);
-    expect(e._unsafeUnwrap().users?.[0]).toEqual({ id: 5, name: "John Smith" });
-    expect(e._unsafeUnwrap().memberships?.[0].project).toEqual({
+    const group = e._unsafeUnwrap();
+    expect(group.id).toStrictEqual(20);
+    expect(group.name).toStrictEqual("Developers");
+    expect(group.users).toBeDefined();
+    expect(group.users?.[0]).toStrictEqual({ id: 5, name: "John Smith" });
+    expect(group.memberships?.[0].project).toStrictEqual({
       id: 1,
       name: "Demo",
     });

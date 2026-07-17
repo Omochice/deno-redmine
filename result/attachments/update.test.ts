@@ -50,8 +50,8 @@ Deno.test("PATCH /attachments/:id.json", async (t) => {
         description: "Updated description",
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.filename).toEqual("renamed.txt");
-      expect(captured?.description).toEqual("Updated description");
+      expect(captured?.filename).toStrictEqual("renamed.txt");
+      expect(captured?.description).toStrictEqual("Updated description");
     },
   );
 });

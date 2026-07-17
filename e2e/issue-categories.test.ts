@@ -15,7 +15,7 @@ Deno.test({
     const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    expect(project !== undefined).toBe(true);
+    expect(project).toBeDefined();
 
     await t.step(
       "POST /projects/:project_id/issue_categories.json should create an issue category",
@@ -32,11 +32,11 @@ Deno.test({
       async () => {
         const result = await fetchList(e2eContext, project!.id);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().length > 0).toBe(true);
+        expect(result._unsafeUnwrap().length).toBeGreaterThan(0);
         const created = result._unsafeUnwrap().find((c) =>
           c.name === "E2E Created Category"
         );
-        expect(created !== undefined).toBe(true);
+        expect(created).toBeDefined();
       },
     );
 
@@ -48,13 +48,16 @@ Deno.test({
         const category = listResult._unsafeUnwrap().find((c) =>
           c.name === "E2E Created Category"
         );
-        expect(category !== undefined).toBe(true);
+        expect(category).toBeDefined();
 
         const result = await show(e2eContext, category!.id);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().id).toEqual(category!.id);
-        expect(result._unsafeUnwrap().name).toEqual("E2E Created Category");
-        expect(result._unsafeUnwrap().project !== undefined).toBe(true);
+        const shown = result._unsafeUnwrap();
+        expect(shown.id).toStrictEqual(category!.id);
+        expect(shown.name).toStrictEqual(
+          "E2E Created Category",
+        );
+        expect(shown.project).toBeDefined();
       },
     );
 
@@ -66,7 +69,7 @@ Deno.test({
         const category = listResult._unsafeUnwrap().find((c) =>
           c.name === "E2E Created Category"
         );
-        expect(category !== undefined).toBe(true);
+        expect(category).toBeDefined();
 
         const result = await update(e2eContext, category!.id, {
           name: "E2E Updated Category",
@@ -75,7 +78,9 @@ Deno.test({
 
         const showResult = await show(e2eContext, category!.id);
         expect(showResult.isOk()).toBe(true);
-        expect(showResult._unsafeUnwrap().name).toEqual("E2E Updated Category");
+        expect(showResult._unsafeUnwrap().name).toStrictEqual(
+          "E2E Updated Category",
+        );
       },
     );
 
@@ -87,7 +92,7 @@ Deno.test({
         const category = listResult._unsafeUnwrap().find((c) =>
           c.name === "E2E Updated Category"
         );
-        expect(category !== undefined).toBe(true);
+        expect(category).toBeDefined();
 
         const result = await deleteIssueCategory(e2eContext, category!.id);
         expect(result.isOk()).toBe(true);

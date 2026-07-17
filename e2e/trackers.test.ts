@@ -9,10 +9,9 @@ Deno.test("E2E: Trackers API", async (t) => {
       const result = await fetchList(e2eContext);
       expect(result.isOk()).toBe(true);
       expect(
-        result._unsafeUnwrap().length > 0,
+        result._unsafeUnwrap().length,
         "Redmine should have default trackers",
-      )
-        .toBe(true);
+      ).toBeGreaterThan(0);
     },
   );
 });

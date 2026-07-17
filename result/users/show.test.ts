@@ -19,9 +19,10 @@ Deno.test("GET /users/:id.json", async (t) => {
       server.use(...validHandlers);
       const e = await show(context, 2);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().id).toEqual(2);
-      expect(e._unsafeUnwrap().login).toEqual("jsmith");
-      expect(e._unsafeUnwrap().lastLoginOn).toEqual(
+      const user = e._unsafeUnwrap();
+      expect(user.id).toStrictEqual(2);
+      expect(user.login).toStrictEqual("jsmith");
+      expect(user.lastLoginOn).toStrictEqual(
         new Date("2026-07-13T00:00:00.000Z"),
       );
     },

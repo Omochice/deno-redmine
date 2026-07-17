@@ -45,8 +45,8 @@ Deno.test("POST /groups.json", async (t) => {
         userIds: [3, 5],
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.name).toEqual("Developers");
-      expect(captured?.user_ids).toEqual([3, 5]);
+      expect(captured?.name).toStrictEqual("Developers");
+      expect(captured?.user_ids).toStrictEqual([3, 5]);
     },
   );
 });

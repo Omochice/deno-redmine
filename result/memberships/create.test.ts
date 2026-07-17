@@ -53,8 +53,8 @@ Deno.test("POST /projects/:project_id/memberships.json", async (t) => {
         roleIds: [1, 2],
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.user_id).toEqual(17);
-      expect(captured?.role_ids).toEqual([1, 2]);
+      expect(captured?.user_id).toStrictEqual(17);
+      expect(captured?.role_ids).toStrictEqual([1, 2]);
     },
   );
 });

@@ -58,11 +58,11 @@ Deno.test("POST /time_entries.json", async (t) => {
         spentOn: new Date("2026-07-01"),
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.issue_id).toEqual(5);
-      expect(captured?.hours).toEqual(2.5);
-      expect(captured?.activity_id).toEqual(9);
-      expect(captured?.comments).toEqual("Worked on it");
-      expect(captured?.spent_on).toEqual("2026-07-01");
+      expect(captured?.issue_id).toStrictEqual(5);
+      expect(captured?.hours).toStrictEqual(2.5);
+      expect(captured?.activity_id).toStrictEqual(9);
+      expect(captured?.comments).toStrictEqual("Worked on it");
+      expect(captured?.spent_on).toStrictEqual("2026-07-01");
     },
   );
 });

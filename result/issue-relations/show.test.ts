@@ -19,8 +19,8 @@ Deno.test("GET /relations/:id.json", async (t) => {
       server.use(...validHandlers);
       const e = await show(context, 1);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().issueToId).toEqual(2);
-      expect(e._unsafeUnwrap().relationType).toEqual("relates");
+      expect(e._unsafeUnwrap().issueToId).toStrictEqual(2);
+      expect(e._unsafeUnwrap().relationType).toStrictEqual("relates");
     },
   );
 

@@ -49,7 +49,7 @@ Deno.test("PUT /groups/:id.json", async (t) => {
       );
       const e = await update(context, 20, { userIds: [3, 5] });
       expect(e.isOk()).toBe(true);
-      expect(captured?.user_ids).toEqual([3, 5]);
+      expect(captured?.user_ids).toStrictEqual([3, 5]);
     },
   );
 });

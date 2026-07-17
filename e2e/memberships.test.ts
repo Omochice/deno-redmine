@@ -48,7 +48,7 @@ Deno.test({
     const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    expect(project !== undefined).toBe(true);
+    expect(project).toBeDefined();
 
     const userId = await fetchCurrentUserId();
     const roleId = await fetchFirstRoleId();
@@ -77,11 +77,11 @@ Deno.test({
       async () => {
         const result = await fetchList(e2eContext, project!.id);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().length > 0).toBe(true);
+        expect(result._unsafeUnwrap().length).toBeGreaterThan(0);
         const created = result._unsafeUnwrap().find((m) =>
           m.user?.id === userId
         );
-        expect(created !== undefined).toBe(true);
+        expect(created).toBeDefined();
         membershipId = created!.id;
       },
     );
@@ -91,9 +91,10 @@ Deno.test({
       async () => {
         const result = await show(e2eContext, membershipId);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().id).toEqual(membershipId);
-        expect(result._unsafeUnwrap().project !== undefined).toBe(true);
-        expect(result._unsafeUnwrap().roles.some((role) => role.id === roleId))
+        const membership = result._unsafeUnwrap();
+        expect(membership.id).toStrictEqual(membershipId);
+        expect(membership.project).toBeDefined();
+        expect(membership.roles.some((role) => role.id === roleId))
           .toBe(
             true,
           );

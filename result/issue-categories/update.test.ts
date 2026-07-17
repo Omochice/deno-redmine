@@ -49,7 +49,7 @@ Deno.test("PUT /issue_categories/:id.json", async (t) => {
         assignedToId: 7,
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.assigned_to_id).toEqual(7);
+      expect(captured?.assigned_to_id).toStrictEqual(7);
     },
   );
 });

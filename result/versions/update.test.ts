@@ -48,8 +48,8 @@ Deno.test("PUT /versions/:id.json", async (t) => {
         wikiPageTitle: "Plan",
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.due_date).toEqual("2026-09-01");
-      expect(captured?.wiki_page_title).toEqual("Plan");
+      expect(captured?.due_date).toStrictEqual("2026-09-01");
+      expect(captured?.wiki_page_title).toStrictEqual("Plan");
     },
   );
 });

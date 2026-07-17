@@ -49,7 +49,7 @@ Deno.test("PUT /memberships/:id.json", async (t) => {
         roleIds: [3, 4],
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.role_ids).toEqual([3, 4]);
+      expect(captured?.role_ids).toStrictEqual([3, 4]);
     },
   );
 });

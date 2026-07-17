@@ -116,10 +116,13 @@ Deno.test({
       async () => {
         const result = await show(e2eContext, attachmentId);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().id).toEqual(attachmentId);
-        expect(result._unsafeUnwrap().filename).toEqual("e2e-attachment.txt");
-        expect(result._unsafeUnwrap().contentType).toEqual("text/plain");
-        expect(result._unsafeUnwrap().author !== undefined).toBe(true);
+        const attachment = result._unsafeUnwrap();
+        expect(attachment.id).toStrictEqual(attachmentId);
+        expect(attachment.filename).toStrictEqual(
+          "e2e-attachment.txt",
+        );
+        expect(attachment.contentType).toStrictEqual("text/plain");
+        expect(attachment.author).toBeDefined();
       },
     );
 
@@ -133,7 +136,7 @@ Deno.test({
 
         const showResult = await show(e2eContext, attachmentId);
         expect(showResult.isOk()).toBe(true);
-        expect(showResult._unsafeUnwrap().description).toEqual(
+        expect(showResult._unsafeUnwrap().description).toStrictEqual(
           "Updated by E2E test",
         );
       },

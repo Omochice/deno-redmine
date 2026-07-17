@@ -31,8 +31,8 @@ Deno.test("POST /issues/:id/watchers.json", async (t) => {
       const e = await addWatcher(context, 1, 5);
       expect(e.isOk()).toBe(true);
 
-      expect(capturedBody !== undefined).toBe(true);
-      expect(capturedBody!.user_id).toEqual(5);
+      expect(capturedBody).toBeDefined();
+      expect(capturedBody!.user_id).toStrictEqual(5);
     },
   );
 

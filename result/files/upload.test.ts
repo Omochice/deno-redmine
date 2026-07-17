@@ -13,7 +13,9 @@ Deno.test("POST /uploads.json", async (t) => {
     server.resetHandlers(...validHandlers);
     const e = await upload(context, new TextEncoder().encode("content"));
     expect(e.isOk()).toBe(true);
-    expect(e._unsafeUnwrap()).toEqual("7167.ed1ccdb093229ca1bd0b043618d88743");
+    expect(e._unsafeUnwrap()).toStrictEqual(
+      "7167.ed1ccdb093229ca1bd0b043618d88743",
+    );
   });
 
   await t.step(
@@ -37,10 +39,10 @@ Deno.test("POST /uploads.json", async (t) => {
         "foo.zip",
       );
       expect(e.isOk()).toBe(true);
-      expect(new URL(capturedUrl!).searchParams.get("filename")).toEqual(
+      expect(new URL(capturedUrl!).searchParams.get("filename")).toStrictEqual(
         "foo.zip",
       );
-      expect(capturedContentType).toEqual("application/octet-stream");
+      expect(capturedContentType).toStrictEqual("application/octet-stream");
     },
   );
 

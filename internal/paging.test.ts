@@ -25,7 +25,7 @@ function finiteSource(
 
 Deno.test("aggregates every page in ascending offset order", async () => {
   const result = await fetchAllPages(finiteSource(23), { pageSize: 10 });
-  expect(result).toEqual(range(0, 23));
+  expect(result).toStrictEqual(range(0, 23));
 });
 
 Deno.test("returns an empty result without fetching data pages when the total is zero", async () => {
@@ -37,8 +37,8 @@ Deno.test("returns an empty result without fetching data pages when the total is
     },
     { pageSize: 10 },
   );
-  expect(result).toEqual([]);
-  expect(offsets).toEqual([0]);
+  expect(result).toStrictEqual([]);
+  expect(offsets).toStrictEqual([0]);
 });
 
 Deno.test("keeps offset order even when later pages settle first", async () => {
@@ -52,7 +52,7 @@ Deno.test("keeps offset order even when later pages settle first", async () => {
     },
     { pageSize: 10, concurrency: 6 },
   );
-  expect(result).toEqual(range(0, 30));
+  expect(result).toStrictEqual(range(0, 30));
 });
 
 Deno.test("never exceeds the concurrency bound for data pages", async () => {
@@ -71,8 +71,8 @@ Deno.test("never exceeds the concurrency bound for data pages", async () => {
     },
     { pageSize: 10, concurrency: 3 },
   );
-  expect(result).toEqual(range(0, 100));
-  expect(maxInFlight).toEqual(3);
+  expect(result).toStrictEqual(range(0, 100));
+  expect(maxInFlight).toStrictEqual(3);
 });
 
 Deno.test("fetches a single page when the total fits within one page", async () => {
@@ -87,8 +87,8 @@ Deno.test("fetches a single page when the total fits within one page", async () 
     },
     { pageSize: 10 },
   );
-  expect(result).toEqual(range(0, 5));
-  expect(calls).toEqual([{ limit: 10, offset: 0 }]);
+  expect(result).toStrictEqual(range(0, 5));
+  expect(calls).toStrictEqual([{ limit: 10, offset: 0 }]);
 });
 
 Deno.test("rejects a pageSize outside Redmine's 1-to-100 range", async () => {
@@ -108,7 +108,7 @@ Deno.test("clamps a non-positive concurrency to at least one", async () => {
     pageSize: 10,
     concurrency: 0,
   });
-  expect(result).toEqual(range(0, 30));
+  expect(result).toStrictEqual(range(0, 30));
 });
 
 Deno.test("stops at the requested limit and slices off the over-fetch", async () => {
@@ -123,9 +123,9 @@ Deno.test("stops at the requested limit and slices off the over-fetch", async ()
     },
     { pageSize: 100, limit: 250 },
   );
-  expect(result).toEqual(range(0, 250));
+  expect(result).toStrictEqual(range(0, 250));
   // No count probe; the last page requests only the remaining 50 items.
-  expect(calls).toEqual([
+  expect(calls).toStrictEqual([
     { limit: 100, offset: 0 },
     { limit: 100, offset: 100 },
     { limit: 50, offset: 200 },
@@ -144,6 +144,6 @@ Deno.test("stops early when the source is exhausted before the limit", async () 
     },
     { pageSize: 100, limit: 250 },
   );
-  expect(result).toEqual(range(0, 30));
-  expect(calls).toEqual([{ limit: 100, offset: 0 }]);
+  expect(result).toStrictEqual(range(0, 30));
+  expect(calls).toStrictEqual([{ limit: 100, offset: 0 }]);
 });

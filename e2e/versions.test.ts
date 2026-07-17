@@ -15,7 +15,7 @@ Deno.test({
     const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    expect(project !== undefined).toBe(true);
+    expect(project).toBeDefined();
 
     await t.step(
       "POST /projects/:project_id/versions.json should create a version",
@@ -36,11 +36,11 @@ Deno.test({
       async () => {
         const result = await fetchList(e2eContext, project!.id);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().length > 0).toBe(true);
+        expect(result._unsafeUnwrap().length).toBeGreaterThan(0);
         const created = result._unsafeUnwrap().find((v) =>
           v.name === "E2E Created Version"
         );
-        expect(created !== undefined).toBe(true);
+        expect(created).toBeDefined();
       },
     );
 
@@ -50,14 +50,15 @@ Deno.test({
       const version = listResult._unsafeUnwrap().find((v) =>
         v.name === "E2E Created Version"
       );
-      expect(version !== undefined).toBe(true);
+      expect(version).toBeDefined();
 
       const result = await show(e2eContext, version!.id);
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap().id).toEqual(version!.id);
-      expect(result._unsafeUnwrap().name).toEqual("E2E Created Version");
-      expect(result._unsafeUnwrap().project !== undefined).toBe(true);
-      expect(result._unsafeUnwrap().status).toEqual("open");
+      const shown = result._unsafeUnwrap();
+      expect(shown.id).toStrictEqual(version!.id);
+      expect(shown.name).toStrictEqual("E2E Created Version");
+      expect(shown.project).toBeDefined();
+      expect(shown.status).toStrictEqual("open");
     });
 
     await t.step("PUT /versions/:id.json should update a version", async () => {
@@ -66,7 +67,7 @@ Deno.test({
       const version = listResult._unsafeUnwrap().find((v) =>
         v.name === "E2E Created Version"
       );
-      expect(version !== undefined).toBe(true);
+      expect(version).toBeDefined();
 
       const result = await update(e2eContext, version!.id, {
         name: "E2E Updated Version",
@@ -76,8 +77,10 @@ Deno.test({
 
       const showResult = await show(e2eContext, version!.id);
       expect(showResult.isOk()).toBe(true);
-      expect(showResult._unsafeUnwrap().name).toEqual("E2E Updated Version");
-      expect(showResult._unsafeUnwrap().status).toEqual("locked");
+      expect(showResult._unsafeUnwrap().name).toStrictEqual(
+        "E2E Updated Version",
+      );
+      expect(showResult._unsafeUnwrap().status).toStrictEqual("locked");
     });
 
     await t.step(
@@ -88,7 +91,7 @@ Deno.test({
         const version = listResult._unsafeUnwrap().find((v) =>
           v.name === "E2E Updated Version"
         );
-        expect(version !== undefined).toBe(true);
+        expect(version).toBeDefined();
 
         const result = await deleteVersion(e2eContext, version!.id);
         expect(result.isOk()).toBe(true);

@@ -34,9 +34,9 @@ Deno.test({
       async () => {
         const result = await fetchList(e2eContext);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().length > 0).toBe(true);
+        expect(result._unsafeUnwrap().length).toBeGreaterThan(0);
         const created = result._unsafeUnwrap().find((u) => u.login === login);
-        expect(created !== undefined).toBe(true);
+        expect(created).toBeDefined();
       },
     );
 
@@ -44,22 +44,23 @@ Deno.test({
       const listResult = await fetchList(e2eContext);
       expect(listResult.isOk()).toBe(true);
       const user = listResult._unsafeUnwrap().find((u) => u.login === login);
-      expect(user !== undefined).toBe(true);
+      expect(user).toBeDefined();
 
       const result = await show(e2eContext, user!.id);
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap().id).toEqual(user!.id);
-      expect(result._unsafeUnwrap().login).toEqual(login);
-      expect(result._unsafeUnwrap().firstname).toEqual("E2E");
-      expect(result._unsafeUnwrap().lastname).toEqual("Created");
-      expect(result._unsafeUnwrap().mail).toEqual(mail);
+      const shown = result._unsafeUnwrap();
+      expect(shown.id).toStrictEqual(user!.id);
+      expect(shown.login).toStrictEqual(login);
+      expect(shown.firstname).toStrictEqual("E2E");
+      expect(shown.lastname).toStrictEqual("Created");
+      expect(shown.mail).toStrictEqual(mail);
     });
 
     await t.step("PUT /users/:id.json should update a user", async () => {
       const listResult = await fetchList(e2eContext);
       expect(listResult.isOk()).toBe(true);
       const user = listResult._unsafeUnwrap().find((u) => u.login === login);
-      expect(user !== undefined).toBe(true);
+      expect(user).toBeDefined();
 
       const result = await update(e2eContext, user!.id, {
         firstname: "E2E",
@@ -69,7 +70,7 @@ Deno.test({
 
       const showResult = await show(e2eContext, user!.id);
       expect(showResult.isOk()).toBe(true);
-      expect(showResult._unsafeUnwrap().lastname).toEqual("Updated");
+      expect(showResult._unsafeUnwrap().lastname).toStrictEqual("Updated");
     });
 
     await t.step(
@@ -78,7 +79,7 @@ Deno.test({
         const listResult = await fetchList(e2eContext);
         expect(listResult.isOk()).toBe(true);
         const user = listResult._unsafeUnwrap().find((u) => u.login === login);
-        expect(user !== undefined).toBe(true);
+        expect(user).toBeDefined();
 
         const result = await deleteUser(e2eContext, user!.id);
         expect(result.isOk()).toBe(true);

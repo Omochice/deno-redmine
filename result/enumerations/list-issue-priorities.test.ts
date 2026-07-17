@@ -24,8 +24,8 @@ Deno.test("GET /enumerations/issue_priorities.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await listIssuePriorities(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(3);
-      expect(e._unsafeUnwrap()[1]).toEqual({
+      expect(e._unsafeUnwrap().length).toStrictEqual(3);
+      expect(e._unsafeUnwrap()[1]).toStrictEqual({
         id: 4,
         name: "Normal",
         isDefault: true,

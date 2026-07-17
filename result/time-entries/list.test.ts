@@ -36,18 +36,18 @@ Deno.test("GET /time_entries.json", async (t) => {
     const e = await fetchList(context);
     expect(e.isOk()).toBe(true);
     const entry = e._unsafeUnwrap().find((timeEntry) => timeEntry.id === 3);
-    expect(entry !== undefined).toBe(true);
-    expect(entry!.project).toEqual({ id: 1, name: "Demo" });
-    expect(entry!.issue).toEqual({ id: 5 });
-    expect(entry!.activity).toEqual({ id: 9, name: "Development" });
-    expect(entry!.hours).toEqual(2.5);
+    expect(entry).toBeDefined();
+    expect(entry!.project).toStrictEqual({ id: 1, name: "Demo" });
+    expect(entry!.issue).toStrictEqual({ id: 5 });
+    expect(entry!.activity).toStrictEqual({ id: 9, name: "Development" });
+    expect(entry!.hours).toStrictEqual(2.5);
 
     const entryWithoutIssue = e._unsafeUnwrap().find((timeEntry) =>
       timeEntry.id === 2
     );
-    expect(entryWithoutIssue !== undefined).toBe(true);
-    expect(entryWithoutIssue!.issue).toEqual(undefined);
-    expect(entryWithoutIssue!.comments).toEqual(undefined);
+    expect(entryWithoutIssue).toBeDefined();
+    expect(entryWithoutIssue!.issue).toBeUndefined();
+    expect(entryWithoutIssue!.comments).toBeUndefined();
   });
 
   await t.step(
@@ -73,11 +73,11 @@ Deno.test("GET /time_entries.json", async (t) => {
         to: new Date("2026-07-31"),
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.get("project_id")).toEqual("1");
-      expect(captured?.get("user_id")).toEqual("2");
-      expect(captured?.get("spent_on")).toEqual("2026-07-01");
-      expect(captured?.get("from")).toEqual("2026-07-01");
-      expect(captured?.get("to")).toEqual("2026-07-31");
+      expect(captured?.get("project_id")).toStrictEqual("1");
+      expect(captured?.get("user_id")).toStrictEqual("2");
+      expect(captured?.get("spent_on")).toStrictEqual("2026-07-01");
+      expect(captured?.get("from")).toStrictEqual("2026-07-01");
+      expect(captured?.get("to")).toStrictEqual("2026-07-31");
     },
   );
 
@@ -98,7 +98,7 @@ Deno.test("GET /time_entries.json", async (t) => {
       );
       const e = await fetchList(context, { projectId: undefined });
       expect(e.isOk()).toBe(true);
-      expect(captured?.has("project_id")).toEqual(false);
+      expect(captured?.has("project_id")).toStrictEqual(false);
       expect(!captured?.toString().includes("undefined")).toBe(true);
     },
   );

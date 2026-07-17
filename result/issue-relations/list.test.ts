@@ -19,15 +19,16 @@ Deno.test("GET /issues/:issue_id/relations.json", async (t) => {
       server.use(...validHandlers);
       const e = await fetchList(context, 1);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap()[0]).toEqual({
+      const relations = e._unsafeUnwrap();
+      expect(relations[0]).toStrictEqual({
         id: 1,
         issueId: 1,
         issueToId: 2,
         relationType: "relates",
         delay: undefined,
       });
-      expect(e._unsafeUnwrap()[1].relationType).toEqual("precedes");
-      expect(e._unsafeUnwrap()[1].delay).toEqual(2);
+      expect(relations[1].relationType).toStrictEqual("precedes");
+      expect(relations[1].delay).toStrictEqual(2);
     },
   );
 

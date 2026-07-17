@@ -24,8 +24,8 @@ Deno.test("GET /enumerations/time_entry_activities.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await listTimeEntryActivities(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(2);
-      expect(e._unsafeUnwrap()[1]).toEqual({
+      expect(e._unsafeUnwrap().length).toStrictEqual(2);
+      expect(e._unsafeUnwrap()[1]).toStrictEqual({
         id: 9,
         name: "Development",
         isDefault: true,

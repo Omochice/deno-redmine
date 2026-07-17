@@ -24,10 +24,13 @@ Deno.test("GET /my/account.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await show(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().login).toEqual("jsmith");
-      expect(e._unsafeUnwrap().mailNotification).toEqual("only_my_events");
-      expect(e._unsafeUnwrap().apiKey).toEqual("sample-api-key");
-      expect(e._unsafeUnwrap().customFields?.[0]).toEqual({
+      const account = e._unsafeUnwrap();
+      expect(account.login).toStrictEqual("jsmith");
+      expect(account.mailNotification).toStrictEqual(
+        "only_my_events",
+      );
+      expect(account.apiKey).toStrictEqual("sample-api-key");
+      expect(account.customFields?.[0]).toStrictEqual({
         id: 1,
         name: "Phone",
         value: "090-0000-0000",

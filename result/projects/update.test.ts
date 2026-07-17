@@ -45,7 +45,7 @@ Deno.test("PUT /projects/:id.json", async (t) => {
       );
       const e = await update(context, 1, { isPublic: false });
       expect(e.isOk()).toBe(true);
-      expect(captured?.is_public).toEqual(false);
+      expect(captured?.is_public).toStrictEqual(false);
     },
   );
 });

@@ -55,10 +55,12 @@ Deno.test("PUT /my/account.json", async (t) => {
         customFieldValues: { "1": "090-1111-2222" },
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.firstname).toEqual("Jane");
-      expect(captured?.lastname).toEqual("Doe");
-      expect(captured?.mail).toEqual("jane@example.com");
-      expect(captured?.custom_field_values).toEqual({ "1": "090-1111-2222" });
+      expect(captured?.firstname).toStrictEqual("Jane");
+      expect(captured?.lastname).toStrictEqual("Doe");
+      expect(captured?.mail).toStrictEqual("jane@example.com");
+      expect(captured?.custom_field_values).toStrictEqual({
+        "1": "090-1111-2222",
+      });
     },
   );
 });

@@ -14,7 +14,7 @@ Deno.test({
         expect(result.isOk()).toBe(true);
         expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
         for (const item of result._unsafeUnwrap()) {
-          expect(item.datetime instanceof Date).toBe(true);
+          expect(item.datetime).toBeInstanceOf(Date);
         }
       },
     );

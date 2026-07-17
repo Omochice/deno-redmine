@@ -19,7 +19,7 @@ Deno.test("GET /roles/:id.json", async (t) => {
       server.use(...validHandlers);
       const e = await show(context, 5);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap()).toEqual({
+      expect(e._unsafeUnwrap()).toStrictEqual({
         id: 5,
         name: "Manager",
         assignable: true,

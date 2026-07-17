@@ -15,13 +15,13 @@ Deno.test({
     const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    expect(project !== undefined).toBe(true);
+    expect(project).toBeDefined();
 
     const issuesResult = await listIssues(e2eContext, {
       projectId: project!.id,
     });
     expect(issuesResult.isOk()).toBe(true);
-    expect(issuesResult._unsafeUnwrap().length > 0).toBe(true);
+    expect(issuesResult._unsafeUnwrap().length).toBeGreaterThan(0);
     const firstIssue = issuesResult._unsafeUnwrap()[0];
 
     // A relation needs two distinct issues. Seed a second one via a raw POST
@@ -51,7 +51,7 @@ Deno.test({
       const created = await response.json() as { issue: { id: number } };
       secondIssueId = created.issue.id;
     }
-    expect(secondIssueId !== undefined).toBe(true);
+    expect(secondIssueId).toBeDefined();
     const targetIssueId = secondIssueId;
 
     await t.step(
@@ -73,8 +73,8 @@ Deno.test({
         const relation = result._unsafeUnwrap().find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
-        expect(relation !== undefined).toBe(true);
-        expect(relation!.issueId).toEqual(firstIssue.id);
+        expect(relation).toBeDefined();
+        expect(relation!.issueId).toStrictEqual(firstIssue.id);
       },
     );
 
@@ -86,14 +86,15 @@ Deno.test({
         const relation = listResult._unsafeUnwrap().find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
-        expect(relation !== undefined).toBe(true);
+        expect(relation).toBeDefined();
 
         const result = await show(e2eContext, relation!.id);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().id).toEqual(relation!.id);
-        expect(result._unsafeUnwrap().issueId).toEqual(firstIssue.id);
-        expect(result._unsafeUnwrap().issueToId).toEqual(targetIssueId);
-        expect(result._unsafeUnwrap().relationType).toEqual("relates");
+        const shown = result._unsafeUnwrap();
+        expect(shown.id).toStrictEqual(relation!.id);
+        expect(shown.issueId).toStrictEqual(firstIssue.id);
+        expect(shown.issueToId).toStrictEqual(targetIssueId);
+        expect(shown.relationType).toStrictEqual("relates");
       },
     );
 
@@ -105,7 +106,7 @@ Deno.test({
         const relation = listResult._unsafeUnwrap().find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
-        expect(relation !== undefined).toBe(true);
+        expect(relation).toBeDefined();
 
         const result = await deleteRelation(e2eContext, relation!.id);
         expect(result.isOk()).toBe(true);

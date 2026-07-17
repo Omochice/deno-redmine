@@ -20,15 +20,16 @@ Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
       server.use(...validHandlers);
       const e = await fetchList(context, 1);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap()[0].user).toEqual({
+      const memberships = e._unsafeUnwrap();
+      expect(memberships[0].user).toStrictEqual({
         id: 17,
         name: "David Robert",
       });
-      expect(e._unsafeUnwrap()[0].roles).toEqual([
+      expect(memberships[0].roles).toStrictEqual([
         { id: 1, name: "Manager", inherited: true },
         { id: 2, name: "Developer" },
       ]);
-      expect(e._unsafeUnwrap()[1].group).toEqual({ id: 8, name: "Developers" });
+      expect(memberships[1].group).toStrictEqual({ id: 8, name: "Developers" });
     },
   );
 
@@ -73,9 +74,10 @@ Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
       );
       const e = await fetchList(context, 1);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(total);
-      expect(e._unsafeUnwrap()[0].id).toEqual(1);
-      expect(e._unsafeUnwrap()[total - 1].id).toEqual(total);
+      const memberships = e._unsafeUnwrap();
+      expect(memberships.length).toStrictEqual(total);
+      expect(memberships[0].id).toStrictEqual(1);
+      expect(memberships[total - 1].id).toStrictEqual(total);
     },
   );
 });

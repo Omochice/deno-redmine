@@ -13,7 +13,7 @@ Deno.test({
     const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    expect(project !== undefined).toBe(true);
+    expect(project).toBeDefined();
 
     const filename = "e2e-file.txt";
 
@@ -34,7 +34,7 @@ Deno.test({
     await t.step(
       "POST /projects/:project_id/files.json should create a file",
       async () => {
-        expect(token !== undefined).toBe(true);
+        expect(token).toBeDefined();
         const result = await create(e2eContext, project!.id, {
           token: token!,
           filename,
@@ -52,7 +52,7 @@ Deno.test({
         const created = result._unsafeUnwrap().find((f) =>
           f.filename === filename
         );
-        expect(created !== undefined).toBe(true);
+        expect(created).toBeDefined();
       },
     );
   },

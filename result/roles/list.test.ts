@@ -19,9 +19,10 @@ Deno.test("GET /roles.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await fetchList(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(2);
-      expect(e._unsafeUnwrap()[0]).toEqual({ id: 1, name: "Manager" });
-      expect(e._unsafeUnwrap()[1]).toEqual({ id: 2, name: "Developer" });
+      const roles = e._unsafeUnwrap();
+      expect(roles.length).toStrictEqual(2);
+      expect(roles[0]).toStrictEqual({ id: 1, name: "Manager" });
+      expect(roles[1]).toStrictEqual({ id: 2, name: "Developer" });
     },
   );
 

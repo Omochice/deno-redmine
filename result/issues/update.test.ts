@@ -57,16 +57,16 @@ Deno.test("PUT /projects/issues/:id.json", async (t) => {
       });
       expect(e.isOk()).toBe(true);
 
-      expect(capturedBody !== undefined).toBe(true);
+      expect(capturedBody).toBeDefined();
       const { issue } = capturedBody!;
-      expect(issue.subject).toEqual("updated subject");
-      expect(issue.notes).toEqual("a note");
-      expect(issue.private_notes).toEqual(true);
-      expect(issue.done_ratio).toEqual(90);
-      expect(issue.is_private).toEqual(true);
-      expect(issue.estimated_hours).toEqual(8);
-      expect(issue.start_date).toEqual("2026-07-01");
-      expect(issue.due_date).toEqual("2026-07-31");
+      expect(issue.subject).toStrictEqual("updated subject");
+      expect(issue.notes).toStrictEqual("a note");
+      expect(issue.private_notes).toStrictEqual(true);
+      expect(issue.done_ratio).toStrictEqual(90);
+      expect(issue.is_private).toStrictEqual(true);
+      expect(issue.estimated_hours).toStrictEqual(8);
+      expect(issue.start_date).toStrictEqual("2026-07-01");
+      expect(issue.due_date).toStrictEqual("2026-07-31");
     },
   );
 
@@ -94,8 +94,8 @@ Deno.test("PUT /projects/issues/:id.json", async (t) => {
       });
       expect(e.isOk()).toBe(true);
 
-      expect(capturedBody !== undefined).toBe(true);
-      expect(capturedBody!.issue.custom_fields).toEqual([
+      expect(capturedBody).toBeDefined();
+      expect(capturedBody!.issue.custom_fields).toStrictEqual([
         { id: 1, value: "hello" },
         { id: 2, value: ["a", "b"] },
       ]);

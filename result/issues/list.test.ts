@@ -89,9 +89,9 @@ Deno.test("listIssues limit option", async (t) => {
       const e = await listIssues(context, { limit: 1 });
 
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(1);
-      expect(requests.length).toEqual(1);
-      expect(requests[0]).toEqual({ limit: "1", offset: "0" });
+      expect(e._unsafeUnwrap().length).toStrictEqual(1);
+      expect(requests.length).toStrictEqual(1);
+      expect(requests[0]).toStrictEqual({ limit: "1", offset: "0" });
     },
   );
 
@@ -104,8 +104,8 @@ Deno.test("listIssues limit option", async (t) => {
       const e = await listIssues(context, { limit: 150 });
 
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(150);
-      expect(requests).toEqual([
+      expect(e._unsafeUnwrap().length).toStrictEqual(150);
+      expect(requests).toStrictEqual([
         { limit: "100", offset: "0" },
         { limit: "50", offset: "100" },
       ]);
@@ -121,8 +121,8 @@ Deno.test("listIssues limit option", async (t) => {
       const e = await listIssues(context, {});
 
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(150);
-      expect(requests).toEqual([
+      expect(e._unsafeUnwrap().length).toStrictEqual(150);
+      expect(requests).toStrictEqual([
         { limit: "100", offset: "0" },
         { limit: "100", offset: "100" },
       ]);
@@ -138,7 +138,7 @@ Deno.test("listIssues limit option", async (t) => {
       const e = await listIssues(context, { limit: 1.5 });
 
       expect(e.isErr()).toBe(true);
-      expect(requests.length).toEqual(0);
+      expect(requests.length).toStrictEqual(0);
     },
   );
 
@@ -151,7 +151,7 @@ Deno.test("listIssues limit option", async (t) => {
       const e = await listIssues(context, { limit: -1 });
 
       expect(e.isErr()).toBe(true);
-      expect(requests.length).toEqual(0);
+      expect(requests.length).toStrictEqual(0);
     },
   );
 
@@ -164,7 +164,7 @@ Deno.test("listIssues limit option", async (t) => {
       const e = await listIssues(context, { limit: 0 });
 
       expect(e.isErr()).toBe(true);
-      expect(requests.length).toEqual(0);
+      expect(requests.length).toStrictEqual(0);
     },
   );
 });

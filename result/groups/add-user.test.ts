@@ -43,6 +43,6 @@ Deno.test("POST /groups/:id/users.json", async (t) => {
     );
     const e = await addUser(context, 20, 5);
     expect(e.isOk()).toBe(true);
-    expect(captured?.user_id).toEqual(5);
+    expect(captured?.user_id).toStrictEqual(5);
   });
 });

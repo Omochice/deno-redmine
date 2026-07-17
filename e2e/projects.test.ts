@@ -13,18 +13,18 @@ Deno.test({
     await t.step("GET /projects.json should return projects", async () => {
       const result = await fetchList(e2eContext);
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap().length > 0).toBe(true);
+      expect(result._unsafeUnwrap().length).toBeGreaterThan(0);
     });
 
     await t.step("GET /projects/:id.json should return a project", async () => {
       const listResult = await fetchList(e2eContext);
       expect(listResult.isOk()).toBe(true);
-      expect(listResult._unsafeUnwrap().length > 0).toBe(true);
+      expect(listResult._unsafeUnwrap().length).toBeGreaterThan(0);
       const projectId = listResult._unsafeUnwrap()[0].id;
 
       const result = await show(e2eContext, projectId);
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap().id).toEqual(projectId);
+      expect(result._unsafeUnwrap().id).toStrictEqual(projectId);
     });
 
     await t.step("POST /projects.json should create a project", async () => {
@@ -41,7 +41,7 @@ Deno.test({
       const project = listResult._unsafeUnwrap().find((p) =>
         p.identifier === "e2e-created-project"
       );
-      expect(project !== undefined).toBe(true);
+      expect(project).toBeDefined();
 
       const result = await update(e2eContext, project!.id, {
         name: "E2E Updated Project",
@@ -50,7 +50,9 @@ Deno.test({
 
       const showResult = await show(e2eContext, project!.id);
       expect(showResult.isOk()).toBe(true);
-      expect(showResult._unsafeUnwrap().name).toEqual("E2E Updated Project");
+      expect(showResult._unsafeUnwrap().name).toStrictEqual(
+        "E2E Updated Project",
+      );
     });
 
     await t.step(
@@ -73,14 +75,14 @@ Deno.test({
           const created = listResult._unsafeUnwrap().find((p) =>
             p.identifier === identifier
           );
-          expect(created !== undefined).toBe(true);
+          expect(created).toBeDefined();
 
           const createdShow = await show(e2eContext, created!.id);
           expect(createdShow.isOk()).toBe(true);
           expect(
             createdShow._unsafeUnwrap().isPublic,
             "isPublic:false must be stored as private on the server",
-          ).toEqual(false);
+          ).toStrictEqual(false);
 
           const updateResult = await update(e2eContext, created!.id, {
             isPublic: true,
@@ -92,7 +94,7 @@ Deno.test({
           expect(
             updatedShow._unsafeUnwrap().isPublic,
             "update must flip is_public on the server",
-          ).toEqual(true);
+          ).toStrictEqual(true);
         } finally {
           const cleanupList = await fetchList(e2eContext);
           if (cleanupList.isOk()) {
@@ -115,7 +117,7 @@ Deno.test({
         const project = listResult._unsafeUnwrap().find((p) =>
           p.identifier === "e2e-created-project"
         );
-        expect(project !== undefined).toBe(true);
+        expect(project).toBeDefined();
 
         const archiveResult = await archive(e2eContext, project!.id);
         expect(archiveResult.isOk(), "Expected archive to succeed").toBe(true);
@@ -135,7 +137,7 @@ Deno.test({
         const project = listResult._unsafeUnwrap().find((p) =>
           p.identifier === "e2e-created-project"
         );
-        expect(project !== undefined).toBe(true);
+        expect(project).toBeDefined();
 
         const result = await deleteProject(e2eContext, project!.id);
         expect(result.isOk()).toBe(true);

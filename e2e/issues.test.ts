@@ -13,22 +13,23 @@ Deno.test({
     await t.step("GET /issues.json should return issues", async () => {
       const result = await listIssues(e2eContext, {});
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap().length > 0).toBe(true);
+      expect(result._unsafeUnwrap().length).toBeGreaterThan(0);
     });
 
     await t.step("GET /issues/:id.json should return an issue", async () => {
       const listResult = await listIssues(e2eContext, {});
       expect(listResult.isOk()).toBe(true);
-      expect(listResult._unsafeUnwrap().length > 0).toBe(true);
+      expect(listResult._unsafeUnwrap().length).toBeGreaterThan(0);
       const issueId = listResult._unsafeUnwrap()[0].id;
 
       const result = await show(e2eContext, issueId);
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap().id).toEqual(issueId);
-      expect(result._unsafeUnwrap().project !== undefined).toBe(true);
-      expect(result._unsafeUnwrap().tracker !== undefined).toBe(true);
-      expect(result._unsafeUnwrap().status !== undefined).toBe(true);
-      expect(result._unsafeUnwrap().priority !== undefined).toBe(true);
+      const issue = result._unsafeUnwrap();
+      expect(issue.id).toStrictEqual(issueId);
+      expect(issue.project).toBeDefined();
+      expect(issue.tracker).toBeDefined();
+      expect(issue.status).toBeDefined();
+      expect(issue.priority).toBeDefined();
     });
 
     await t.step("POST /issues.json should create an issue", async () => {
@@ -37,19 +38,20 @@ Deno.test({
       const project = projectsResult._unsafeUnwrap().find((p) =>
         p.identifier === "e2e-test-project"
       );
-      expect(project !== undefined).toBe(true);
+      expect(project).toBeDefined();
 
       const issuesBefore = await listIssues(e2eContext, {
         projectId: project!.id,
       });
       expect(issuesBefore.isOk()).toBe(true);
-      expect(issuesBefore._unsafeUnwrap().length > 0).toBe(true);
+      const issues = issuesBefore._unsafeUnwrap();
+      expect(issues.length).toBeGreaterThan(0);
 
       const result = await createIssue(e2eContext, {
         projectId: project!.id,
-        trackerId: issuesBefore._unsafeUnwrap()[0].tracker.id,
-        statusId: issuesBefore._unsafeUnwrap()[0].status.id,
-        priorityId: issuesBefore._unsafeUnwrap()[0].priority.id,
+        trackerId: issues[0].tracker.id,
+        statusId: issues[0].status.id,
+        priorityId: issues[0].priority.id,
         subject: "E2E Created Issue",
         description: "Created by E2E test",
       });
@@ -73,27 +75,28 @@ Deno.test({
         const customField = customFieldsData.custom_fields.find(
           (f) => f.name === "E2E CF",
         );
-        expect(customField !== undefined).toBe(true);
+        expect(customField).toBeDefined();
 
         const projectsResult = await fetchProjects(e2eContext);
         expect(projectsResult.isOk()).toBe(true);
         const project = projectsResult._unsafeUnwrap().find((p) =>
           p.identifier === "e2e-test-project"
         );
-        expect(project !== undefined).toBe(true);
+        expect(project).toBeDefined();
 
         const issuesBefore = await listIssues(e2eContext, {
           projectId: project!.id,
         });
         expect(issuesBefore.isOk()).toBe(true);
-        expect(issuesBefore._unsafeUnwrap().length > 0).toBe(true);
+        const issues = issuesBefore._unsafeUnwrap();
+        expect(issues.length).toBeGreaterThan(0);
 
         const subject = "E2E Issue With Custom Field";
         const result = await createIssue(e2eContext, {
           projectId: project!.id,
-          trackerId: issuesBefore._unsafeUnwrap()[0].tracker.id,
-          statusId: issuesBefore._unsafeUnwrap()[0].status.id,
-          priorityId: issuesBefore._unsafeUnwrap()[0].priority.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
           subject,
           customFields: [{ id: customField!.id, value: "e2e custom value" }],
         });
@@ -106,15 +109,15 @@ Deno.test({
         const created = listAfter._unsafeUnwrap().find((i) =>
           i.subject === subject
         );
-        expect(created !== undefined).toBe(true);
+        expect(created).toBeDefined();
 
         const showResult = await show(e2eContext, created!.id);
         expect(showResult.isOk()).toBe(true);
         const persisted = showResult._unsafeUnwrap().customFields?.find(
           (f) => f.id === customField!.id,
         );
-        expect(persisted !== undefined).toBe(true);
-        expect(persisted!.value).toEqual("e2e custom value");
+        expect(persisted).toBeDefined();
+        expect(persisted!.value).toStrictEqual("e2e custom value");
       },
     );
 
@@ -124,7 +127,7 @@ Deno.test({
       const issue = listResult._unsafeUnwrap().find((i) =>
         i.subject === "E2E Created Issue"
       );
-      expect(issue !== undefined).toBe(true);
+      expect(issue).toBeDefined();
 
       const result = await update(e2eContext, issue!.id, {
         subject: "E2E Updated Issue",
@@ -136,12 +139,13 @@ Deno.test({
 
       const showResult = await show(e2eContext, issue!.id);
       expect(showResult.isOk()).toBe(true);
-      expect(showResult._unsafeUnwrap().subject).toEqual("E2E Updated Issue");
-      expect(showResult._unsafeUnwrap().doneRatio).toEqual(90);
-      expect(showResult._unsafeUnwrap().isPrivate).toEqual(true);
-      expect(showResult._unsafeUnwrap().startDate !== undefined).toBe(true);
-      expect(showResult._unsafeUnwrap().startDate?.toISOString().slice(0, 10))
-        .toEqual(
+      const showIssue = showResult._unsafeUnwrap();
+      expect(showIssue.subject).toStrictEqual("E2E Updated Issue");
+      expect(showIssue.doneRatio).toStrictEqual(90);
+      expect(showIssue.isPrivate).toStrictEqual(true);
+      expect(showIssue.startDate).toBeDefined();
+      expect(showIssue.startDate?.toISOString().slice(0, 10))
+        .toStrictEqual(
           "2026-07-01",
         );
     });
@@ -154,13 +158,14 @@ Deno.test({
         const project = projectsResult._unsafeUnwrap().find((p) =>
           p.identifier === "e2e-test-project"
         );
-        expect(project !== undefined).toBe(true);
+        expect(project).toBeDefined();
 
         const issuesInProject = await listIssues(e2eContext, {
           projectId: project!.id,
         });
         expect(issuesInProject.isOk()).toBe(true);
-        expect(issuesInProject._unsafeUnwrap().length > 0).toBe(true);
+        const issues = issuesInProject._unsafeUnwrap();
+        expect(issues.length).toBeGreaterThan(0);
 
         // Ensure at least two issues exist on the server so that a
         // `limit: 1` result can only be explained by the limit being
@@ -168,9 +173,9 @@ Deno.test({
         const subject = "E2E Limit Test Issue";
         const created = await createIssue(e2eContext, {
           projectId: project!.id,
-          trackerId: issuesInProject._unsafeUnwrap()[0].tracker.id,
-          statusId: issuesInProject._unsafeUnwrap()[0].status.id,
-          priorityId: issuesInProject._unsafeUnwrap()[0].priority.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
           subject,
           description: "Created by E2E test to exercise listIssues limit",
         });
@@ -181,7 +186,7 @@ Deno.test({
         try {
           const result = await listIssues(e2eContext, { limit: 1 });
           expect(result.isOk()).toBe(true);
-          expect(result._unsafeUnwrap().length).toEqual(1);
+          expect(result._unsafeUnwrap().length).toStrictEqual(1);
         } finally {
           const cleanupList = await listIssues(e2eContext, {
             projectId: project!.id,
@@ -207,7 +212,7 @@ Deno.test({
       const issue = listResult._unsafeUnwrap().find((i) =>
         i.subject === "E2E Updated Issue"
       );
-      expect(issue !== undefined).toBe(true);
+      expect(issue).toBeDefined();
 
       const result = await deleteIssue(e2eContext, issue!.id);
       expect(result.isOk()).toBe(true);

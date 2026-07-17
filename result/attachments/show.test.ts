@@ -19,16 +19,17 @@ Deno.test("GET /attachments/:id.json", async (t) => {
       server.use(...validHandlers);
       const e = await show(context, 6243);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().id).toEqual(6243);
-      expect(e._unsafeUnwrap().filename).toEqual("example.txt");
-      expect(e._unsafeUnwrap().contentType).toEqual("text/plain");
-      expect(e._unsafeUnwrap().contentUrl).toEqual(
+      const attachment = e._unsafeUnwrap();
+      expect(attachment.id).toStrictEqual(6243);
+      expect(attachment.filename).toStrictEqual("example.txt");
+      expect(attachment.contentType).toStrictEqual("text/plain");
+      expect(attachment.contentUrl).toStrictEqual(
         "http://redmine.example.com/attachments/download/6243/example.txt",
       );
-      expect(e._unsafeUnwrap().thumbnailUrl).toEqual(
+      expect(attachment.thumbnailUrl).toStrictEqual(
         "http://redmine.example.com/attachments/thumbnail/6243",
       );
-      expect(e._unsafeUnwrap().author).toEqual({
+      expect(attachment.author).toStrictEqual({
         id: 1,
         name: "Redmine Admin",
       });

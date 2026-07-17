@@ -19,8 +19,11 @@ Deno.test("GET /memberships/:id.json", async (t) => {
       server.use(...validHandlers);
       const e = await show(context, 5);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().user).toEqual({ id: 17, name: "David Robert" });
-      expect(e._unsafeUnwrap().roles).toEqual([
+      expect(e._unsafeUnwrap().user).toStrictEqual({
+        id: 17,
+        name: "David Robert",
+      });
+      expect(e._unsafeUnwrap().roles).toStrictEqual([
         { id: 1, name: "Manager", inherited: true },
         { id: 2, name: "Developer" },
       ]);

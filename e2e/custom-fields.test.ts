@@ -12,8 +12,8 @@ Deno.test("E2E: Custom Fields API", async (t) => {
       // e2e/setup.ts seeds an "E2E CF" issue custom field, so the list is
       // non-empty and contains it.
       const seeded = result._unsafeUnwrap().find((cf) => cf.name === "E2E CF");
-      expect(seeded !== undefined).toBe(true);
-      expect(seeded!.fieldFormat).toEqual("string");
+      expect(seeded).toBeDefined();
+      expect(seeded!.fieldFormat).toStrictEqual("string");
     },
   );
 });

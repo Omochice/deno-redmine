@@ -24,8 +24,8 @@ Deno.test("GET /enumerations/document_categories.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await listDocumentCategories(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(2);
-      expect(e._unsafeUnwrap()[0]).toEqual({
+      expect(e._unsafeUnwrap().length).toStrictEqual(2);
+      expect(e._unsafeUnwrap()[0]).toStrictEqual({
         id: 1,
         name: "User documentation",
         isDefault: false,

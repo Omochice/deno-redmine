@@ -16,7 +16,7 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
     server.resetHandlers(...validResponseHandelers);
     const e = await show(context, 1, "sample-title");
     expect(e.isOk()).toBe(true);
-    expect(e._unsafeUnwrap().title === "sample-title").toBe(true);
+    expect(e._unsafeUnwrap().title).toBe("sample-title");
   });
   await t.step("if got 200 with null comments, should be success", async () => {
     server.resetHandlers(
@@ -39,14 +39,14 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
     );
     const e = await show(context, 1, "sample-title");
     expect(e.isOk()).toBe(true);
-    expect(e._unsafeUnwrap().title).toEqual("sample-title");
-    expect(e._unsafeUnwrap().comments).toEqual(undefined);
+    expect(e._unsafeUnwrap().title).toStrictEqual("sample-title");
+    expect(e._unsafeUnwrap().comments).toBeUndefined();
   });
   await t.step("If got 422, should be error", async () => {
     server.resetHandlers(...invalidResponseHandlers);
     const e = await show(context, 2, "sample-title");
     expect(e.isErr()).toBe(true);
-    expect(e._unsafeUnwrapErr().message === "Unprocessable Entity").toBe(true);
+    expect(e._unsafeUnwrapErr().message).toBe("Unprocessable Entity");
   });
 });
 
@@ -55,7 +55,7 @@ Deno.test("GET /projects/:id/wiki/:page/:version.json", async (t) => {
     server.resetHandlers(...validResponseHandelers);
     const e = await show(context, 1, "sample-title", 3);
     expect(e.isOk()).toBe(true);
-    expect(e._unsafeUnwrap().title === "sample-title").toBe(true);
-    expect(e._unsafeUnwrap().version === 3).toBe(true);
+    expect(e._unsafeUnwrap().title).toBe("sample-title");
+    expect(e._unsafeUnwrap().version).toBe(3);
   });
 });

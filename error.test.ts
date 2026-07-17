@@ -9,18 +9,18 @@ Deno.test("RedmineResponseError.fromResponse captures status, statusText and bod
   const error = await RedmineResponseError.fromResponse(response);
 
   expect(error).toBeInstanceOf(RedmineResponseError);
-  expect(error.name).toEqual("RedmineResponseError");
-  expect(error.status).toEqual(422);
-  expect(error.statusText).toEqual("Unprocessable Entity");
-  expect(error.body).toEqual("id is required");
-  expect(error.message).toEqual("Unprocessable Entity");
+  expect(error.name).toStrictEqual("RedmineResponseError");
+  expect(error.status).toStrictEqual(422);
+  expect(error.statusText).toStrictEqual("Unprocessable Entity");
+  expect(error.body).toStrictEqual("id is required");
+  expect(error.message).toStrictEqual("Unprocessable Entity");
 });
 
 Deno.test("RedmineResponseError falls back to the status code when statusText is empty", async () => {
   const response = new Response("boom", { status: 500, statusText: "" });
   const error = await RedmineResponseError.fromResponse(response);
 
-  expect(error.message).toEqual("HTTP 500");
+  expect(error.message).toStrictEqual("HTTP 500");
 });
 
 Deno.test("RedmineResponseError does not populate cause", async () => {
@@ -42,7 +42,7 @@ Deno.test("RedmineResponseError.fromResponse falls back to empty body when the b
 
   const error = await RedmineResponseError.fromResponse(response);
 
-  expect(error.body).toEqual("");
+  expect(error.body).toStrictEqual("");
 });
 
 Deno.test("assertResponse resolves without throwing for an ok response", async () => {
@@ -63,6 +63,6 @@ Deno.test("assertResponse throws RedmineResponseError carrying the response deta
     error = e;
   }
   expect(error).toBeInstanceOf(RedmineResponseError);
-  expect((error as RedmineResponseError).status).toEqual(404);
-  expect((error as RedmineResponseError).body).toEqual("not found");
+  expect((error as RedmineResponseError).status).toStrictEqual(404);
+  expect((error as RedmineResponseError).body).toStrictEqual("not found");
 });

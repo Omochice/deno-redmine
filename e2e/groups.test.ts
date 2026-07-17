@@ -42,33 +42,33 @@ Deno.test({
       const result = await fetchList(e2eContext);
       expect(result.isOk()).toBe(true);
       const created = result._unsafeUnwrap().find((g) => g.name === groupName);
-      expect(created !== undefined).toBe(true);
+      expect(created).toBeDefined();
       groupId = created!.id;
     });
 
     await t.step("GET /groups/:id.json should return the group", async () => {
-      expect(groupId !== undefined).toBe(true);
+      expect(groupId).toBeDefined();
       const result = await show(e2eContext, groupId!);
       expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap().id).toEqual(groupId);
-      expect(result._unsafeUnwrap().name).toEqual(groupName);
+      expect(result._unsafeUnwrap().id).toStrictEqual(groupId);
+      expect(result._unsafeUnwrap().name).toStrictEqual(groupName);
     });
 
     const updatedName = `${groupName} Updated`;
     await t.step("PUT /groups/:id.json should update the group", async () => {
-      expect(groupId !== undefined).toBe(true);
+      expect(groupId).toBeDefined();
       const result = await update(e2eContext, groupId!, { name: updatedName });
       expect(result.isOk()).toBe(true);
 
       const showResult = await show(e2eContext, groupId!);
       expect(showResult.isOk()).toBe(true);
-      expect(showResult._unsafeUnwrap().name).toEqual(updatedName);
+      expect(showResult._unsafeUnwrap().name).toStrictEqual(updatedName);
     });
 
     await t.step(
       "POST /groups/:id/users.json should add the current user",
       async () => {
-        expect(groupId !== undefined).toBe(true);
+        expect(groupId).toBeDefined();
         const userId = await currentUserId();
         // Skip gracefully when the current user cannot be resolved.
         if (userId === undefined) {
@@ -85,7 +85,7 @@ Deno.test({
     await t.step(
       "DELETE /groups/:id.json should delete the group",
       async () => {
-        expect(groupId !== undefined).toBe(true);
+        expect(groupId).toBeDefined();
         const result = await deleteGroup(e2eContext, groupId!);
         expect(result.isOk()).toBe(true);
 

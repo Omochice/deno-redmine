@@ -20,8 +20,9 @@ Deno.test("GET /custom_fields.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await fetchList(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(3);
-      expect(e._unsafeUnwrap()[0]).toEqual({
+      const customFields = e._unsafeUnwrap();
+      expect(customFields.length).toStrictEqual(3);
+      expect(customFields[0]).toStrictEqual({
         id: 1,
         name: "Affected version",
         customizedType: "issue",
@@ -39,7 +40,7 @@ Deno.test("GET /custom_fields.json", async (t) => {
         trackers: [{ id: 1, name: "Bug" }],
         roles: [{ id: 3, name: "Manager" }],
       });
-      expect(e._unsafeUnwrap()[1]).toEqual({
+      expect(customFields[1]).toStrictEqual({
         id: 2,
         name: "Database",
         customizedType: "project",
@@ -57,7 +58,7 @@ Deno.test("GET /custom_fields.json", async (t) => {
         multiple: false,
         visible: true,
       });
-      expect(e._unsafeUnwrap()[2].possibleValues).toEqual([
+      expect(customFields[2].possibleValues).toStrictEqual([
         { value: "a" },
         { value: "b" },
       ]);

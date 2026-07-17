@@ -31,9 +31,10 @@ Deno.test({
 
         const result = await show(e2eContext, role.id);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().id === role.id).toBe(true);
-        expect(result._unsafeUnwrap().name === role.name).toBe(true);
-        expect(Array.isArray(result._unsafeUnwrap().permissions)).toBe(true);
+        const shown = result._unsafeUnwrap();
+        expect(shown.id).toBe(role.id);
+        expect(shown.name).toBe(role.name);
+        expect(Array.isArray(shown.permissions)).toBe(true);
       },
     );
   },

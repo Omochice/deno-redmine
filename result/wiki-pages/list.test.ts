@@ -16,12 +16,12 @@ Deno.test("GET /projects/:id/wiki/index.json", async (t) => {
     server.resetHandlers(...validResponseHandelers);
     const e = await fetchList(context, 1);
     expect(e.isOk()).toBe(true);
-    expect(e._unsafeUnwrap().length === 2).toBe(true);
+    expect(e._unsafeUnwrap().length).toBe(2);
   });
   await t.step("If got 422, should be error", async () => {
     server.resetHandlers(...invalidResponseHandlers);
     const e = await fetchList(context, 2);
     expect(e.isErr()).toBe(true);
-    expect(e._unsafeUnwrapErr().message === "Unprocessable Entity").toBe(true);
+    expect(e._unsafeUnwrapErr().message).toBe("Unprocessable Entity");
   });
 });

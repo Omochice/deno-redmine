@@ -20,13 +20,14 @@ Deno.test("GET /search.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await search(context, { q: "E2E" });
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(3);
-      expect(e._unsafeUnwrap()[0].id).toEqual(1);
-      expect(e._unsafeUnwrap()[0].type).toEqual("issue");
-      expect(e._unsafeUnwrap()[0].datetime instanceof Date).toBe(true);
+      const items = e._unsafeUnwrap();
+      expect(items.length).toStrictEqual(3);
+      expect(items[0].id).toStrictEqual(1);
+      expect(items[0].type).toStrictEqual("issue");
+      expect(items[0].datetime).toBeInstanceOf(Date);
       // A null description from Redmine normalizes to undefined.
-      expect(e._unsafeUnwrap()[2].type).toEqual("project");
-      expect(e._unsafeUnwrap()[2].description).toEqual(undefined);
+      expect(items[2].type).toStrictEqual("project");
+      expect(items[2].description).toBeUndefined();
     },
   );
 
@@ -54,13 +55,13 @@ Deno.test("GET /search.json", async (t) => {
         attachments: true,
       });
       expect(e.isOk()).toBe(true);
-      expect(capturedUrl !== undefined).toBe(true);
-      expect(capturedUrl!.searchParams.get("q")).toEqual("E2E");
-      expect(capturedUrl!.searchParams.get("all_words")).toEqual("1");
-      expect(capturedUrl!.searchParams.get("wiki_pages")).toEqual("1");
-      expect(capturedUrl!.searchParams.get("scope")).toEqual("all");
-      expect(capturedUrl!.searchParams.get("attachments")).toEqual("1");
-      expect(capturedUrl!.searchParams.get("open_issues")).toEqual(null);
+      expect(capturedUrl).toBeDefined();
+      expect(capturedUrl!.searchParams.get("q")).toStrictEqual("E2E");
+      expect(capturedUrl!.searchParams.get("all_words")).toStrictEqual("1");
+      expect(capturedUrl!.searchParams.get("wiki_pages")).toStrictEqual("1");
+      expect(capturedUrl!.searchParams.get("scope")).toStrictEqual("all");
+      expect(capturedUrl!.searchParams.get("attachments")).toStrictEqual("1");
+      expect(capturedUrl!.searchParams.get("open_issues")).toStrictEqual(null);
     },
   );
 
@@ -106,9 +107,10 @@ Deno.test("GET /search.json", async (t) => {
       );
       const e = await search(context, { q: "E2E" });
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(total);
-      expect(e._unsafeUnwrap()[0].id).toEqual(1);
-      expect(e._unsafeUnwrap()[total - 1].id).toEqual(total);
+      const items = e._unsafeUnwrap();
+      expect(items.length).toStrictEqual(total);
+      expect(items[0].id).toStrictEqual(1);
+      expect(items[total - 1].id).toStrictEqual(total);
     },
   );
 });

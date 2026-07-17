@@ -20,8 +20,8 @@ Deno.test("GET /news.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await fetchList(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(2);
-      expect(e._unsafeUnwrap()[0]).toEqual({
+      expect(e._unsafeUnwrap().length).toStrictEqual(2);
+      expect(e._unsafeUnwrap()[0]).toStrictEqual({
         id: 1,
         project: { id: 1, name: "Demo" },
         author: { id: 2, name: "John Smith" },

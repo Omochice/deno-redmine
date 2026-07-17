@@ -31,8 +31,8 @@ Deno.test("POST /issues.json", async (t) => {
       });
       expect(e.isOk()).toBe(true);
 
-      expect(capturedBody !== undefined).toBe(true);
-      expect(capturedBody!.issue.custom_fields).toEqual([
+      expect(capturedBody).toBeDefined();
+      expect(capturedBody!.issue.custom_fields).toStrictEqual([
         { id: 1, value: "hello" },
       ]);
     },
@@ -61,8 +61,8 @@ Deno.test("POST /issues.json", async (t) => {
       });
       expect(e.isOk()).toBe(true);
 
-      expect(capturedBody !== undefined).toBe(true);
-      expect(capturedBody!.issue.custom_fields).toEqual([
+      expect(capturedBody).toBeDefined();
+      expect(capturedBody!.issue.custom_fields).toStrictEqual([
         { id: 2, value: ["a", "b"] },
       ]);
     },

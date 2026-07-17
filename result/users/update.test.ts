@@ -48,8 +48,8 @@ Deno.test("PUT /users/:id.json", async (t) => {
         admin: true,
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.mail_notification).toEqual("none");
-      expect(captured?.admin).toEqual(true);
+      expect(captured?.mail_notification).toStrictEqual("none");
+      expect(captured?.admin).toStrictEqual(true);
     },
   );
 });

@@ -19,9 +19,13 @@ Deno.test("GET /groups.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await fetchList(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(2);
-      expect(e._unsafeUnwrap()[0]).toEqual({ id: 53, name: "Managers" });
-      expect(e._unsafeUnwrap()[1]).toEqual({ id: 55, name: "Developers" });
+      const groups = e._unsafeUnwrap();
+      expect(groups.length).toStrictEqual(2);
+      expect(groups[0]).toStrictEqual({ id: 53, name: "Managers" });
+      expect(groups[1]).toStrictEqual({
+        id: 55,
+        name: "Developers",
+      });
     },
   );
 

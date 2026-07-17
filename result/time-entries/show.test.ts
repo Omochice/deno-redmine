@@ -32,11 +32,12 @@ Deno.test("GET /time_entries/:id.json", async (t) => {
     server.use(...validHandlers);
     const e = await show(context, 3);
     expect(e.isOk()).toBe(true);
-    expect(e._unsafeUnwrap().project).toEqual({ id: 1, name: "Demo" });
-    expect(e._unsafeUnwrap().issue).toEqual({ id: 5 });
-    expect(e._unsafeUnwrap().activity).toEqual({ id: 9, name: "Development" });
-    expect(e._unsafeUnwrap().hours).toEqual(2.5);
-    expect(e._unsafeUnwrap().spentOn.toISOString().slice(0, 10)).toEqual(
+    const entry = e._unsafeUnwrap();
+    expect(entry.project).toStrictEqual({ id: 1, name: "Demo" });
+    expect(entry.issue).toStrictEqual({ id: 5 });
+    expect(entry.activity).toStrictEqual({ id: 9, name: "Development" });
+    expect(entry.hours).toStrictEqual(2.5);
+    expect(entry.spentOn.toISOString().slice(0, 10)).toStrictEqual(
       "2026-07-01",
     );
   });

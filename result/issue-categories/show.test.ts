@@ -19,7 +19,10 @@ Deno.test("GET /issue_categories/:id.json", async (t) => {
       server.use(...validHandlers);
       const e = await show(context, 3);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().assignedTo).toEqual({ id: 5, name: "Alice" });
+      expect(e._unsafeUnwrap().assignedTo).toStrictEqual({
+        id: 5,
+        name: "Alice",
+      });
     },
   );
 

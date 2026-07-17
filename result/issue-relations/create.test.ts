@@ -61,9 +61,9 @@ Deno.test("POST /issues/:issue_id/relations.json", async (t) => {
         delay: 3,
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.issue_to_id).toEqual(2);
-      expect(captured?.relation_type).toEqual("precedes");
-      expect(captured?.delay).toEqual(3);
+      expect(captured?.issue_to_id).toStrictEqual(2);
+      expect(captured?.relation_type).toStrictEqual("precedes");
+      expect(captured?.delay).toStrictEqual(3);
     },
   );
 });

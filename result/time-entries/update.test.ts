@@ -50,8 +50,8 @@ Deno.test("PUT /time_entries/:id.json", async (t) => {
         spentOn: new Date("2026-07-02"),
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.activity_id).toEqual(8);
-      expect(captured?.spent_on).toEqual("2026-07-02");
+      expect(captured?.activity_id).toStrictEqual(8);
+      expect(captured?.spent_on).toStrictEqual("2026-07-02");
     },
   );
 });

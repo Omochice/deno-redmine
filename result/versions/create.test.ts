@@ -54,9 +54,9 @@ Deno.test("POST /projects/:project_id/versions.json", async (t) => {
         wikiPageTitle: "Roadmap",
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.name).toEqual("v1.0");
-      expect(captured?.due_date).toEqual("2026-08-01");
-      expect(captured?.wiki_page_title).toEqual("Roadmap");
+      expect(captured?.name).toStrictEqual("v1.0");
+      expect(captured?.due_date).toStrictEqual("2026-08-01");
+      expect(captured?.wiki_page_title).toStrictEqual("Roadmap");
     },
   );
 });

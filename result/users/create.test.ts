@@ -74,11 +74,11 @@ Deno.test("POST /users.json", async (t) => {
         generatePassword: false,
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.login).toEqual("jsmith");
-      expect(captured?.auth_source_id).toEqual(1);
-      expect(captured?.mail_notification).toEqual("only_my_events");
-      expect(captured?.must_change_passwd).toEqual(true);
-      expect(captured?.generate_password).toEqual(false);
+      expect(captured?.login).toStrictEqual("jsmith");
+      expect(captured?.auth_source_id).toStrictEqual(1);
+      expect(captured?.mail_notification).toStrictEqual("only_my_events");
+      expect(captured?.must_change_passwd).toStrictEqual(true);
+      expect(captured?.generate_password).toStrictEqual(false);
     },
   );
 });

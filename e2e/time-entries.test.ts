@@ -16,13 +16,13 @@ Deno.test({
     const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    expect(project !== undefined).toBe(true);
+    expect(project).toBeDefined();
 
     const issuesResult = await listIssues(e2eContext, {
       projectId: project!.id,
     });
     expect(issuesResult.isOk()).toBe(true);
-    expect(issuesResult._unsafeUnwrap().length > 0).toBe(true);
+    expect(issuesResult._unsafeUnwrap().length).toBeGreaterThan(0);
     const issue = issuesResult._unsafeUnwrap()[0];
 
     // Activities are a server-wide enumeration seeded by Redmine's default
@@ -63,11 +63,11 @@ Deno.test({
       async () => {
         const result = await fetchList(e2eContext, { projectId: project!.id });
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().length > 0).toBe(true);
+        expect(result._unsafeUnwrap().length).toBeGreaterThan(0);
         const created = result._unsafeUnwrap().find((e) =>
           e.comments === "E2E Created Time Entry"
         );
-        expect(created !== undefined).toBe(true);
+        expect(created).toBeDefined();
       },
     );
 
@@ -81,15 +81,16 @@ Deno.test({
         const timeEntry = listResult._unsafeUnwrap().find((e) =>
           e.comments === "E2E Created Time Entry"
         );
-        expect(timeEntry !== undefined).toBe(true);
+        expect(timeEntry).toBeDefined();
 
         const result = await show(e2eContext, timeEntry!.id);
         expect(result.isOk()).toBe(true);
-        expect(result._unsafeUnwrap().id).toEqual(timeEntry!.id);
-        expect(result._unsafeUnwrap().hours).toEqual(2.5);
-        expect(result._unsafeUnwrap().project !== undefined).toBe(true);
-        expect(result._unsafeUnwrap().issue !== undefined).toBe(true);
-        expect(result._unsafeUnwrap().issue?.id).toEqual(issue.id);
+        const shown = result._unsafeUnwrap();
+        expect(shown.id).toStrictEqual(timeEntry!.id);
+        expect(shown.hours).toStrictEqual(2.5);
+        expect(shown.project).toBeDefined();
+        expect(shown.issue).toBeDefined();
+        expect(shown.issue?.id).toStrictEqual(issue.id);
       },
     );
 
@@ -103,7 +104,7 @@ Deno.test({
         const timeEntry = listResult._unsafeUnwrap().find((e) =>
           e.comments === "E2E Created Time Entry"
         );
-        expect(timeEntry !== undefined).toBe(true);
+        expect(timeEntry).toBeDefined();
 
         const result = await update(e2eContext, timeEntry!.id, {
           hours: 4,
@@ -113,8 +114,8 @@ Deno.test({
 
         const showResult = await show(e2eContext, timeEntry!.id);
         expect(showResult.isOk()).toBe(true);
-        expect(showResult._unsafeUnwrap().hours).toEqual(4);
-        expect(showResult._unsafeUnwrap().comments).toEqual(
+        expect(showResult._unsafeUnwrap().hours).toStrictEqual(4);
+        expect(showResult._unsafeUnwrap().comments).toStrictEqual(
           "E2E Updated Time Entry",
         );
       },
@@ -130,7 +131,7 @@ Deno.test({
         const timeEntry = listResult._unsafeUnwrap().find((e) =>
           e.comments === "E2E Updated Time Entry"
         );
-        expect(timeEntry !== undefined).toBe(true);
+        expect(timeEntry).toBeDefined();
 
         const result = await deleteTimeEntry(e2eContext, timeEntry!.id);
         expect(result.isOk()).toBe(true);

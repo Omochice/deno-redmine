@@ -53,10 +53,10 @@ Deno.test("POST /projects/:project_id/files.json", async (t) => {
         description: "A dummy attachment",
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.token).toEqual("abc");
-      expect(captured?.version_id).toEqual(3);
-      expect(captured?.filename).toEqual("foo.zip");
-      expect(captured?.description).toEqual("A dummy attachment");
+      expect(captured?.token).toStrictEqual("abc");
+      expect(captured?.version_id).toStrictEqual(3);
+      expect(captured?.filename).toStrictEqual("foo.zip");
+      expect(captured?.description).toStrictEqual("A dummy attachment");
     },
   );
 });

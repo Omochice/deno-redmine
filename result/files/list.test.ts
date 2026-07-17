@@ -19,17 +19,18 @@ Deno.test("GET /projects/:project_id/files.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await fetchList(context, 1);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(2);
-      expect(e._unsafeUnwrap()[0].contentType).toEqual("application/zip");
-      expect(e._unsafeUnwrap()[0].contentUrl).toEqual(
+      const files = e._unsafeUnwrap();
+      expect(files.length).toStrictEqual(2);
+      expect(files[0].contentType).toStrictEqual("application/zip");
+      expect(files[0].contentUrl).toStrictEqual(
         "http://redmine.example.com/attachments/download/12/foo.zip",
       );
-      expect(e._unsafeUnwrap()[0].version).toEqual({ id: 3, name: "v1.0" });
-      expect(e._unsafeUnwrap()[0].createdOn).toEqual(
+      expect(files[0].version).toStrictEqual({ id: 3, name: "v1.0" });
+      expect(files[0].createdOn).toStrictEqual(
         new Date("2026-07-13T00:00:00.000Z"),
       );
-      expect(e._unsafeUnwrap()[1].description).toEqual(undefined);
-      expect(e._unsafeUnwrap()[1].version).toEqual(undefined);
+      expect(files[1].description).toBeUndefined();
+      expect(files[1].version).toBeUndefined();
     },
   );
 

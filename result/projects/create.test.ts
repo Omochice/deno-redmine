@@ -57,10 +57,10 @@ Deno.test("POST /projects.json", async (t) => {
         trackerIds: [1, 2],
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.is_public).toEqual(false);
-      expect(captured?.parent_id).toEqual(42);
-      expect(captured?.inherit_members).toEqual(true);
-      expect(captured?.tracker_ids).toEqual([1, 2]);
+      expect(captured?.is_public).toStrictEqual(false);
+      expect(captured?.parent_id).toStrictEqual(42);
+      expect(captured?.inherit_members).toStrictEqual(true);
+      expect(captured?.tracker_ids).toStrictEqual([1, 2]);
     },
   );
 
@@ -80,7 +80,7 @@ Deno.test("POST /projects.json", async (t) => {
         identifier: "my-project",
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.name).toEqual("My Project");
+      expect(captured?.name).toStrictEqual("My Project");
     },
   );
 });

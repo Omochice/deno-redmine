@@ -20,13 +20,14 @@ Deno.test("GET /issue_statuses.json", async (t) => {
       server.resetHandlers(...validHandlers);
       const e = await fetchList(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(3);
-      expect(e._unsafeUnwrap()[0]).toEqual({
+      const issueStatuses = e._unsafeUnwrap();
+      expect(issueStatuses.length).toStrictEqual(3);
+      expect(issueStatuses[0]).toStrictEqual({
         id: 1,
         name: "New",
         isClosed: false,
       });
-      expect(e._unsafeUnwrap()[2]).toEqual({
+      expect(issueStatuses[2]).toStrictEqual({
         id: 5,
         name: "Closed",
         isClosed: true,

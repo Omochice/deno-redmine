@@ -19,11 +19,12 @@ Deno.test("GET /users.json", async (t) => {
       server.use(...validHandlers);
       const e = await fetchList(context);
       expect(e.isOk()).toBe(true);
-      expect(e._unsafeUnwrap().length).toEqual(2);
-      expect(e._unsafeUnwrap()[1].login).toEqual("admin");
-      expect(e._unsafeUnwrap()[1].admin).toEqual(true);
-      expect(e._unsafeUnwrap()[1].apiKey).toEqual("abcdef1234567890");
-      expect(e._unsafeUnwrap()[0].lastLoginOn).toEqual(
+      const users = e._unsafeUnwrap();
+      expect(users.length).toStrictEqual(2);
+      expect(users[1].login).toStrictEqual("admin");
+      expect(users[1].admin).toStrictEqual(true);
+      expect(users[1].apiKey).toStrictEqual("abcdef1234567890");
+      expect(users[0].lastLoginOn).toStrictEqual(
         new Date("2026-07-13T00:00:00.000Z"),
       );
     },

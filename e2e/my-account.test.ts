@@ -18,7 +18,7 @@ Deno.test({
           expect(result.isOk()).toBe(true);
           // e2e/setup.ts authenticates as the "admin" user, so the account
           // returned here is always that user.
-          expect(result._unsafeUnwrap().login).toEqual("admin");
+          expect(result._unsafeUnwrap().login).toStrictEqual("admin");
         },
       );
 
@@ -32,7 +32,7 @@ Deno.test({
 
           const showResult = await show(e2eContext);
           expect(showResult.isOk()).toBe(true);
-          expect(showResult._unsafeUnwrap().firstname).toEqual(
+          expect(showResult._unsafeUnwrap().firstname).toStrictEqual(
             "E2E Updated Firstname",
           );
         },

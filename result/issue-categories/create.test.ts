@@ -53,8 +53,8 @@ Deno.test("POST /projects/:project_id/issue_categories.json", async (t) => {
         assignedToId: 5,
       });
       expect(e.isOk()).toBe(true);
-      expect(captured?.name).toEqual("Bug");
-      expect(captured?.assigned_to_id).toEqual(5);
+      expect(captured?.name).toStrictEqual("Bug");
+      expect(captured?.assigned_to_id).toStrictEqual(5);
     },
   );
 });
