@@ -1,5 +1,5 @@
 import { listIssues } from "./list.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
@@ -12,7 +12,7 @@ Deno.test("GET /projects/issues.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validHandlers);
     const e = await listIssues(context);
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -20,7 +20,7 @@ Deno.test("GET /projects/issues.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await listIssues(context);
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 });
@@ -88,10 +88,10 @@ Deno.test("listIssues limit option", async (t) => {
 
       const e = await listIssues(context, { limit: 1 });
 
-      assert(e.isOk());
-      assertEquals(e.value.length, 1);
-      assertEquals(requests.length, 1);
-      assertEquals(requests[0], { limit: "1", offset: "0" });
+      expect(e.isOk()).toBe(true);
+      expect(e._unsafeUnwrap().length).toEqual(1);
+      expect(requests.length).toEqual(1);
+      expect(requests[0]).toEqual({ limit: "1", offset: "0" });
     },
   );
 
@@ -103,9 +103,9 @@ Deno.test("listIssues limit option", async (t) => {
 
       const e = await listIssues(context, { limit: 150 });
 
-      assert(e.isOk());
-      assertEquals(e.value.length, 150);
-      assertEquals(requests, [
+      expect(e.isOk()).toBe(true);
+      expect(e._unsafeUnwrap().length).toEqual(150);
+      expect(requests).toEqual([
         { limit: "100", offset: "0" },
         { limit: "50", offset: "100" },
       ]);
@@ -120,9 +120,9 @@ Deno.test("listIssues limit option", async (t) => {
 
       const e = await listIssues(context, {});
 
-      assert(e.isOk());
-      assertEquals(e.value.length, 150);
-      assertEquals(requests, [
+      expect(e.isOk()).toBe(true);
+      expect(e._unsafeUnwrap().length).toEqual(150);
+      expect(requests).toEqual([
         { limit: "100", offset: "0" },
         { limit: "100", offset: "100" },
       ]);
@@ -137,8 +137,8 @@ Deno.test("listIssues limit option", async (t) => {
 
       const e = await listIssues(context, { limit: 1.5 });
 
-      assert(e.isErr());
-      assertEquals(requests.length, 0);
+      expect(e.isErr()).toBe(true);
+      expect(requests.length).toEqual(0);
     },
   );
 
@@ -150,8 +150,8 @@ Deno.test("listIssues limit option", async (t) => {
 
       const e = await listIssues(context, { limit: -1 });
 
-      assert(e.isErr());
-      assertEquals(requests.length, 0);
+      expect(e.isErr()).toBe(true);
+      expect(requests.length).toEqual(0);
     },
   );
 
@@ -163,8 +163,8 @@ Deno.test("listIssues limit option", async (t) => {
 
       const e = await listIssues(context, { limit: 0 });
 
-      assert(e.isErr());
-      assertEquals(requests.length, 0);
+      expect(e.isErr()).toBe(true);
+      expect(requests.length).toEqual(0);
     },
   );
 });

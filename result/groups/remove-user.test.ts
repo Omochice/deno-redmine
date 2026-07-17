@@ -1,5 +1,5 @@
 import { removeUser } from "./remove-user.ts";
-import { assert } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
 
@@ -10,7 +10,7 @@ Deno.test("DELETE /groups/:id/users/:user_id.json", async (t) => {
   await t.step("if got 204, should be success", async () => {
     server.resetHandlers(...validHandlers);
     const e = await removeUser(context, 20, 5);
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -18,13 +18,13 @@ Deno.test("DELETE /groups/:id/users/:user_id.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await removeUser(context, 422, 5);
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...invalidHandlers);
     const e = await removeUser(context, 404, 5);
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 });

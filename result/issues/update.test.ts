@@ -1,5 +1,5 @@
 import { update } from "./update.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
 import { http, HttpResponse } from "npm:msw@2.15.0";
@@ -11,7 +11,7 @@ Deno.test("PUT /projects/issues/:id.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validHandlers);
     const e = await update(context, 1, { notes: "sample" });
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -19,14 +19,14 @@ Deno.test("PUT /projects/issues/:id.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await update(context, 411, { notes: "sample" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...invalidHandlers);
     const e = await update(context, 404, { notes: "sample" });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -55,18 +55,18 @@ Deno.test("PUT /projects/issues/:id.json", async (t) => {
         startDate: new Date("2026-07-01"),
         dueDate: new Date("2026-07-31"),
       });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
 
-      assert(capturedBody !== undefined);
-      const { issue } = capturedBody;
-      assertEquals(issue.subject, "updated subject");
-      assertEquals(issue.notes, "a note");
-      assertEquals(issue.private_notes, true);
-      assertEquals(issue.done_ratio, 90);
-      assertEquals(issue.is_private, true);
-      assertEquals(issue.estimated_hours, 8);
-      assertEquals(issue.start_date, "2026-07-01");
-      assertEquals(issue.due_date, "2026-07-31");
+      expect(capturedBody !== undefined).toBe(true);
+      const { issue } = capturedBody!;
+      expect(issue.subject).toEqual("updated subject");
+      expect(issue.notes).toEqual("a note");
+      expect(issue.private_notes).toEqual(true);
+      expect(issue.done_ratio).toEqual(90);
+      expect(issue.is_private).toEqual(true);
+      expect(issue.estimated_hours).toEqual(8);
+      expect(issue.start_date).toEqual("2026-07-01");
+      expect(issue.due_date).toEqual("2026-07-31");
     },
   );
 
@@ -92,10 +92,10 @@ Deno.test("PUT /projects/issues/:id.json", async (t) => {
           { id: 2, name: "list field", multiple: true, value: ["a", "b"] },
         ],
       });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
 
-      assert(capturedBody !== undefined);
-      assertEquals(capturedBody.issue.custom_fields, [
+      expect(capturedBody !== undefined).toBe(true);
+      expect(capturedBody!.issue.custom_fields).toEqual([
         { id: 1, value: "hello" },
         { id: 2, value: ["a", "b"] },
       ]);

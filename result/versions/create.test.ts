@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -13,7 +13,7 @@ Deno.test("POST /projects/:project_id/versions.json", async (t) => {
     async () => {
       server.use(...validHandlers);
       const e = await create(context, 1, { name: "v1.0" });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
     },
   );
 
@@ -22,14 +22,14 @@ Deno.test("POST /projects/:project_id/versions.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const e = await create(context, 422, { name: "v1.0" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const e = await create(context, 404, { name: "v1.0" });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -53,10 +53,10 @@ Deno.test("POST /projects/:project_id/versions.json", async (t) => {
         dueDate: new Date("2026-08-01"),
         wikiPageTitle: "Roadmap",
       });
-      assert(e.isOk());
-      assertEquals(captured?.name, "v1.0");
-      assertEquals(captured?.due_date, "2026-08-01");
-      assertEquals(captured?.wiki_page_title, "Roadmap");
+      expect(e.isOk()).toBe(true);
+      expect(captured?.name).toEqual("v1.0");
+      expect(captured?.due_date).toEqual("2026-08-01");
+      expect(captured?.wiki_page_title).toEqual("Roadmap");
     },
   );
 });

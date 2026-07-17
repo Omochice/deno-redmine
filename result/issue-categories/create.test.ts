@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -13,7 +13,7 @@ Deno.test("POST /projects/:project_id/issue_categories.json", async (t) => {
     async () => {
       server.use(...validHandlers);
       const e = await create(context, 1, { name: "Bug" });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
     },
   );
 
@@ -22,14 +22,14 @@ Deno.test("POST /projects/:project_id/issue_categories.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const e = await create(context, 422, { name: "Bug" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const e = await create(context, 404, { name: "Bug" });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -52,9 +52,9 @@ Deno.test("POST /projects/:project_id/issue_categories.json", async (t) => {
         name: "Bug",
         assignedToId: 5,
       });
-      assert(e.isOk());
-      assertEquals(captured?.name, "Bug");
-      assertEquals(captured?.assigned_to_id, 5);
+      expect(e.isOk()).toBe(true);
+      expect(captured?.name).toEqual("Bug");
+      expect(captured?.assigned_to_id).toEqual(5);
     },
   );
 });

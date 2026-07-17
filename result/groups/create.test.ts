@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -13,7 +13,7 @@ Deno.test("POST /groups.json", async (t) => {
     async () => {
       server.resetHandlers(...validHandlers);
       const e = await create(context, { name: "Developers" });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
     },
   );
 
@@ -22,7 +22,7 @@ Deno.test("POST /groups.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await create(context, { name: "Developers" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
@@ -44,9 +44,9 @@ Deno.test("POST /groups.json", async (t) => {
         name: "Developers",
         userIds: [3, 5],
       });
-      assert(e.isOk());
-      assertEquals(captured?.name, "Developers");
-      assertEquals(captured?.user_ids, [3, 5]);
+      expect(e.isOk()).toBe(true);
+      expect(captured?.name).toEqual("Developers");
+      expect(captured?.user_ids).toEqual([3, 5]);
     },
   );
 });

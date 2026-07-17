@@ -2,7 +2,7 @@ import { update } from "./update.ts";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 
 const server = setupServer();
 server.listen();
@@ -11,7 +11,7 @@ Deno.test("PUT /versions/:id.json", async (t) => {
   await t.step("if got 204, should be success", async () => {
     server.use(...validHandlers);
     const e = await update(context, 3, { name: "v1.1" });
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -19,14 +19,14 @@ Deno.test("PUT /versions/:id.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const e = await update(context, 422, { name: "v1.1" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const e = await update(context, 404, { name: "v1.1" });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -47,9 +47,9 @@ Deno.test("PUT /versions/:id.json", async (t) => {
         dueDate: new Date("2026-09-01"),
         wikiPageTitle: "Plan",
       });
-      assert(e.isOk());
-      assertEquals(captured?.due_date, "2026-09-01");
-      assertEquals(captured?.wiki_page_title, "Plan");
+      expect(e.isOk()).toBe(true);
+      expect(captured?.due_date).toEqual("2026-09-01");
+      expect(captured?.wiki_page_title).toEqual("Plan");
     },
   );
 });

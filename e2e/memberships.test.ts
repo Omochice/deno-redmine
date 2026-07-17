@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/memberships/list.ts";
 import { show } from "../result/memberships/show.ts";
@@ -44,11 +44,11 @@ Deno.test({
   name: "E2E: Memberships API",
   fn: async (t) => {
     const projectsResult = await fetchProjects(e2eContext);
-    assert(projectsResult.isOk());
-    const project = projectsResult.value.find((p) =>
+    expect(projectsResult.isOk()).toBe(true);
+    const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    assert(project !== undefined);
+    expect(project !== undefined).toBe(true);
 
     const userId = await fetchCurrentUserId();
     const roleId = await fetchFirstRoleId();
@@ -64,23 +64,25 @@ Deno.test({
     await t.step(
       "POST /projects/:project_id/memberships.json should create a membership",
       async () => {
-        const result = await create(e2eContext, project.id, {
+        const result = await create(e2eContext, project!.id, {
           userId,
           roleIds: [roleId],
         });
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
       },
     );
 
     await t.step(
       "GET /projects/:project_id/memberships.json should return memberships",
       async () => {
-        const result = await fetchList(e2eContext, project.id);
-        assert(result.isOk());
-        assert(result.value.length > 0);
-        const created = result.value.find((m) => m.user?.id === userId);
-        assert(created !== undefined);
-        membershipId = created.id;
+        const result = await fetchList(e2eContext, project!.id);
+        expect(result.isOk()).toBe(true);
+        expect(result._unsafeUnwrap().length > 0).toBe(true);
+        const created = result._unsafeUnwrap().find((m) =>
+          m.user?.id === userId
+        );
+        expect(created !== undefined).toBe(true);
+        membershipId = created!.id;
       },
     );
 
@@ -88,10 +90,13 @@ Deno.test({
       "GET /memberships/:id.json should return a membership",
       async () => {
         const result = await show(e2eContext, membershipId);
-        assert(result.isOk());
-        assertEquals(result.value.id, membershipId);
-        assert(result.value.project !== undefined);
-        assert(result.value.roles.some((role) => role.id === roleId));
+        expect(result.isOk()).toBe(true);
+        expect(result._unsafeUnwrap().id).toEqual(membershipId);
+        expect(result._unsafeUnwrap().project !== undefined).toBe(true);
+        expect(result._unsafeUnwrap().roles.some((role) => role.id === roleId))
+          .toBe(
+            true,
+          );
       },
     );
 
@@ -101,11 +106,15 @@ Deno.test({
         const result = await update(e2eContext, membershipId, {
           roleIds: [roleId],
         });
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
 
         const showResult = await show(e2eContext, membershipId);
-        assert(showResult.isOk());
-        assert(showResult.value.roles.some((role) => role.id === roleId));
+        expect(showResult.isOk()).toBe(true);
+        expect(
+          showResult._unsafeUnwrap().roles.some((role) => role.id === roleId),
+        ).toBe(
+          true,
+        );
       },
     );
 
@@ -113,10 +122,10 @@ Deno.test({
       "DELETE /memberships/:id.json should delete a membership",
       async () => {
         const result = await deleteMembership(e2eContext, membershipId);
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
 
         const showResult = await show(e2eContext, membershipId);
-        assert(showResult.isErr());
+        expect(showResult.isErr()).toBe(true);
       },
     );
   },

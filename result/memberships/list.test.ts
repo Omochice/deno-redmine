@@ -2,7 +2,7 @@ import { fetchList } from "./list.ts";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 
 const server = setupServer();
 server.listen();
@@ -11,7 +11,7 @@ Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.use(...validHandlers);
     const e = await fetchList(context, 1);
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -19,13 +19,16 @@ Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
     async () => {
       server.use(...validHandlers);
       const e = await fetchList(context, 1);
-      assert(e.isOk());
-      assertEquals(e.value[0].user, { id: 17, name: "David Robert" });
-      assertEquals(e.value[0].roles, [
+      expect(e.isOk()).toBe(true);
+      expect(e._unsafeUnwrap()[0].user).toEqual({
+        id: 17,
+        name: "David Robert",
+      });
+      expect(e._unsafeUnwrap()[0].roles).toEqual([
         { id: 1, name: "Manager", inherited: true },
         { id: 2, name: "Developer" },
       ]);
-      assertEquals(e.value[1].group, { id: 8, name: "Developers" });
+      expect(e._unsafeUnwrap()[1].group).toEqual({ id: 8, name: "Developers" });
     },
   );
 
@@ -34,14 +37,14 @@ Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const e = await fetchList(context, 422);
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const e = await fetchList(context, 404);
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -69,10 +72,10 @@ Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
         ),
       );
       const e = await fetchList(context, 1);
-      assert(e.isOk());
-      assertEquals(e.value.length, total);
-      assertEquals(e.value[0].id, 1);
-      assertEquals(e.value[total - 1].id, total);
+      expect(e.isOk()).toBe(true);
+      expect(e._unsafeUnwrap().length).toEqual(total);
+      expect(e._unsafeUnwrap()[0].id).toEqual(1);
+      expect(e._unsafeUnwrap()[total - 1].id).toEqual(total);
     },
   );
 });

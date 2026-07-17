@@ -1,5 +1,5 @@
 import { addUser } from "./add-user.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -11,7 +11,7 @@ Deno.test("POST /groups/:id/users.json", async (t) => {
   await t.step("if got 204, should be success", async () => {
     server.resetHandlers(...validHandlers);
     const e = await addUser(context, 20, 5);
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -19,14 +19,14 @@ Deno.test("POST /groups/:id/users.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await addUser(context, 422, 5);
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...invalidHandlers);
     const e = await addUser(context, 404, 5);
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step("should send the user id as user_id", async () => {
@@ -42,7 +42,7 @@ Deno.test("POST /groups/:id/users.json", async (t) => {
       ),
     );
     const e = await addUser(context, 20, 5);
-    assert(e.isOk());
-    assertEquals(captured?.user_id, 5);
+    expect(e.isOk()).toBe(true);
+    expect(captured?.user_id).toEqual(5);
   });
 });

@@ -1,5 +1,5 @@
 import { show } from "./show.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import {
   context,
   invalidResponseHandlers,
@@ -15,8 +15,8 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validResponseHandelers);
     const e = await show(context, 1, "sample-title");
-    assert(e.isOk());
-    assert(e.value.title === "sample-title");
+    expect(e.isOk()).toBe(true);
+    expect(e._unsafeUnwrap().title === "sample-title").toBe(true);
   });
   await t.step("if got 200 with null comments, should be success", async () => {
     server.resetHandlers(
@@ -38,15 +38,15 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
       ),
     );
     const e = await show(context, 1, "sample-title");
-    assert(e.isOk());
-    assertEquals(e.value.title, "sample-title");
-    assertEquals(e.value.comments, undefined);
+    expect(e.isOk()).toBe(true);
+    expect(e._unsafeUnwrap().title).toEqual("sample-title");
+    expect(e._unsafeUnwrap().comments).toEqual(undefined);
   });
   await t.step("If got 422, should be error", async () => {
     server.resetHandlers(...invalidResponseHandlers);
     const e = await show(context, 2, "sample-title");
-    assert(e.isErr());
-    assert(e.error.message === "Unprocessable Entity");
+    expect(e.isErr()).toBe(true);
+    expect(e._unsafeUnwrapErr().message === "Unprocessable Entity").toBe(true);
   });
 });
 
@@ -54,8 +54,8 @@ Deno.test("GET /projects/:id/wiki/:page/:version.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validResponseHandelers);
     const e = await show(context, 1, "sample-title", 3);
-    assert(e.isOk());
-    assert(e.value.title === "sample-title");
-    assert(e.value.version === 3);
+    expect(e.isOk()).toBe(true);
+    expect(e._unsafeUnwrap().title === "sample-title").toBe(true);
+    expect(e._unsafeUnwrap().version === 3).toBe(true);
   });
 });

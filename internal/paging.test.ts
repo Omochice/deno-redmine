@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { fetchAllPages, type Page } from "./paging.ts";
 
 const nextTick = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
@@ -25,7 +25,7 @@ function finiteSource(
 
 Deno.test("aggregates every page in ascending offset order", async () => {
   const result = await fetchAllPages(finiteSource(23), { pageSize: 10 });
-  assertEquals(result, range(0, 23));
+  expect(result).toEqual(range(0, 23));
 });
 
 Deno.test("returns an empty result without fetching data pages when the total is zero", async () => {
@@ -37,8 +37,8 @@ Deno.test("returns an empty result without fetching data pages when the total is
     },
     { pageSize: 10 },
   );
-  assertEquals(result, []);
-  assertEquals(offsets, [0]);
+  expect(result).toEqual([]);
+  expect(offsets).toEqual([0]);
 });
 
 Deno.test("keeps offset order even when later pages settle first", async () => {
@@ -52,7 +52,7 @@ Deno.test("keeps offset order even when later pages settle first", async () => {
     },
     { pageSize: 10, concurrency: 6 },
   );
-  assertEquals(result, range(0, 30));
+  expect(result).toEqual(range(0, 30));
 });
 
 Deno.test("never exceeds the concurrency bound for data pages", async () => {
@@ -71,8 +71,8 @@ Deno.test("never exceeds the concurrency bound for data pages", async () => {
     },
     { pageSize: 10, concurrency: 3 },
   );
-  assertEquals(result, range(0, 100));
-  assertEquals(maxInFlight, 3);
+  expect(result).toEqual(range(0, 100));
+  expect(maxInFlight).toEqual(3);
 });
 
 Deno.test("fetches a single page when the total fits within one page", async () => {
@@ -87,8 +87,8 @@ Deno.test("fetches a single page when the total fits within one page", async () 
     },
     { pageSize: 10 },
   );
-  assertEquals(result, range(0, 5));
-  assertEquals(calls, [{ limit: 10, offset: 0 }]);
+  expect(result).toEqual(range(0, 5));
+  expect(calls).toEqual([{ limit: 10, offset: 0 }]);
 });
 
 Deno.test("rejects a pageSize outside Redmine's 1-to-100 range", async () => {
@@ -96,10 +96,8 @@ Deno.test("rejects a pageSize outside Redmine's 1-to-100 range", async () => {
   // full pageSize, which would silently skip records; at or below zero the walk
   // cannot advance.
   for (const pageSize of [0, -1, 101, 10.5]) {
-    await assertRejects(
-      () => fetchAllPages(finiteSource(50), { pageSize }),
-      RangeError,
-    );
+    await expect(fetchAllPages(finiteSource(50), { pageSize })).rejects
+      .toThrow(RangeError);
   }
 });
 
@@ -110,7 +108,7 @@ Deno.test("clamps a non-positive concurrency to at least one", async () => {
     pageSize: 10,
     concurrency: 0,
   });
-  assertEquals(result, range(0, 30));
+  expect(result).toEqual(range(0, 30));
 });
 
 Deno.test("stops at the requested limit and slices off the over-fetch", async () => {
@@ -125,9 +123,9 @@ Deno.test("stops at the requested limit and slices off the over-fetch", async ()
     },
     { pageSize: 100, limit: 250 },
   );
-  assertEquals(result, range(0, 250));
+  expect(result).toEqual(range(0, 250));
   // No count probe; the last page requests only the remaining 50 items.
-  assertEquals(calls, [
+  expect(calls).toEqual([
     { limit: 100, offset: 0 },
     { limit: 100, offset: 100 },
     { limit: 50, offset: 200 },
@@ -146,6 +144,6 @@ Deno.test("stops early when the source is exhausted before the limit", async () 
     },
     { pageSize: 100, limit: 250 },
   );
-  assertEquals(result, range(0, 30));
-  assertEquals(calls, [{ limit: 100, offset: 0 }]);
+  expect(result).toEqual(range(0, 30));
+  expect(calls).toEqual([{ limit: 100, offset: 0 }]);
 });

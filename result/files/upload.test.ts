@@ -1,5 +1,5 @@
 import { upload } from "./upload.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -12,8 +12,8 @@ Deno.test("POST /uploads.json", async (t) => {
   await t.step("if got 201, should return the upload token", async () => {
     server.resetHandlers(...validHandlers);
     const e = await upload(context, new TextEncoder().encode("content"));
-    assert(e.isOk());
-    assertEquals(e.value, "7167.ed1ccdb093229ca1bd0b043618d88743");
+    expect(e.isOk()).toBe(true);
+    expect(e._unsafeUnwrap()).toEqual("7167.ed1ccdb093229ca1bd0b043618d88743");
   });
 
   await t.step(
@@ -36,12 +36,11 @@ Deno.test("POST /uploads.json", async (t) => {
         new TextEncoder().encode("content"),
         "foo.zip",
       );
-      assert(e.isOk());
-      assertEquals(
-        new URL(capturedUrl!).searchParams.get("filename"),
+      expect(e.isOk()).toBe(true);
+      expect(new URL(capturedUrl!).searchParams.get("filename")).toEqual(
         "foo.zip",
       );
-      assertEquals(capturedContentType, "application/octet-stream");
+      expect(capturedContentType).toEqual("application/octet-stream");
     },
   );
 
@@ -60,7 +59,7 @@ Deno.test("POST /uploads.json", async (t) => {
         }),
       );
       const e = await upload(context, new TextEncoder().encode("content"));
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
@@ -72,6 +71,6 @@ Deno.test("POST /uploads.json", async (t) => {
       }),
     );
     const e = await upload(context, new TextEncoder().encode("content"));
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 });

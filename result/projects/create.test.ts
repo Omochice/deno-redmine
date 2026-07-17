@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -16,7 +16,7 @@ Deno.test("POST /projects.json", async (t) => {
         context,
         { name: "sample", identifier: "sample" },
       );
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
     },
   );
 
@@ -26,7 +26,7 @@ Deno.test("POST /projects.json", async (t) => {
       server.use(...invalidHandlers);
       const c = { ...context, endpoint: `${context.endpoint}/422` };
       const e = await create(c, { name: "sample", identifier: "sample" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
@@ -34,7 +34,7 @@ Deno.test("POST /projects.json", async (t) => {
     server.use(...invalidHandlers);
     const c = { ...context, endpoint: `${context.endpoint}/422` };
     const e = await create(c, { name: "sample", identifier: "sample" });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -56,11 +56,11 @@ Deno.test("POST /projects.json", async (t) => {
         inheritMembers: true,
         trackerIds: [1, 2],
       });
-      assert(e.isOk());
-      assertEquals(captured?.is_public, false);
-      assertEquals(captured?.parent_id, 42);
-      assertEquals(captured?.inherit_members, true);
-      assertEquals(captured?.tracker_ids, [1, 2]);
+      expect(e.isOk()).toBe(true);
+      expect(captured?.is_public).toEqual(false);
+      expect(captured?.parent_id).toEqual(42);
+      expect(captured?.inherit_members).toEqual(true);
+      expect(captured?.tracker_ids).toEqual([1, 2]);
     },
   );
 
@@ -79,8 +79,8 @@ Deno.test("POST /projects.json", async (t) => {
         name: "My Project",
         identifier: "my-project",
       });
-      assert(e.isOk());
-      assertEquals(captured?.name, "My Project");
+      expect(e.isOk()).toBe(true);
+      expect(captured?.name).toEqual("My Project");
     },
   );
 });

@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import {
   context,
   invalidResponseHandlers,
@@ -17,7 +17,7 @@ Deno.test("POST /project/:id/wiki/:page.json", async (t) => {
       title: "create",
       text: "sample text",
     });
-    assert(r.isOk());
+    expect(r.isOk()).toBe(true);
   });
   await t.step("If got 422, should be error", async () => {
     server.resetHandlers(...invalidResponseHandlers);
@@ -25,6 +25,6 @@ Deno.test("POST /project/:id/wiki/:page.json", async (t) => {
       title: "create",
       text: "sample text",
     });
-    assert(r.isErr());
+    expect(r.isErr()).toBe(true);
   });
 });

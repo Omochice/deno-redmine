@@ -1,5 +1,5 @@
 import { fetchList } from "./list.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
 
@@ -10,7 +10,7 @@ Deno.test("GET /roles.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validHandlers);
     const e = await fetchList(context);
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -18,10 +18,10 @@ Deno.test("GET /roles.json", async (t) => {
     async () => {
       server.resetHandlers(...validHandlers);
       const e = await fetchList(context);
-      assert(e.isOk());
-      assertEquals(e.value.length, 2);
-      assertEquals(e.value[0], { id: 1, name: "Manager" });
-      assertEquals(e.value[1], { id: 2, name: "Developer" });
+      expect(e.isOk()).toBe(true);
+      expect(e._unsafeUnwrap().length).toEqual(2);
+      expect(e._unsafeUnwrap()[0]).toEqual({ id: 1, name: "Manager" });
+      expect(e._unsafeUnwrap()[1]).toEqual({ id: 2, name: "Developer" });
     },
   );
 
@@ -30,7 +30,7 @@ Deno.test("GET /roles.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await fetchList(context);
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 });

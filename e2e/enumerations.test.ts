@@ -1,4 +1,4 @@
-import { assert } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import {
   listDocumentCategories,
@@ -14,8 +14,8 @@ Deno.test("E2E: Enumerations API", async (t) => {
     "GET /enumerations/issue_priorities.json should return an array",
     async () => {
       const result = await listIssuePriorities(e2eContext);
-      assert(result.isOk());
-      assert(Array.isArray(result.value));
+      expect(result.isOk()).toBe(true);
+      expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
     },
   );
 
@@ -23,8 +23,8 @@ Deno.test("E2E: Enumerations API", async (t) => {
     "GET /enumerations/time_entry_activities.json should return an array",
     async () => {
       const result = await listTimeEntryActivities(e2eContext);
-      assert(result.isOk());
-      assert(Array.isArray(result.value));
+      expect(result.isOk()).toBe(true);
+      expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
     },
   );
 
@@ -32,8 +32,8 @@ Deno.test("E2E: Enumerations API", async (t) => {
     "GET /enumerations/document_categories.json should return an array",
     async () => {
       const result = await listDocumentCategories(e2eContext);
-      assert(result.isOk());
-      assert(Array.isArray(result.value));
+      expect(result.isOk()).toBe(true);
+      expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
     },
   );
 });

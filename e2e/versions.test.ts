@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/versions/list.ts";
 import { show } from "../result/versions/show.ts";
@@ -11,90 +11,90 @@ Deno.test({
   name: "E2E: Versions API",
   fn: async (t) => {
     const projectsResult = await fetchProjects(e2eContext);
-    assert(projectsResult.isOk());
-    const project = projectsResult.value.find((p) =>
+    expect(projectsResult.isOk()).toBe(true);
+    const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    assert(project !== undefined);
+    expect(project !== undefined).toBe(true);
 
     await t.step(
       "POST /projects/:project_id/versions.json should create a version",
       async () => {
-        const result = await create(e2eContext, project.id, {
+        const result = await create(e2eContext, project!.id, {
           name: "E2E Created Version",
           status: "open",
           sharing: "none",
           description: "Created by E2E test",
           dueDate: new Date("2026-08-01"),
         });
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
       },
     );
 
     await t.step(
       "GET /projects/:project_id/versions.json should return versions",
       async () => {
-        const result = await fetchList(e2eContext, project.id);
-        assert(result.isOk());
-        assert(result.value.length > 0);
-        const created = result.value.find((v) =>
+        const result = await fetchList(e2eContext, project!.id);
+        expect(result.isOk()).toBe(true);
+        expect(result._unsafeUnwrap().length > 0).toBe(true);
+        const created = result._unsafeUnwrap().find((v) =>
           v.name === "E2E Created Version"
         );
-        assert(created !== undefined);
+        expect(created !== undefined).toBe(true);
       },
     );
 
     await t.step("GET /versions/:id.json should return a version", async () => {
-      const listResult = await fetchList(e2eContext, project.id);
-      assert(listResult.isOk());
-      const version = listResult.value.find((v) =>
+      const listResult = await fetchList(e2eContext, project!.id);
+      expect(listResult.isOk()).toBe(true);
+      const version = listResult._unsafeUnwrap().find((v) =>
         v.name === "E2E Created Version"
       );
-      assert(version !== undefined);
+      expect(version !== undefined).toBe(true);
 
-      const result = await show(e2eContext, version.id);
-      assert(result.isOk());
-      assertEquals(result.value.id, version.id);
-      assertEquals(result.value.name, "E2E Created Version");
-      assert(result.value.project !== undefined);
-      assertEquals(result.value.status, "open");
+      const result = await show(e2eContext, version!.id);
+      expect(result.isOk()).toBe(true);
+      expect(result._unsafeUnwrap().id).toEqual(version!.id);
+      expect(result._unsafeUnwrap().name).toEqual("E2E Created Version");
+      expect(result._unsafeUnwrap().project !== undefined).toBe(true);
+      expect(result._unsafeUnwrap().status).toEqual("open");
     });
 
     await t.step("PUT /versions/:id.json should update a version", async () => {
-      const listResult = await fetchList(e2eContext, project.id);
-      assert(listResult.isOk());
-      const version = listResult.value.find((v) =>
+      const listResult = await fetchList(e2eContext, project!.id);
+      expect(listResult.isOk()).toBe(true);
+      const version = listResult._unsafeUnwrap().find((v) =>
         v.name === "E2E Created Version"
       );
-      assert(version !== undefined);
+      expect(version !== undefined).toBe(true);
 
-      const result = await update(e2eContext, version.id, {
+      const result = await update(e2eContext, version!.id, {
         name: "E2E Updated Version",
         status: "locked",
       });
-      assert(result.isOk());
+      expect(result.isOk()).toBe(true);
 
-      const showResult = await show(e2eContext, version.id);
-      assert(showResult.isOk());
-      assertEquals(showResult.value.name, "E2E Updated Version");
-      assertEquals(showResult.value.status, "locked");
+      const showResult = await show(e2eContext, version!.id);
+      expect(showResult.isOk()).toBe(true);
+      expect(showResult._unsafeUnwrap().name).toEqual("E2E Updated Version");
+      expect(showResult._unsafeUnwrap().status).toEqual("locked");
     });
 
     await t.step(
       "DELETE /versions/:id.json should delete a version",
       async () => {
-        const listResult = await fetchList(e2eContext, project.id);
-        assert(listResult.isOk());
-        const version = listResult.value.find((v) =>
+        const listResult = await fetchList(e2eContext, project!.id);
+        expect(listResult.isOk()).toBe(true);
+        const version = listResult._unsafeUnwrap().find((v) =>
           v.name === "E2E Updated Version"
         );
-        assert(version !== undefined);
+        expect(version !== undefined).toBe(true);
 
-        const result = await deleteVersion(e2eContext, version.id);
-        assert(result.isOk());
+        const result = await deleteVersion(e2eContext, version!.id);
+        expect(result.isOk()).toBe(true);
 
-        const showResult = await show(e2eContext, version.id);
-        assert(showResult.isErr());
+        const showResult = await show(e2eContext, version!.id);
+        expect(showResult.isErr()).toBe(true);
       },
     );
   },

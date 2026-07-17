@@ -2,7 +2,7 @@ import { update } from "./update.ts";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 
 const server = setupServer();
 server.listen();
@@ -11,7 +11,7 @@ Deno.test("PUT /users/:id.json", async (t) => {
   await t.step("if got 204, should be success", async () => {
     server.use(...validHandlers);
     const e = await update(context, 2, { firstname: "Jonathan" });
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -19,14 +19,14 @@ Deno.test("PUT /users/:id.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const e = await update(context, 422, { firstname: "Jonathan" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const e = await update(context, 404, { firstname: "Jonathan" });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -47,9 +47,9 @@ Deno.test("PUT /users/:id.json", async (t) => {
         mailNotification: "none",
         admin: true,
       });
-      assert(e.isOk());
-      assertEquals(captured?.mail_notification, "none");
-      assertEquals(captured?.admin, true);
+      expect(e.isOk()).toBe(true);
+      expect(captured?.mail_notification).toEqual("none");
+      expect(captured?.admin).toEqual(true);
     },
   );
 });

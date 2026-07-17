@@ -1,4 +1,4 @@
-import { assert } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { listIssues } from "../result/issues/list.ts";
 import { addWatcher } from "../result/issues/add-watcher.ts";
@@ -23,8 +23,8 @@ Deno.test({
   name: "E2E: Issue watchers API",
   fn: async (t) => {
     const issuesResult = await listIssues(e2eContext, { limit: 1 });
-    assert(issuesResult.isOk());
-    const issue = issuesResult.value[0];
+    expect(issuesResult.isOk()).toBe(true);
+    const issue = issuesResult._unsafeUnwrap()[0];
     if (issue === undefined) {
       // Nothing to watch when the seeded project holds no issues.
       return;
@@ -39,7 +39,7 @@ Deno.test({
       "POST /issues/:id/watchers.json should add a watcher",
       async () => {
         const result = await addWatcher(e2eContext, issue.id, userId);
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
       },
     );
 
@@ -47,7 +47,7 @@ Deno.test({
       "DELETE /issues/:id/watchers/:user_id.json should remove a watcher",
       async () => {
         const result = await removeWatcher(e2eContext, issue.id, userId);
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
       },
     );
   },

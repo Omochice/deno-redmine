@@ -1,5 +1,5 @@
 import { show } from "./show.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import {
   context,
   invalidHandlers,
@@ -15,7 +15,7 @@ Deno.test("GET /my/account.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validHandlers);
     const e = await show(context);
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -23,11 +23,11 @@ Deno.test("GET /my/account.json", async (t) => {
     async () => {
       server.resetHandlers(...validHandlers);
       const e = await show(context);
-      assert(e.isOk());
-      assertEquals(e.value.login, "jsmith");
-      assertEquals(e.value.mailNotification, "only_my_events");
-      assertEquals(e.value.apiKey, "sample-api-key");
-      assertEquals(e.value.customFields?.[0], {
+      expect(e.isOk()).toBe(true);
+      expect(e._unsafeUnwrap().login).toEqual("jsmith");
+      expect(e._unsafeUnwrap().mailNotification).toEqual("only_my_events");
+      expect(e._unsafeUnwrap().apiKey).toEqual("sample-api-key");
+      expect(e._unsafeUnwrap().customFields?.[0]).toEqual({
         id: 1,
         name: "Phone",
         value: "090-0000-0000",
@@ -40,13 +40,13 @@ Deno.test("GET /my/account.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await show(context);
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...notFoundHandlers);
     const e = await show(context);
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 });

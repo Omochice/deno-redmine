@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -16,7 +16,7 @@ Deno.test("POST /issues/:issue_id/relations.json", async (t) => {
         issueToId: 2,
         relationType: "relates",
       });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
     },
   );
 
@@ -28,7 +28,7 @@ Deno.test("POST /issues/:issue_id/relations.json", async (t) => {
         issueToId: 2,
         relationType: "relates",
       });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
@@ -38,7 +38,7 @@ Deno.test("POST /issues/:issue_id/relations.json", async (t) => {
       issueToId: 2,
       relationType: "relates",
     });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -60,10 +60,10 @@ Deno.test("POST /issues/:issue_id/relations.json", async (t) => {
         relationType: "precedes",
         delay: 3,
       });
-      assert(e.isOk());
-      assertEquals(captured?.issue_to_id, 2);
-      assertEquals(captured?.relation_type, "precedes");
-      assertEquals(captured?.delay, 3);
+      expect(e.isOk()).toBe(true);
+      expect(captured?.issue_to_id).toEqual(2);
+      expect(captured?.relation_type).toEqual("precedes");
+      expect(captured?.delay).toEqual(3);
     },
   );
 });

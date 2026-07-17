@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/wiki-pages/list.ts";
 import { show } from "../result/wiki-pages/show.ts";
@@ -13,20 +13,20 @@ Deno.test({
 
     await t.step("resolve test project", async () => {
       const projectsResult = await fetchProjects(e2eContext);
-      assert(projectsResult.isOk());
-      const project = projectsResult.value.find((p) =>
+      expect(projectsResult.isOk()).toBe(true);
+      const project = projectsResult._unsafeUnwrap().find((p) =>
         p.identifier === "e2e-test-project"
       );
-      assert(project !== undefined);
-      projectId = project.id;
+      expect(project !== undefined).toBe(true);
+      projectId = project!.id;
     });
 
     await t.step(
       "GET /projects/:id/wiki/index.json should return wiki pages",
       async () => {
         const result = await fetchList(e2eContext, projectId);
-        assert(result.isOk());
-        assert(result.value.length > 0);
+        expect(result.isOk()).toBe(true);
+        expect(result._unsafeUnwrap().length > 0).toBe(true);
       },
     );
 
@@ -34,9 +34,9 @@ Deno.test({
       "GET /projects/:id/wiki/:page.json should return a wiki page",
       async () => {
         const result = await show(e2eContext, projectId, "E2ETestPage");
-        assert(result.isOk());
-        assertEquals(result.value.title, "E2ETestPage");
-        assert(result.value.version >= 1);
+        expect(result.isOk()).toBe(true);
+        expect(result._unsafeUnwrap().title).toEqual("E2ETestPage");
+        expect(result._unsafeUnwrap().version >= 1).toBe(true);
       },
     );
 
@@ -48,7 +48,7 @@ Deno.test({
           text: "Created by E2E test",
           comments: "E2E test creation",
         });
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
       },
     );
 
@@ -56,10 +56,10 @@ Deno.test({
       "GET /projects/:id/wiki/:page.json should return a wiki page with comments",
       async () => {
         const result = await show(e2eContext, projectId, "E2ECreatedPage");
-        assert(result.isOk());
-        assertEquals(result.value.title, "E2ECreatedPage");
-        assertEquals(result.value.text, "Created by E2E test");
-        assert(result.value.version >= 1);
+        expect(result.isOk()).toBe(true);
+        expect(result._unsafeUnwrap().title).toEqual("E2ECreatedPage");
+        expect(result._unsafeUnwrap().text).toEqual("Created by E2E test");
+        expect(result._unsafeUnwrap().version >= 1).toBe(true);
       },
     );
 
@@ -71,11 +71,14 @@ Deno.test({
           text: "Updated by E2E test",
           comments: "E2E test update",
         });
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
 
         const showResult = await show(e2eContext, projectId, "E2ECreatedPage");
-        assert(showResult.isOk());
-        assert(showResult.value.text.includes("Updated by E2E test"));
+        expect(showResult.isOk()).toBe(true);
+        expect(showResult._unsafeUnwrap().text.includes("Updated by E2E test"))
+          .toBe(
+            true,
+          );
       },
     );
 
@@ -87,7 +90,7 @@ Deno.test({
           projectId,
           "E2ECreatedPage",
         );
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
       },
     );
   },
