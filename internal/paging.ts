@@ -62,6 +62,15 @@ export async function fetchAllPages<T>(
   fetchPage: FetchPage<T>,
   options: PagingOptions,
 ): Promise<T[]> {
+  if (
+    !Number.isInteger(options.pageSize) ||
+    options.pageSize < 1 ||
+    options.pageSize > 100
+  ) {
+    throw new RangeError(
+      `pageSize must be an integer between 1 and 100, got ${options.pageSize}`,
+    );
+  }
   if (options.limit !== undefined) {
     return await collectUpToLimit(fetchPage, options.pageSize, options.limit);
   }

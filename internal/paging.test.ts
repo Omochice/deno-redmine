@@ -1,4 +1,4 @@
-import { assertEquals } from "jsr:@std/assert@1.0.19";
+import { assertEquals, assertRejects } from "jsr:@std/assert@1.0.19";
 import { fetchAllPages, type Page } from "./paging.ts";
 
 const nextTick = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
@@ -89,6 +89,18 @@ Deno.test("fetches a single page when the total fits within one page", async () 
   );
   assertEquals(result, range(0, 5));
   assertEquals(calls, [{ limit: 10, offset: 0 }]);
+});
+
+Deno.test("rejects a pageSize outside Redmine's 1-to-100 range", async () => {
+  // Above 100 Redmine clamps each page while the offset walk advances by the
+  // full pageSize, which would silently skip records; at or below zero the walk
+  // cannot advance.
+  for (const pageSize of [0, -1, 101, 10.5]) {
+    await assertRejects(
+      () => fetchAllPages(finiteSource(50), { pageSize }),
+      RangeError,
+    );
+  }
 });
 
 Deno.test("clamps a non-positive concurrency to at least one", async () => {
