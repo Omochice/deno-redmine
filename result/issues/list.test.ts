@@ -123,7 +123,6 @@ Deno.test("listIssues limit option", async (t) => {
       assert(e.isOk());
       assertEquals(e.value.length, 150);
       assertEquals(requests, [
-        { limit: "1", offset: "0" },
         { limit: "100", offset: "0" },
         { limit: "100", offset: "100" },
       ]);

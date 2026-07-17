@@ -1,6 +1,7 @@
 import type { Context } from "../../context.ts";
 import { parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../../internal/url.ts";
+import { fetchAllPages } from "../../internal/paging.ts";
 import type { Issue, ListIssueQuery } from "./type.ts";
 import { assertResponse } from "../../error.ts";
 import { listResponse, toListOption } from "./validator.ts";
@@ -11,72 +12,27 @@ export async function listIssues(
   context: Context,
   option: Partial<ListIssueQuery> = {},
 ): Promise<Issue[]> {
-  const opts: RequestInit = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Redmine-API-Key": context.apiKey,
-    },
-  };
   const convertedOption = parse(toListOption, option);
 
-  const fetchPage = async (limit: number, offset: number): Promise<Issue[]> => {
+  // A requested limit selects the helper's over-fetch-avoiding path, which
+  // walks sequentially and skips the total_count probe; without one the helper
+  // probes the count and walks the remaining pages with bounded parallelism.
+  return await fetchAllPages(async (limit, offset) => {
     const endpoint = buildUrl(context.endpoint, "issues.json");
     endpoint.search = new URLSearchParams({
       limit: `${limit}`,
       offset: `${offset}`,
       ...convertedOption,
     }).toString();
-    const response = await fetch(endpoint, opts);
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Redmine-API-Key": context.apiKey,
+      },
+    });
     await assertResponse(response);
-    const json = await response.json();
-    return parse(listResponse, json).issues;
-  };
-
-  // When a limit is requested, the caller does not care about the server's
-  // total_count, so the extra count request that the unbounded path needs
-  // (to know how many pages to walk) is unnecessary and would over-fetch.
-  if (option.limit !== undefined) {
-    const limit = option.limit;
-    const issues: Issue[] = [];
-    while (issues.length < limit) {
-      const fetchSize = Math.min(pageSize, limit - issues.length);
-      const page = await fetchPage(fetchSize, issues.length);
-      issues.push(...page);
-      if (page.length < fetchSize) {
-        break;
-      }
-    }
-    return issues.slice(0, limit);
-  }
-
-  const n = await fetchNumberOfIssues(context, option);
-  const issues: Issue[] = [];
-  for (let offset = 0; offset < n; offset += pageSize) {
-    issues.push(...await fetchPage(pageSize, offset));
-  }
-  return issues;
-}
-
-async function fetchNumberOfIssues(
-  context: Context,
-  option: Partial<ListIssueQuery>,
-): Promise<number> {
-  const endpoint = buildUrl(context.endpoint, "issues.json");
-  endpoint.search = new URLSearchParams({
-    limit: "1",
-    offset: "0",
-    ...parse(toListOption, option),
-  }).toString();
-
-  const response = await fetch(endpoint, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Redmine-API-Key": context.apiKey,
-    },
-  });
-
-  await assertResponse(response);
-  return parse(listResponse, await response.json()).totalCount;
+    const parsed = parse(listResponse, await response.json());
+    return { items: parsed.issues, totalCount: parsed.totalCount };
+  }, { pageSize, limit: option.limit });
 }
