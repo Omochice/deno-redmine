@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.2.0](https://github.com/Omochice/deno-redmine/compare/v2.1.0...v2.2.0) (2026-07-17)
+
+
+### Features
+
+* add issue watcher operations ([#410](https://github.com/Omochice/deno-redmine/issues/410)) ([8bb9e45](https://github.com/Omochice/deno-redmine/commit/8bb9e45d705546fb15ceb899e363c1b4c5132210))
+* expose response status and body on Redmine errors ([#418](https://github.com/Omochice/deno-redmine/issues/418)) ([4e7b0ce](https://github.com/Omochice/deno-redmine/commit/4e7b0ce33163a5a53825e19bc8c91f15a8d67cde))
+* implement attachment resources ([#413](https://github.com/Omochice/deno-redmine/issues/413)) ([7b4de18](https://github.com/Omochice/deno-redmine/commit/7b4de1882be745e65985f4203d09e732d64882c3))
+* implement custom field resources ([#402](https://github.com/Omochice/deno-redmine/issues/402)) ([7fe7b75](https://github.com/Omochice/deno-redmine/commit/7fe7b75edebdaa2fd4de8fbf6191599698ba468b))
+* implement enumeration resources ([#401](https://github.com/Omochice/deno-redmine/issues/401)) ([752963b](https://github.com/Omochice/deno-redmine/commit/752963bae3d6ee2b4977e614525facbb520a0a9e))
+* implement file resources ([#414](https://github.com/Omochice/deno-redmine/issues/414)) ([88f66d3](https://github.com/Omochice/deno-redmine/commit/88f66d3dff5a961cb796392c86f05e7d6631e01f))
+* implement group resources ([#411](https://github.com/Omochice/deno-redmine/issues/411)) ([a421502](https://github.com/Omochice/deno-redmine/commit/a421502aee92e48ee5ee45f764ca5c1ccf3fa3c9))
+* implement issue category resources ([#407](https://github.com/Omochice/deno-redmine/issues/407)) ([01805bd](https://github.com/Omochice/deno-redmine/commit/01805bd10ccdc64610ea373c0a1109dbf7a1b44f))
+* implement issue relation resources ([#412](https://github.com/Omochice/deno-redmine/issues/412)) ([f837337](https://github.com/Omochice/deno-redmine/commit/f83733779736637ec93763d3f18082d9795d23bb))
+* implement membership resources ([#408](https://github.com/Omochice/deno-redmine/issues/408)) ([23cf9b4](https://github.com/Omochice/deno-redmine/commit/23cf9b4611ffb963fc133d5bc15c7e2c91501c72))
+* implement my account resources ([#409](https://github.com/Omochice/deno-redmine/issues/409)) ([62d02bd](https://github.com/Omochice/deno-redmine/commit/62d02bd376c54734c336a2ead7210da66921fad9))
+* implement news resources ([#404](https://github.com/Omochice/deno-redmine/issues/404)) ([20b7df5](https://github.com/Omochice/deno-redmine/commit/20b7df533a209fc525b105edb535dc54e69d1ab6))
+* implement query resources ([#403](https://github.com/Omochice/deno-redmine/issues/403)) ([229891e](https://github.com/Omochice/deno-redmine/commit/229891e372f0205c260b6a7ce62c800fad5d9ffc))
+* implement role resources ([#400](https://github.com/Omochice/deno-redmine/issues/400)) ([5f9a7cb](https://github.com/Omochice/deno-redmine/commit/5f9a7cb20796e0891de160b96a067fbdfaaf2816))
+* implement search resources ([#415](https://github.com/Omochice/deno-redmine/issues/415)) ([e1566d0](https://github.com/Omochice/deno-redmine/commit/e1566d0f9eb98e8134b2ff545ec64237d5915b8a))
+* implement time entry resources ([#406](https://github.com/Omochice/deno-redmine/issues/406)) ([f4a16e6](https://github.com/Omochice/deno-redmine/commit/f4a16e63bba5c97fb8b7aecb47ff614e9167223f))
+* implement user resources ([#405](https://github.com/Omochice/deno-redmine/issues/405)) ([4fbbc1c](https://github.com/Omochice/deno-redmine/commit/4fbbc1c9e3118104b33a2c42891c1def807129bb))
+
 ## [2.1.0](https://github.com/Omochice/deno-redmine/compare/v2.0.1...v2.1.0) (2026-07-12)
 
 
