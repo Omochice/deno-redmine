@@ -19,6 +19,8 @@ Redmine rest api wrapper for deno.
   - [x] [Updating a project](https://www.redmine.org/projects/redmine/wiki/Rest_Projects#Updating-a-project)
   - [x] [Archiving a project](https://www.redmine.org/projects/redmine/wiki/Rest_Projects#Archiving-a-project)
   - [x] [Unarchiving a project](https://www.redmine.org/projects/redmine/wiki/Rest_Projects#Unarchiving-a-project)
+  - [x] [Closing a project](https://www.redmine.org/projects/redmine/wiki/Rest_Projects)
+  - [x] [Reopening a project](https://www.redmine.org/projects/redmine/wiki/Rest_Projects)
   - [x] [Deleting a project](https://www.redmine.org/projects/redmine/wiki/Rest_Projects#Deleting-a-project)
 - [x] [Project Memberships](https://www.redmine.org/projects/redmine/wiki/Rest_Memberships)
   - [x] [`/projects/:project_id/memberships.:format`](https://www.redmine.org/projects/redmine/wiki/Rest_Memberships#projectsproject_idmembershipsformat)

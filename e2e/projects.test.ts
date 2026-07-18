@@ -6,6 +6,7 @@ import { create } from "../result/projects/create.ts";
 import { update } from "../result/projects/update.ts";
 import { deleteProject } from "../result/projects/delete.ts";
 import { archive, unarchive } from "../result/projects/archive.ts";
+import { close, reopen } from "../result/projects/close.ts";
 
 Deno.test({
   name: "E2E: Projects API",
@@ -124,6 +125,26 @@ Deno.test({
 
         const unarchiveResult = await unarchive(e2eContext, project!.id);
         expect(unarchiveResult.isOk(), "Expected unarchive to succeed").toBe(
+          true,
+        );
+      },
+    );
+
+    await t.step(
+      "PUT /projects/:id/close.json should close and reopen",
+      async () => {
+        const listResult = await fetchList(e2eContext);
+        expect(listResult.isOk()).toBe(true);
+        const project = listResult._unsafeUnwrap().find((p) =>
+          p.identifier === "e2e-created-project"
+        );
+        expect(project).toBeDefined();
+
+        const closeResult = await close(e2eContext, project!.id);
+        expect(closeResult.isOk(), "Expected close to succeed").toBe(true);
+
+        const reopenResult = await reopen(e2eContext, project!.id);
+        expect(reopenResult.isOk(), "Expected reopen to succeed").toBe(
           true,
         );
       },

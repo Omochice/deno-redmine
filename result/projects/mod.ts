@@ -6,6 +6,7 @@ import type { ProjectQuery } from "../../throwable/projects/type.ts";
 import { update } from "./update.ts";
 import { deleteProject } from "./delete.ts";
 import { archive, unarchive } from "./archive.ts";
+import { close, reopen } from "./close.ts";
 import { ProjectUpdateInformation } from "../../throwable/projects/update.ts";
 
 export class Client {
@@ -83,5 +84,23 @@ export class Client {
    */
   unarchive(id: number): ReturnType<typeof unarchive> {
     return unarchive(this.#context, id);
+  }
+
+  /**
+   * Closes the project of given id or identifier.
+   *
+   * @param id Project identifier
+   */
+  close(id: number): ReturnType<typeof close> {
+    return close(this.#context, id);
+  }
+
+  /**
+   * Reopens the project of given id or identifier.
+   *
+   * @param id Project identifier
+   */
+  reopen(id: number): ReturnType<typeof reopen> {
+    return reopen(this.#context, id);
   }
 }
