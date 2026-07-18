@@ -213,8 +213,9 @@ async function seedTestData(context: Context): Promise<void> {
     `tracker = Tracker.first!`,
     `IssueTemplate.create!(project_id: ${projectId}, tracker_id: tracker.id, author_id: author.id, title: "E2E Bug Template", issue_title: "Bug: ", description: "Template for bug reports", enabled: true)`,
     `GlobalIssueTemplate.create!(tracker_id: tracker.id, author_id: author.id, project_ids: [${projectId}], title: "E2E Global Template", issue_title: "Global: ", description: "Global template description", enabled: true)`,
-    // News has no REST create endpoint, so seed via the model. One item omits
-    // summary to exercise how Redmine renders a blank summary in the API.
+    // Seed these read fixtures via the model so the list assertions do not
+    // depend on the create endpoint under test. One item omits summary to
+    // exercise how Redmine renders a blank summary in the API.
     `News.create!(project_id: ${projectId}, author_id: author.id, title: "E2E News", summary: "E2E news summary", description: "E2E news description")`,
     `News.create!(project_id: ${projectId}, author_id: author.id, title: "E2E News Without Summary", description: "E2E news description without summary")`,
   ].join("; ");
