@@ -1,4 +1,4 @@
-import { assert } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/queries/list.ts";
 
@@ -7,11 +7,11 @@ Deno.test("E2E: Queries API", async (t) => {
     "GET /queries.json should return the list of queries",
     async () => {
       const result = await fetchList(e2eContext);
-      assert(result.isOk());
+      expect(result.isOk()).toBe(true);
       // Saved queries are user-created, so a freshly provisioned Redmine has
       // none; a successful parse already proves the response matches the
       // schema regardless of length.
-      assert(Array.isArray(result.value));
+      expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
     },
   );
 });

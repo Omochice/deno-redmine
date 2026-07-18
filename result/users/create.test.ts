@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -18,7 +18,7 @@ Deno.test("POST /users.json", async (t) => {
         lastname: "Smith",
         mail: "jsmith@example.com",
       });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
     },
   );
 
@@ -33,7 +33,7 @@ Deno.test("POST /users.json", async (t) => {
         lastname: "Smith",
         mail: "jsmith@example.com",
       });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
@@ -46,7 +46,7 @@ Deno.test("POST /users.json", async (t) => {
       lastname: "Smith",
       mail: "jsmith@example.com",
     });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -73,12 +73,12 @@ Deno.test("POST /users.json", async (t) => {
         mustChangePasswd: true,
         generatePassword: false,
       });
-      assert(e.isOk());
-      assertEquals(captured?.login, "jsmith");
-      assertEquals(captured?.auth_source_id, 1);
-      assertEquals(captured?.mail_notification, "only_my_events");
-      assertEquals(captured?.must_change_passwd, true);
-      assertEquals(captured?.generate_password, false);
+      expect(e.isOk()).toBe(true);
+      expect(captured?.login).toStrictEqual("jsmith");
+      expect(captured?.auth_source_id).toStrictEqual(1);
+      expect(captured?.mail_notification).toStrictEqual("only_my_events");
+      expect(captured?.must_change_passwd).toStrictEqual(true);
+      expect(captured?.generate_password).toStrictEqual(false);
     },
   );
 });

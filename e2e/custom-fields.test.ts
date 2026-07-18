@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/custom-fields/list.ts";
 
@@ -7,13 +7,13 @@ Deno.test("E2E: Custom Fields API", async (t) => {
     "GET /custom_fields.json should return an array of custom fields",
     async () => {
       const result = await fetchList(e2eContext);
-      assert(result.isOk());
-      assert(Array.isArray(result.value));
+      expect(result.isOk()).toBe(true);
+      expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
       // e2e/setup.ts seeds an "E2E CF" issue custom field, so the list is
       // non-empty and contains it.
-      const seeded = result.value.find((cf) => cf.name === "E2E CF");
-      assert(seeded !== undefined);
-      assertEquals(seeded.fieldFormat, "string");
+      const seeded = result._unsafeUnwrap().find((cf) => cf.name === "E2E CF");
+      expect(seeded).toBeDefined();
+      expect(seeded!.fieldFormat).toStrictEqual("string");
     },
   );
 });

@@ -2,7 +2,7 @@ import { search } from "./search.ts";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
 import { http, HttpResponse } from "npm:msw@2.15.0";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 
 const server = setupServer();
 server.listen();
@@ -11,7 +11,7 @@ Deno.test("GET /search.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validHandlers);
     const e = await search(context, { q: "E2E" });
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -19,14 +19,15 @@ Deno.test("GET /search.json", async (t) => {
     async () => {
       server.resetHandlers(...validHandlers);
       const e = await search(context, { q: "E2E" });
-      assert(e.isOk());
-      assertEquals(e.value.length, 3);
-      assertEquals(e.value[0].id, 1);
-      assertEquals(e.value[0].type, "issue");
-      assert(e.value[0].datetime instanceof Date);
+      expect(e.isOk()).toBe(true);
+      const items = e._unsafeUnwrap();
+      expect(items.length).toStrictEqual(3);
+      expect(items[0].id).toStrictEqual(1);
+      expect(items[0].type).toStrictEqual("issue");
+      expect(items[0].datetime).toBeInstanceOf(Date);
       // A null description from Redmine normalizes to undefined.
-      assertEquals(e.value[2].type, "project");
-      assertEquals(e.value[2].description, undefined);
+      expect(items[2].type).toStrictEqual("project");
+      expect(items[2].description).toBeUndefined();
     },
   );
 
@@ -53,14 +54,14 @@ Deno.test("GET /search.json", async (t) => {
         scope: "all",
         attachments: true,
       });
-      assert(e.isOk());
-      assert(capturedUrl !== undefined);
-      assertEquals(capturedUrl.searchParams.get("q"), "E2E");
-      assertEquals(capturedUrl.searchParams.get("all_words"), "1");
-      assertEquals(capturedUrl.searchParams.get("wiki_pages"), "1");
-      assertEquals(capturedUrl.searchParams.get("scope"), "all");
-      assertEquals(capturedUrl.searchParams.get("attachments"), "1");
-      assertEquals(capturedUrl.searchParams.get("open_issues"), null);
+      expect(e.isOk()).toBe(true);
+      expect(capturedUrl).toBeDefined();
+      expect(capturedUrl!.searchParams.get("q")).toStrictEqual("E2E");
+      expect(capturedUrl!.searchParams.get("all_words")).toStrictEqual("1");
+      expect(capturedUrl!.searchParams.get("wiki_pages")).toStrictEqual("1");
+      expect(capturedUrl!.searchParams.get("scope")).toStrictEqual("all");
+      expect(capturedUrl!.searchParams.get("attachments")).toStrictEqual("1");
+      expect(capturedUrl!.searchParams.get("open_issues")).toStrictEqual(null);
     },
   );
 
@@ -69,14 +70,14 @@ Deno.test("GET /search.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await search(context, { q: "422" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...invalidHandlers);
     const e = await search(context, { q: "404" });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -105,10 +106,11 @@ Deno.test("GET /search.json", async (t) => {
         }),
       );
       const e = await search(context, { q: "E2E" });
-      assert(e.isOk());
-      assertEquals(e.value.length, total);
-      assertEquals(e.value[0].id, 1);
-      assertEquals(e.value[total - 1].id, total);
+      expect(e.isOk()).toBe(true);
+      const items = e._unsafeUnwrap();
+      expect(items.length).toStrictEqual(total);
+      expect(items[0].id).toStrictEqual(1);
+      expect(items[total - 1].id).toStrictEqual(total);
     },
   );
 });

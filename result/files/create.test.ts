@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -13,7 +13,7 @@ Deno.test("POST /projects/:project_id/files.json", async (t) => {
     async () => {
       server.use(...validHandlers);
       const e = await create(context, 1, { token: "abc" });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
     },
   );
 
@@ -22,14 +22,14 @@ Deno.test("POST /projects/:project_id/files.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const e = await create(context, 422, { token: "abc" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const e = await create(context, 404, { token: "abc" });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -52,11 +52,11 @@ Deno.test("POST /projects/:project_id/files.json", async (t) => {
         filename: "foo.zip",
         description: "A dummy attachment",
       });
-      assert(e.isOk());
-      assertEquals(captured?.token, "abc");
-      assertEquals(captured?.version_id, 3);
-      assertEquals(captured?.filename, "foo.zip");
-      assertEquals(captured?.description, "A dummy attachment");
+      expect(e.isOk()).toBe(true);
+      expect(captured?.token).toStrictEqual("abc");
+      expect(captured?.version_id).toStrictEqual(3);
+      expect(captured?.filename).toStrictEqual("foo.zip");
+      expect(captured?.description).toStrictEqual("A dummy attachment");
     },
   );
 });

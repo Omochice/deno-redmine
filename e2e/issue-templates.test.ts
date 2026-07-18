@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { list } from "../result/issue-templates/list.ts";
 
@@ -17,30 +17,33 @@ Deno.test({
         }
 
         const { issueTemplates, globalIssueTemplates, inheritTemplates } =
-          result.value;
+          result._unsafeUnwrap();
 
-        assertEquals(issueTemplates.length, 1);
-        assertEquals(issueTemplates[0].title, "E2E Bug Template");
-        assertEquals(issueTemplates[0].issueTitle, "Bug: ");
-        assertEquals(issueTemplates[0].description, "Template for bug reports");
-        assertEquals(issueTemplates[0].enabled, true);
-        assertEquals(issueTemplates[0].trackerName, "Bug");
-        assert(issueTemplates[0].createdOn instanceof Date);
-        assert(issueTemplates[0].updatedOn instanceof Date);
+        expect(issueTemplates.length).toStrictEqual(1);
+        expect(issueTemplates[0].title).toStrictEqual("E2E Bug Template");
+        expect(issueTemplates[0].issueTitle).toStrictEqual("Bug: ");
+        expect(issueTemplates[0].description).toStrictEqual(
+          "Template for bug reports",
+        );
+        expect(issueTemplates[0].enabled).toStrictEqual(true);
+        expect(issueTemplates[0].trackerName).toStrictEqual("Bug");
+        expect(issueTemplates[0].createdOn).toBeInstanceOf(Date);
+        expect(issueTemplates[0].updatedOn).toBeInstanceOf(Date);
 
-        assertEquals(globalIssueTemplates.length, 1);
-        assertEquals(globalIssueTemplates[0].title, "E2E Global Template");
-        assertEquals(globalIssueTemplates[0].issueTitle, "Global: ");
-        assertEquals(
-          globalIssueTemplates[0].description,
+        expect(globalIssueTemplates.length).toStrictEqual(1);
+        expect(globalIssueTemplates[0].title).toStrictEqual(
+          "E2E Global Template",
+        );
+        expect(globalIssueTemplates[0].issueTitle).toStrictEqual("Global: ");
+        expect(globalIssueTemplates[0].description).toStrictEqual(
           "Global template description",
         );
-        assertEquals(globalIssueTemplates[0].enabled, true);
-        assertEquals(globalIssueTemplates[0].trackerName, "Bug");
-        assert(globalIssueTemplates[0].createdOn instanceof Date);
-        assert(globalIssueTemplates[0].updatedOn instanceof Date);
+        expect(globalIssueTemplates[0].enabled).toStrictEqual(true);
+        expect(globalIssueTemplates[0].trackerName).toStrictEqual("Bug");
+        expect(globalIssueTemplates[0].createdOn).toBeInstanceOf(Date);
+        expect(globalIssueTemplates[0].updatedOn).toBeInstanceOf(Date);
 
-        assertEquals(inheritTemplates.length, 0);
+        expect(inheritTemplates.length).toStrictEqual(0);
       },
     );
   },

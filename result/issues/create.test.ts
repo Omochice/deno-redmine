@@ -1,5 +1,5 @@
 import { createIssue } from "./create.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
 import { http, HttpResponse } from "npm:msw@2.15.0";
@@ -29,10 +29,10 @@ Deno.test("POST /issues.json", async (t) => {
         subject: "sample",
         customFields: [{ id: 1, value: "hello" }],
       });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
 
-      assert(capturedBody !== undefined);
-      assertEquals(capturedBody.issue.custom_fields, [
+      expect(capturedBody).toBeDefined();
+      expect(capturedBody!.issue.custom_fields).toStrictEqual([
         { id: 1, value: "hello" },
       ]);
     },
@@ -59,10 +59,10 @@ Deno.test("POST /issues.json", async (t) => {
         subject: "sample",
         customFields: [{ id: 2, value: ["a", "b"] }],
       });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
 
-      assert(capturedBody !== undefined);
-      assertEquals(capturedBody.issue.custom_fields, [
+      expect(capturedBody).toBeDefined();
+      expect(capturedBody!.issue.custom_fields).toStrictEqual([
         { id: 2, value: ["a", "b"] },
       ]);
     },

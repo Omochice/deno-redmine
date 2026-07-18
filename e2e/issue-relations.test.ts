@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/issue-relations/list.ts";
 import { show } from "../result/issue-relations/show.ts";
@@ -11,25 +11,25 @@ Deno.test({
   name: "E2E: Issue Relations API",
   fn: async (t) => {
     const projectsResult = await fetchProjects(e2eContext);
-    assert(projectsResult.isOk());
-    const project = projectsResult.value.find((p) =>
+    expect(projectsResult.isOk()).toBe(true);
+    const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    assert(project !== undefined);
+    expect(project).toBeDefined();
 
     const issuesResult = await listIssues(e2eContext, {
-      projectId: project.id,
+      projectId: project!.id,
     });
-    assert(issuesResult.isOk());
-    assert(issuesResult.value.length > 0);
-    const firstIssue = issuesResult.value[0];
+    expect(issuesResult.isOk()).toBe(true);
+    expect(issuesResult._unsafeUnwrap().length).toBeGreaterThan(0);
+    const firstIssue = issuesResult._unsafeUnwrap()[0];
 
     // A relation needs two distinct issues. Seed a second one via a raw POST
     // when the project has only one, reusing the first issue's tracker,
     // status and priority so the created issue is valid for this project.
-    let secondIssueId: number | undefined = issuesResult.value.find((i) =>
-      i.id !== firstIssue.id
-    )?.id;
+    let secondIssueId: number | undefined = issuesResult._unsafeUnwrap().find((
+      i,
+    ) => i.id !== firstIssue.id)?.id;
     if (secondIssueId === undefined) {
       const response = await fetch(`${e2eContext.endpoint}/issues.json`, {
         method: "POST",
@@ -39,7 +39,7 @@ Deno.test({
         },
         body: JSON.stringify({
           issue: {
-            project_id: project.id,
+            project_id: project!.id,
             tracker_id: firstIssue.tracker.id,
             status_id: firstIssue.status.id,
             priority_id: firstIssue.priority.id,
@@ -47,11 +47,11 @@ Deno.test({
           },
         }),
       });
-      assert(response.ok);
+      expect(response.ok).toBe(true);
       const created = await response.json() as { issue: { id: number } };
       secondIssueId = created.issue.id;
     }
-    assert(secondIssueId !== undefined);
+    expect(secondIssueId).toBeDefined();
     const targetIssueId = secondIssueId;
 
     await t.step(
@@ -61,7 +61,7 @@ Deno.test({
           issueToId: targetIssueId,
           relationType: "relates",
         });
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
       },
     );
 
@@ -69,12 +69,12 @@ Deno.test({
       "GET /issues/:issue_id/relations.json should return relations",
       async () => {
         const result = await fetchList(e2eContext, firstIssue.id);
-        assert(result.isOk());
-        const relation = result.value.find((r) =>
+        expect(result.isOk()).toBe(true);
+        const relation = result._unsafeUnwrap().find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
-        assert(relation !== undefined);
-        assertEquals(relation.issueId, firstIssue.id);
+        expect(relation).toBeDefined();
+        expect(relation!.issueId).toStrictEqual(firstIssue.id);
       },
     );
 
@@ -82,18 +82,19 @@ Deno.test({
       "GET /relations/:id.json should return a relation",
       async () => {
         const listResult = await fetchList(e2eContext, firstIssue.id);
-        assert(listResult.isOk());
-        const relation = listResult.value.find((r) =>
+        expect(listResult.isOk()).toBe(true);
+        const relation = listResult._unsafeUnwrap().find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
-        assert(relation !== undefined);
+        expect(relation).toBeDefined();
 
-        const result = await show(e2eContext, relation.id);
-        assert(result.isOk());
-        assertEquals(result.value.id, relation.id);
-        assertEquals(result.value.issueId, firstIssue.id);
-        assertEquals(result.value.issueToId, targetIssueId);
-        assertEquals(result.value.relationType, "relates");
+        const result = await show(e2eContext, relation!.id);
+        expect(result.isOk()).toBe(true);
+        const shown = result._unsafeUnwrap();
+        expect(shown.id).toStrictEqual(relation!.id);
+        expect(shown.issueId).toStrictEqual(firstIssue.id);
+        expect(shown.issueToId).toStrictEqual(targetIssueId);
+        expect(shown.relationType).toStrictEqual("relates");
       },
     );
 
@@ -101,17 +102,17 @@ Deno.test({
       "DELETE /relations/:id.json should delete a relation",
       async () => {
         const listResult = await fetchList(e2eContext, firstIssue.id);
-        assert(listResult.isOk());
-        const relation = listResult.value.find((r) =>
+        expect(listResult.isOk()).toBe(true);
+        const relation = listResult._unsafeUnwrap().find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
-        assert(relation !== undefined);
+        expect(relation).toBeDefined();
 
-        const result = await deleteRelation(e2eContext, relation.id);
-        assert(result.isOk());
+        const result = await deleteRelation(e2eContext, relation!.id);
+        expect(result.isOk()).toBe(true);
 
-        const showResult = await show(e2eContext, relation.id);
-        assert(showResult.isErr());
+        const showResult = await show(e2eContext, relation!.id);
+        expect(showResult.isErr()).toBe(true);
       },
     );
   },

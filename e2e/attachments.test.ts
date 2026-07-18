@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { show } from "../result/attachments/show.ts";
 import { update } from "../result/attachments/update.ts";
@@ -115,11 +115,14 @@ Deno.test({
       "GET /attachments/:id.json should return an attachment",
       async () => {
         const result = await show(e2eContext, attachmentId);
-        assert(result.isOk());
-        assertEquals(result.value.id, attachmentId);
-        assertEquals(result.value.filename, "e2e-attachment.txt");
-        assertEquals(result.value.contentType, "text/plain");
-        assert(result.value.author !== undefined);
+        expect(result.isOk()).toBe(true);
+        const attachment = result._unsafeUnwrap();
+        expect(attachment.id).toStrictEqual(attachmentId);
+        expect(attachment.filename).toStrictEqual(
+          "e2e-attachment.txt",
+        );
+        expect(attachment.contentType).toStrictEqual("text/plain");
+        expect(attachment.author).toBeDefined();
       },
     );
 
@@ -129,11 +132,13 @@ Deno.test({
         const result = await update(e2eContext, attachmentId, {
           description: "Updated by E2E test",
         });
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
 
         const showResult = await show(e2eContext, attachmentId);
-        assert(showResult.isOk());
-        assertEquals(showResult.value.description, "Updated by E2E test");
+        expect(showResult.isOk()).toBe(true);
+        expect(showResult._unsafeUnwrap().description).toStrictEqual(
+          "Updated by E2E test",
+        );
       },
     );
 
@@ -141,10 +146,10 @@ Deno.test({
       "DELETE /attachments/:id.json should delete an attachment",
       async () => {
         const result = await deleteAttachment(e2eContext, attachmentId);
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
 
         const showResult = await show(e2eContext, attachmentId);
-        assert(showResult.isErr());
+        expect(showResult.isErr()).toBe(true);
       },
     );
   },

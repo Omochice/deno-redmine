@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { show } from "../result/my-account/show.ts";
 import { update } from "../result/my-account/update.ts";
@@ -7,18 +7,18 @@ Deno.test({
   name: "E2E: My Account API",
   fn: async (t) => {
     const initialResult = await show(e2eContext);
-    assert(initialResult.isOk());
-    const originalFirstname = initialResult.value.firstname;
+    expect(initialResult.isOk()).toBe(true);
+    const originalFirstname = initialResult._unsafeUnwrap().firstname;
 
     try {
       await t.step(
         "GET /my/account.json should return the authenticated user's account",
         async () => {
           const result = await show(e2eContext);
-          assert(result.isOk());
+          expect(result.isOk()).toBe(true);
           // e2e/setup.ts authenticates as the "admin" user, so the account
           // returned here is always that user.
-          assertEquals(result.value.login, "admin");
+          expect(result._unsafeUnwrap().login).toStrictEqual("admin");
         },
       );
 
@@ -28,11 +28,13 @@ Deno.test({
           const result = await update(e2eContext, {
             firstname: "E2E Updated Firstname",
           });
-          assert(result.isOk());
+          expect(result.isOk()).toBe(true);
 
           const showResult = await show(e2eContext);
-          assert(showResult.isOk());
-          assertEquals(showResult.value.firstname, "E2E Updated Firstname");
+          expect(showResult.isOk()).toBe(true);
+          expect(showResult._unsafeUnwrap().firstname).toStrictEqual(
+            "E2E Updated Firstname",
+          );
         },
       );
     } finally {
@@ -41,7 +43,7 @@ Deno.test({
       const restoreResult = await update(e2eContext, {
         firstname: originalFirstname,
       });
-      assert(restoreResult.isOk());
+      expect(restoreResult.isOk()).toBe(true);
     }
   },
 });

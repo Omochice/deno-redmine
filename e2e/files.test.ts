@@ -1,4 +1,4 @@
-import { assert } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/files/list.ts";
 import { create } from "../result/files/create.ts";
@@ -9,11 +9,11 @@ Deno.test({
   name: "E2E: Files API",
   fn: async (t) => {
     const projectsResult = await fetchProjects(e2eContext);
-    assert(projectsResult.isOk());
-    const project = projectsResult.value.find((p) =>
+    expect(projectsResult.isOk()).toBe(true);
+    const project = projectsResult._unsafeUnwrap().find((p) =>
       p.identifier === "e2e-test-project"
     );
-    assert(project !== undefined);
+    expect(project).toBeDefined();
 
     const filename = "e2e-file.txt";
 
@@ -26,31 +26,33 @@ Deno.test({
           new TextEncoder().encode("e2e file content"),
           filename,
         );
-        assert(result.isOk());
-        token = result.value;
+        expect(result.isOk()).toBe(true);
+        token = result._unsafeUnwrap();
       },
     );
 
     await t.step(
       "POST /projects/:project_id/files.json should create a file",
       async () => {
-        assert(token !== undefined);
-        const result = await create(e2eContext, project.id, {
-          token,
+        expect(token).toBeDefined();
+        const result = await create(e2eContext, project!.id, {
+          token: token!,
           filename,
           description: "Created by E2E test",
         });
-        assert(result.isOk());
+        expect(result.isOk()).toBe(true);
       },
     );
 
     await t.step(
       "GET /projects/:project_id/files.json should return files",
       async () => {
-        const result = await fetchList(e2eContext, project.id);
-        assert(result.isOk());
-        const created = result.value.find((f) => f.filename === filename);
-        assert(created !== undefined);
+        const result = await fetchList(e2eContext, project!.id);
+        expect(result.isOk()).toBe(true);
+        const created = result._unsafeUnwrap().find((f) =>
+          f.filename === filename
+        );
+        expect(created).toBeDefined();
       },
     );
   },

@@ -1,9 +1,4 @@
-import {
-  assertEquals,
-  assertInstanceOf,
-  assertRejects,
-  assertStrictEquals,
-} from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { assertResponse, RedmineResponseError } from "./error.ts";
 
 Deno.test("RedmineResponseError.fromResponse captures status, statusText and body", async () => {
@@ -13,19 +8,19 @@ Deno.test("RedmineResponseError.fromResponse captures status, statusText and bod
   });
   const error = await RedmineResponseError.fromResponse(response);
 
-  assertInstanceOf(error, RedmineResponseError);
-  assertEquals(error.name, "RedmineResponseError");
-  assertEquals(error.status, 422);
-  assertEquals(error.statusText, "Unprocessable Entity");
-  assertEquals(error.body, "id is required");
-  assertEquals(error.message, "Unprocessable Entity");
+  expect(error).toBeInstanceOf(RedmineResponseError);
+  expect(error.name).toStrictEqual("RedmineResponseError");
+  expect(error.status).toStrictEqual(422);
+  expect(error.statusText).toStrictEqual("Unprocessable Entity");
+  expect(error.body).toStrictEqual("id is required");
+  expect(error.message).toStrictEqual("Unprocessable Entity");
 });
 
 Deno.test("RedmineResponseError falls back to the status code when statusText is empty", async () => {
   const response = new Response("boom", { status: 500, statusText: "" });
   const error = await RedmineResponseError.fromResponse(response);
 
-  assertEquals(error.message, "HTTP 500");
+  expect(error.message).toStrictEqual("HTTP 500");
 });
 
 Deno.test("RedmineResponseError does not populate cause", async () => {
@@ -35,7 +30,7 @@ Deno.test("RedmineResponseError does not populate cause", async () => {
   });
   const error = await RedmineResponseError.fromResponse(response);
 
-  assertStrictEquals(error.cause, undefined);
+  expect(error.cause).toBe(undefined);
 });
 
 Deno.test("RedmineResponseError.fromResponse falls back to empty body when the body is unreadable", async () => {
@@ -47,7 +42,7 @@ Deno.test("RedmineResponseError.fromResponse falls back to empty body when the b
 
   const error = await RedmineResponseError.fromResponse(response);
 
-  assertEquals(error.body, "");
+  expect(error.body).toStrictEqual("");
 });
 
 Deno.test("assertResponse resolves without throwing for an ok response", async () => {
@@ -61,8 +56,13 @@ Deno.test("assertResponse throws RedmineResponseError carrying the response deta
     statusText: "Not Found",
   });
 
-  const error = await assertRejects(() => assertResponse(response));
-  assertInstanceOf(error, RedmineResponseError);
-  assertEquals(error.status, 404);
-  assertEquals(error.body, "not found");
+  let error: unknown;
+  try {
+    await assertResponse(response);
+  } catch (e) {
+    error = e;
+  }
+  expect(error).toBeInstanceOf(RedmineResponseError);
+  expect((error as RedmineResponseError).status).toStrictEqual(404);
+  expect((error as RedmineResponseError).body).toStrictEqual("not found");
 });

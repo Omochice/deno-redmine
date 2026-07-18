@@ -7,7 +7,7 @@ import {
 } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 
 const server = setupServer();
 server.listen();
@@ -16,7 +16,7 @@ Deno.test("PUT /my/account.json", async (t) => {
   await t.step("if got 204, should be success", async () => {
     server.resetHandlers(...validHandlers);
     const e = await update(context, { firstname: "Jane" });
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -24,14 +24,14 @@ Deno.test("PUT /my/account.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await update(context, { firstname: "Jane" });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...notFoundHandlers);
     const e = await update(context, { firstname: "Jane" });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -54,11 +54,13 @@ Deno.test("PUT /my/account.json", async (t) => {
         mail: "jane@example.com",
         customFieldValues: { "1": "090-1111-2222" },
       });
-      assert(e.isOk());
-      assertEquals(captured?.firstname, "Jane");
-      assertEquals(captured?.lastname, "Doe");
-      assertEquals(captured?.mail, "jane@example.com");
-      assertEquals(captured?.custom_field_values, { "1": "090-1111-2222" });
+      expect(e.isOk()).toBe(true);
+      expect(captured?.firstname).toStrictEqual("Jane");
+      expect(captured?.lastname).toStrictEqual("Doe");
+      expect(captured?.mail).toStrictEqual("jane@example.com");
+      expect(captured?.custom_field_values).toStrictEqual({
+        "1": "090-1111-2222",
+      });
     },
   );
 });

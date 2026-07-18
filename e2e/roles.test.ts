@@ -1,4 +1,4 @@
-import { assert } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
 import { fetchList } from "../result/roles/list.ts";
 import { show } from "../result/roles/show.ts";
@@ -10,8 +10,8 @@ Deno.test({
       "GET /roles.json should return a list of roles",
       async () => {
         const result = await fetchList(e2eContext);
-        assert(result.isOk());
-        assert(Array.isArray(result.value));
+        expect(result.isOk()).toBe(true);
+        expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
       },
     );
 
@@ -19,8 +19,8 @@ Deno.test({
       "GET /roles/:id.json should return a role",
       async () => {
         const listResult = await fetchList(e2eContext);
-        assert(listResult.isOk());
-        const role = listResult.value[0];
+        expect(listResult.isOk()).toBe(true);
+        const role = listResult._unsafeUnwrap()[0];
         // e2e/setup.ts seeds a role so this normally runs. A freshly
         // provisioned Redmine loads no default roles, so guard the listing
         // being empty, but surface it rather than passing silently.
@@ -30,10 +30,11 @@ Deno.test({
         }
 
         const result = await show(e2eContext, role.id);
-        assert(result.isOk());
-        assert(result.value.id === role.id);
-        assert(result.value.name === role.name);
-        assert(Array.isArray(result.value.permissions));
+        expect(result.isOk()).toBe(true);
+        const shown = result._unsafeUnwrap();
+        expect(shown.id).toBe(role.id);
+        expect(shown.name).toBe(role.name);
+        expect(Array.isArray(shown.permissions)).toBe(true);
       },
     );
   },

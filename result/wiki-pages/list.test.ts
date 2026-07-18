@@ -1,5 +1,5 @@
 import { fetchList } from "./list.ts";
-import { assert } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 
 import {
   context,
@@ -15,13 +15,13 @@ Deno.test("GET /projects/:id/wiki/index.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validResponseHandelers);
     const e = await fetchList(context, 1);
-    assert(e.isOk());
-    assert(e.value.length === 2);
+    expect(e.isOk()).toBe(true);
+    expect(e._unsafeUnwrap().length).toBe(2);
   });
   await t.step("If got 422, should be error", async () => {
     server.resetHandlers(...invalidResponseHandlers);
     const e = await fetchList(context, 2);
-    assert(e.isErr());
-    assert(e.error.message === "Unprocessable Entity");
+    expect(e.isErr()).toBe(true);
+    expect(e._unsafeUnwrapErr().message).toBe("Unprocessable Entity");
   });
 });

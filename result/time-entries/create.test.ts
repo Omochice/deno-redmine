@@ -1,5 +1,5 @@
 import { create } from "./create.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -13,7 +13,7 @@ Deno.test("POST /time_entries.json", async (t) => {
     async () => {
       server.use(...validHandlers);
       const e = await create(context, { projectId: 1, hours: 2 });
-      assert(e.isOk());
+      expect(e.isOk()).toBe(true);
     },
   );
 
@@ -23,7 +23,7 @@ Deno.test("POST /time_entries.json", async (t) => {
       server.use(...invalidHandlers);
       const c = { ...context, endpoint: `${context.endpoint}/422` };
       const e = await create(c, { projectId: 1, hours: 2 });
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 
@@ -31,7 +31,7 @@ Deno.test("POST /time_entries.json", async (t) => {
     server.use(...invalidHandlers);
     const c = { ...context, endpoint: `${context.endpoint}/404` };
     const e = await create(c, { projectId: 1, hours: 2 });
-    assert(e.isErr());
+    expect(e.isErr()).toBe(true);
   });
 
   await t.step(
@@ -57,12 +57,12 @@ Deno.test("POST /time_entries.json", async (t) => {
         comments: "Worked on it",
         spentOn: new Date("2026-07-01"),
       });
-      assert(e.isOk());
-      assertEquals(captured?.issue_id, 5);
-      assertEquals(captured?.hours, 2.5);
-      assertEquals(captured?.activity_id, 9);
-      assertEquals(captured?.comments, "Worked on it");
-      assertEquals(captured?.spent_on, "2026-07-01");
+      expect(e.isOk()).toBe(true);
+      expect(captured?.issue_id).toStrictEqual(5);
+      expect(captured?.hours).toStrictEqual(2.5);
+      expect(captured?.activity_id).toStrictEqual(9);
+      expect(captured?.comments).toStrictEqual("Worked on it");
+      expect(captured?.spent_on).toStrictEqual("2026-07-01");
     },
   );
 });

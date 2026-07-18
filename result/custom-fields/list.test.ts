@@ -1,5 +1,5 @@
 import { fetchList } from "./list.ts";
-import { assert, assertEquals } from "jsr:@std/assert@1.0.19";
+import { expect } from "jsr:@std/expect@1.0.20";
 
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -11,7 +11,7 @@ Deno.test("GET /custom_fields.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validHandlers);
     const e = await fetchList(context);
-    assert(e.isOk());
+    expect(e.isOk()).toBe(true);
   });
 
   await t.step(
@@ -19,9 +19,10 @@ Deno.test("GET /custom_fields.json", async (t) => {
     async () => {
       server.resetHandlers(...validHandlers);
       const e = await fetchList(context);
-      assert(e.isOk());
-      assertEquals(e.value.length, 3);
-      assertEquals(e.value[0], {
+      expect(e.isOk()).toBe(true);
+      const customFields = e._unsafeUnwrap();
+      expect(customFields.length).toStrictEqual(3);
+      expect(customFields[0]).toStrictEqual({
         id: 1,
         name: "Affected version",
         customizedType: "issue",
@@ -39,7 +40,7 @@ Deno.test("GET /custom_fields.json", async (t) => {
         trackers: [{ id: 1, name: "Bug" }],
         roles: [{ id: 3, name: "Manager" }],
       });
-      assertEquals(e.value[1], {
+      expect(customFields[1]).toStrictEqual({
         id: 2,
         name: "Database",
         customizedType: "project",
@@ -57,7 +58,7 @@ Deno.test("GET /custom_fields.json", async (t) => {
         multiple: false,
         visible: true,
       });
-      assertEquals(e.value[2].possibleValues, [
+      expect(customFields[2].possibleValues).toStrictEqual([
         { value: "a" },
         { value: "b" },
       ]);
@@ -69,7 +70,7 @@ Deno.test("GET /custom_fields.json", async (t) => {
     async () => {
       server.resetHandlers(...invalidHandlers);
       const e = await fetchList(context);
-      assert(e.isErr());
+      expect(e.isErr()).toBe(true);
     },
   );
 });
