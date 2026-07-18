@@ -13,6 +13,12 @@ export const validHandlers = [
   http.put(`${context.endpoint}/projects/:id/unarchive.json`, () => {
     return HttpResponse.json({});
   }),
+  http.put(`${context.endpoint}/projects/:id/close.json`, () => {
+    return HttpResponse.json({});
+  }),
+  http.put(`${context.endpoint}/projects/:id/reopen.json`, () => {
+    return HttpResponse.json({});
+  }),
   http.post(`${context.endpoint}/projects.json`, () => {
     return HttpResponse.json({});
   }),
@@ -128,6 +134,32 @@ export const invalidHandlers = [
     });
   }),
   http.put(`${context.endpoint}/projects/404/unarchive.json`, () => {
+    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+    return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+  }),
+  http.put(`${context.endpoint}/projects/422/close.json`, () => {
+    return HttpResponse.json({
+      errors: ["sample error"],
+    }, {
+      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+      status: STATUS_CODE.UnprocessableEntity,
+      statusText: "Unprocessable Entity",
+    });
+  }),
+  http.put(`${context.endpoint}/projects/404/close.json`, () => {
+    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+    return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+  }),
+  http.put(`${context.endpoint}/projects/422/reopen.json`, () => {
+    return HttpResponse.json({
+      errors: ["sample error"],
+    }, {
+      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+      status: STATUS_CODE.UnprocessableEntity,
+      statusText: "Unprocessable Entity",
+    });
+  }),
+  http.put(`${context.endpoint}/projects/404/reopen.json`, () => {
     // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
     return new HttpResponse(null, { status: STATUS_CODE.NotFound });
   }),
