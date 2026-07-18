@@ -9,7 +9,7 @@ server.listen();
 
 Deno.test("PUT /news/:id.json", async (t) => {
   await t.step("if got 204, should be success", async () => {
-    server.use(...validHandlers);
+    server.resetHandlers(...validHandlers);
     const e = await update(context, 1, { title: "Updated title" });
     expect(e.isOk()).toBe(true);
   });
@@ -17,7 +17,7 @@ Deno.test("PUT /news/:id.json", async (t) => {
   await t.step(
     "if get invalid response with error object, should be err",
     async () => {
-      server.use(...invalidHandlers);
+      server.resetHandlers(...invalidHandlers);
       const e = await update(context, 422, { title: "Updated title" });
       expect(e.isErr()).toBe(true);
     },
@@ -25,7 +25,7 @@ Deno.test("PUT /news/:id.json", async (t) => {
 
   await t.step("should send camelCase attributes as snake_case", async () => {
     let captured: Record<string, unknown> | undefined;
-    server.use(
+    server.resetHandlers(
       http.put(
         `${context.endpoint}/news/:id.json`,
         async ({ request }) => {

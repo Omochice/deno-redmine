@@ -9,7 +9,7 @@ server.listen();
 
 Deno.test("POST /projects/:project_id/news.json", async (t) => {
   await t.step("if got 201, should be success", async () => {
-    server.use(...validHandlers);
+    server.resetHandlers(...validHandlers);
     const e = await create(context, 1, {
       title: "New title",
       description: "New description",
@@ -20,7 +20,7 @@ Deno.test("POST /projects/:project_id/news.json", async (t) => {
   await t.step(
     "if get invalid response with error object, should be err",
     async () => {
-      server.use(...invalidHandlers);
+      server.resetHandlers(...invalidHandlers);
       const e = await create(context, 422, {
         title: "New title",
         description: "New description",
@@ -33,7 +33,7 @@ Deno.test("POST /projects/:project_id/news.json", async (t) => {
     "should send camelCase attributes as snake_case, including uploads",
     async () => {
       let captured: Record<string, unknown> | undefined;
-      server.use(
+      server.resetHandlers(
         http.post(
           `${context.endpoint}/projects/:id/news.json`,
           async ({ request }) => {

@@ -8,13 +8,13 @@ server.listen();
 
 Deno.test("DELETE /news/:id.json", async (t) => {
   await t.step("if got 204, should be success", async () => {
-    server.use(...validHandlers);
+    server.resetHandlers(...validHandlers);
     const e = await deleteNews(context, 1);
     expect(e.isOk()).toBe(true);
   });
 
   await t.step("if got 404, should be err", async () => {
-    server.use(...invalidHandlers);
+    server.resetHandlers(...invalidHandlers);
     const e = await deleteNews(context, 404);
     expect(e.isErr()).toBe(true);
   });
