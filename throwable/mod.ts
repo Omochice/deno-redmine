@@ -18,6 +18,7 @@ import { Client as Membership } from "./memberships/mod.ts";
 import { Client as MyAccount } from "./my-account/mod.ts";
 import { Client as Group } from "./groups/mod.ts";
 import { Client as IssueRelation } from "./issue-relations/mod.ts";
+import { Client as Journal } from "./journals/mod.ts";
 import { Client as Attachment } from "./attachments/mod.ts";
 import { Client as FileClient } from "./files/mod.ts";
 import { Client as Search } from "./search/mod.ts";
@@ -43,6 +44,7 @@ export class Redmine {
   readonly myAccount: MyAccount;
   readonly group: Group;
   readonly issueRelation: IssueRelation;
+  readonly journal: Journal;
   readonly attachment: Attachment;
   readonly file: FileClient;
   readonly search: Search;
@@ -68,6 +70,7 @@ export class Redmine {
     this.myAccount = new MyAccount(this.#context);
     this.group = new Group(this.#context);
     this.issueRelation = new IssueRelation(this.#context);
+    this.journal = new Journal(this.#context);
     this.attachment = new Attachment(this.#context);
     this.file = new FileClient(this.#context);
     this.search = new Search(this.#context);

@@ -134,9 +134,8 @@ Redmine rest api wrapper for deno.
   - [x] [`/my/account.:format`](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount#myaccountformat)
     - [x] [`GET`](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount#GET)
     - [x] [`PUT`](https://www.redmine.org/projects/redmine/wiki/Rest_MyAccount#PUT)
-- [ ] [Journals](https://www.redmine.org/projects/redmine/wiki/Rest_Journals)
-  - Official Page is not found...:
-    https://www.redmine.org/projects/redmine/wiki/Rest_Journals
+- [x] [Journals](https://www.redmine.org/projects/redmine/wiki/Rest_Journals)
+  - [x] [Updating a journal](https://www.redmine.org/projects/redmine/wiki/Rest_Journals#Updating-a-journal)
 
 ### external plugin
 
