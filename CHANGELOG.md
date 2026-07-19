@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.3.0](https://github.com/Omochice/deno-redmine/compare/v2.2.0...v2.3.0) (2026-07-19)
+
+
+### Features
+
+* implement Journal note update ([#431](https://github.com/Omochice/deno-redmine/issues/431)) ([950553f](https://github.com/Omochice/deno-redmine/commit/950553fd3c0d679502aabf30b359ac2278d210b8))
+* implement News show/create/update/delete ([#428](https://github.com/Omochice/deno-redmine/issues/428)) ([8a2f732](https://github.com/Omochice/deno-redmine/commit/8a2f73207363274a25facb4c77b659f41327157a))
+* implement Projects close/reopen ([#430](https://github.com/Omochice/deno-redmine/issues/430)) ([a8a5ced](https://github.com/Omochice/deno-redmine/commit/a8a5ced373687deb293fb658a37696a774f26dc2))
+* implement Repository add/remove related issue ([#432](https://github.com/Omochice/deno-redmine/issues/432)) ([d23a7bd](https://github.com/Omochice/deno-redmine/commit/d23a7bd098bc746bb1628525910c6a2f65220957))
+* support attaching files to wiki pages on create/update ([#433](https://github.com/Omochice/deno-redmine/issues/433)) ([b6819da](https://github.com/Omochice/deno-redmine/commit/b6819daeca19658771dc50c8941a0ddd58a2e01b))
+
 ## [2.2.0](https://github.com/Omochice/deno-redmine/compare/v2.1.0...v2.2.0) (2026-07-17)
 
 
