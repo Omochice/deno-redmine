@@ -9,7 +9,6 @@ import {
   string,
   transform,
 } from "jsr:@valibot/valibot@1.4.2";
-import type { SnakeCasedProperties } from "npm:type-fest@5.8.0";
 import {
   sanitizeTitle,
   type Wiki,
@@ -17,7 +16,7 @@ import {
   type WikiDetail,
 } from "./type.ts";
 // NOTE: replace valibot.toCamelCase when implements it
-import { objectToCamel } from "npm:ts-case-convert@2.3.1";
+import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
 import { toUndefined } from "../../internal/validator.ts";
 
 const dateLikeString = pipe(
@@ -98,13 +97,13 @@ export const wikiDetail = pipe(
  * @returns Converted one
  */
 export function makeWikiPutRequest(wiki: WikiContent) {
-  const page = {
-    text: wiki.text,
-    comments: wiki.comments,
-    version: wiki.version,
-    parent_title: wiki.parentTitle == null
-      ? undefined
-      : sanitizeTitle(wiki.parentTitle),
-  } satisfies Omit<SnakeCasedProperties<WikiContent>, "title">;
-  return { wiki_page: page };
+  const { text, comments, version, parentTitle } = wiki;
+  return {
+    wiki_page: objectToSnake({
+      text,
+      comments,
+      version,
+      parentTitle: parentTitle == null ? undefined : sanitizeTitle(parentTitle),
+    }),
+  };
 }
