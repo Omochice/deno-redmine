@@ -17,8 +17,6 @@ Deno.test("GET /projects.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.use(...invalidHandlers);
-      // Hit the endpoint whose /422/projects.json handler returns an error,
-      // without mutating the shared context object.
       const c = { ...context, endpoint: `${context.endpoint}/422` };
       await expect(fetchList(c)).rejects.toThrow();
     },
