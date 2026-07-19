@@ -1,7 +1,7 @@
 import type { Context } from "../../context.ts";
 import type { WikiContent } from "./type.ts";
 import { fetchList } from "./list.ts";
-import { type Include, show } from "./show.ts";
+import { show, type ShowWikiPageParams } from "./show.ts";
 import { update } from "./update.ts";
 import { create } from "./create.ts";
 import { deleteWiki } from "./delete.ts";
@@ -25,29 +25,11 @@ export class Client {
   /**
    * Fetch a wiki page in the project
    *
-   * @param projectId The project ID
-   * @param title The title for querying
+   * @param params Parameters to identify the wiki page
    * @returns Wiki page
    */
-  show(projectId: number, title: string): ReturnType<typeof show>;
-  show(
-    projectId: number,
-    title: string,
-    version: number,
-  ): ReturnType<typeof show>;
-  show(
-    projectId: number,
-    title: string,
-    version: number | undefined,
-    includes: Include[],
-  ): ReturnType<typeof show>;
-  show(
-    projectId: number,
-    title: string,
-    version?: number,
-    includes?: Include[],
-  ): ReturnType<typeof show> {
-    return show(this.#context, projectId, title, version, includes);
+  show(params: ShowWikiPageParams): ReturnType<typeof show> {
+    return show(this.#context, params);
   }
 
   /**

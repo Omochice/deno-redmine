@@ -34,7 +34,10 @@ Deno.test({
     await t.step(
       "GET /projects/:id/wiki/:page.json should return a wiki page",
       async () => {
-        const result = await show(e2eContext, projectId, "E2ETestPage");
+        const result = await show(e2eContext, {
+          projectId,
+          title: "E2ETestPage",
+        });
         expect(result.isOk()).toBe(true);
         expect(result._unsafeUnwrap().title).toStrictEqual("E2ETestPage");
         expect(result._unsafeUnwrap().version).toBeGreaterThanOrEqual(1);
@@ -56,7 +59,10 @@ Deno.test({
     await t.step(
       "GET /projects/:id/wiki/:page.json should return a wiki page with comments",
       async () => {
-        const result = await show(e2eContext, projectId, "E2ECreatedPage");
+        const result = await show(e2eContext, {
+          projectId,
+          title: "E2ECreatedPage",
+        });
         expect(result.isOk()).toBe(true);
         const page = result._unsafeUnwrap();
         expect(page.title).toStrictEqual("E2ECreatedPage");
@@ -77,7 +83,10 @@ Deno.test({
         });
         expect(result.isOk()).toBe(true);
 
-        const showResult = await show(e2eContext, projectId, "E2ECreatedPage");
+        const showResult = await show(e2eContext, {
+          projectId,
+          title: "E2ECreatedPage",
+        });
         expect(showResult.isOk()).toBe(true);
         expect(showResult._unsafeUnwrap().text.includes("Updated by E2E test"))
           .toBe(
@@ -110,13 +119,11 @@ Deno.test({
         });
         expect(result.isOk()).toBe(true);
 
-        const showResult = await show(
-          e2eContext,
+        const showResult = await show(e2eContext, {
           projectId,
-          "E2ECreatedPage",
-          undefined,
-          ["attachments"],
-        );
+          title: "E2ECreatedPage",
+          includes: ["attachments"],
+        });
         expect(showResult.isOk()).toBe(true);
         const attachments = showResult._unsafeUnwrap().attachments;
         expect(attachments).toBeDefined();

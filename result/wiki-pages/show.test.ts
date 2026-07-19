@@ -14,7 +14,7 @@ server.listen();
 Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validResponseHandelers);
-    const e = await show(context, 1, "sample-title");
+    const e = await show(context, { projectId: 1, title: "sample-title" });
     expect(e.isOk()).toBe(true);
     expect(e._unsafeUnwrap().title).toBe("sample-title");
   });
@@ -37,7 +37,7 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
         },
       ),
     );
-    const e = await show(context, 1, "sample-title");
+    const e = await show(context, { projectId: 1, title: "sample-title" });
     expect(e.isOk()).toBe(true);
     expect(e._unsafeUnwrap().title).toStrictEqual("sample-title");
     expect(e._unsafeUnwrap().comments).toBeUndefined();
@@ -66,9 +66,11 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
           },
         ),
       );
-      const e = await show(context, 1, "sample-title", undefined, [
-        "attachments",
-      ]);
+      const e = await show(context, {
+        projectId: 1,
+        title: "sample-title",
+        includes: ["attachments"],
+      });
       expect(e.isOk()).toBe(true);
       expect(capturedInclude).toStrictEqual("attachments");
       expect(e._unsafeUnwrap().attachments).toStrictEqual([
@@ -78,7 +80,7 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
   );
   await t.step("If got 422, should be error", async () => {
     server.resetHandlers(...invalidResponseHandlers);
-    const e = await show(context, 2, "sample-title");
+    const e = await show(context, { projectId: 2, title: "sample-title" });
     expect(e.isErr()).toBe(true);
     expect(e._unsafeUnwrapErr().message).toBe("Unprocessable Entity");
   });
@@ -87,7 +89,11 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
 Deno.test("GET /projects/:id/wiki/:page/:version.json", async (t) => {
   await t.step("if got 200, should be success", async () => {
     server.resetHandlers(...validResponseHandelers);
-    const e = await show(context, 1, "sample-title", 3);
+    const e = await show(context, {
+      projectId: 1,
+      title: "sample-title",
+      version: 3,
+    });
     expect(e.isOk()).toBe(true);
     expect(e._unsafeUnwrap().title).toBe("sample-title");
     expect(e._unsafeUnwrap().version).toBe(3);
