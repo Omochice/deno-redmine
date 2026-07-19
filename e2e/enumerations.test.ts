@@ -4,7 +4,7 @@ import {
   listDocumentCategories,
   listIssuePriorities,
   listTimeEntryActivities,
-} from "../result/enumerations/list.ts";
+} from "../enumerations/list.ts";
 
 Deno.test("E2E: Enumerations API", async (t) => {
   // The e2e Redmine is provisioned without loading Redmine's default data, so
@@ -13,27 +13,24 @@ Deno.test("E2E: Enumerations API", async (t) => {
   await t.step(
     "GET /enumerations/issue_priorities.json should return an array",
     async () => {
-      const result = await listIssuePriorities(e2eContext);
-      expect(result.isOk()).toBe(true);
-      expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
+      const priorities = await listIssuePriorities(e2eContext);
+      expect(Array.isArray(priorities)).toBe(true);
     },
   );
 
   await t.step(
     "GET /enumerations/time_entry_activities.json should return an array",
     async () => {
-      const result = await listTimeEntryActivities(e2eContext);
-      expect(result.isOk()).toBe(true);
-      expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
+      const activities = await listTimeEntryActivities(e2eContext);
+      expect(Array.isArray(activities)).toBe(true);
     },
   );
 
   await t.step(
     "GET /enumerations/document_categories.json should return an array",
     async () => {
-      const result = await listDocumentCategories(e2eContext);
-      expect(result.isOk()).toBe(true);
-      expect(Array.isArray(result._unsafeUnwrap())).toBe(true);
+      const categories = await listDocumentCategories(e2eContext);
+      expect(Array.isArray(categories)).toBe(true);
     },
   );
 });

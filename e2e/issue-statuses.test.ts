@@ -1,15 +1,14 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../result/issue-statuses/list.ts";
+import { fetchList } from "../issue-statuses/list.ts";
 
 Deno.test("E2E: Issue Statuses API", async (t) => {
   await t.step(
     "GET /issue_statuses.json should return default issue statuses",
     async () => {
-      const result = await fetchList(e2eContext);
-      expect(result.isOk()).toBe(true);
+      const statuses = await fetchList(e2eContext);
       expect(
-        result._unsafeUnwrap().length,
+        statuses.length,
         "Redmine should have default issue statuses",
       ).toBeGreaterThan(0);
     },

@@ -1,6 +1,6 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { list } from "../result/issue-templates/list.ts";
+import { list } from "../issue-templates/list.ts";
 
 Deno.test({
   name: "E2E: Issue Templates API",
@@ -8,8 +8,10 @@ Deno.test({
     await t.step(
       "GET /projects/:id/issue_templates.json should return templates",
       async () => {
-        const result = await list(e2eContext, "e2e-test-project");
-        if (result.isErr()) {
+        let result;
+        try {
+          result = await list(e2eContext, "e2e-test-project");
+        } catch {
           // The redmine_issue_templates plugin does not support JSON API
           // on Redmine 6.0+ due to a template resolution incompatibility
           // with Rails 7.2.
@@ -17,7 +19,7 @@ Deno.test({
         }
 
         const { issueTemplates, globalIssueTemplates, inheritTemplates } =
-          result._unsafeUnwrap();
+          result;
 
         expect(issueTemplates.length).toStrictEqual(1);
         expect(issueTemplates[0].title).toStrictEqual("E2E Bug Template");

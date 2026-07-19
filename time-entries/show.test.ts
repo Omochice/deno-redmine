@@ -1,0 +1,40 @@
+import { show } from "./show.ts";
+import { context, invalidHandlers, validHandlers } from "./_mock.ts";
+import { setupServer } from "npm:msw@2.15.0/node";
+import { expect } from "jsr:@std/expect@1.0.20";
+
+const server = setupServer();
+server.listen();
+
+Deno.test("GET /time_entries/:id.json", async (t) => {
+  await t.step("if got 200, should resolve", async () => {
+    server.use(...validHandlers);
+    const entry = await show(context, 3);
+    expect(entry).toBeDefined();
+  });
+
+  await t.step(
+    "if get invalid response with error object, should throw",
+    async () => {
+      server.use(...invalidHandlers);
+      await expect(show(context, 422)).rejects.toThrow();
+    },
+  );
+
+  await t.step("if get invalid response with unexpected format", async () => {
+    server.use(...invalidHandlers);
+    await expect(show(context, 404)).rejects.toThrow();
+  });
+
+  await t.step("should map camelCase fields from the response", async () => {
+    server.use(...validHandlers);
+    const entry = await show(context, 3);
+    expect(entry.project).toStrictEqual({ id: 1, name: "Demo" });
+    expect(entry.issue).toStrictEqual({ id: 5 });
+    expect(entry.activity).toStrictEqual({ id: 9, name: "Development" });
+    expect(entry.hours).toStrictEqual(2.5);
+    expect(entry.spentOn.toISOString().slice(0, 10)).toStrictEqual(
+      "2026-07-01",
+    );
+  });
+});
