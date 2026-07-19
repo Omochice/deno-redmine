@@ -7,7 +7,7 @@ import { http, HttpResponse } from "npm:msw@2.15.0";
 const server = setupServer();
 server.listen();
 
-Deno.test("PUT /projects/issues/:id.json", async (t) => {
+Deno.test("PUT /issues/:id.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
     await expect(update(context, 1, { notes: "sample" })).resolves

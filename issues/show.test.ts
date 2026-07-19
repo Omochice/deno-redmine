@@ -7,7 +7,7 @@ import { setupServer } from "npm:msw@2.15.0/node";
 const server = setupServer();
 server.listen();
 
-Deno.test("GET /projects/issues/:id.json", async (t) => {
+Deno.test("GET /issues/:id.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
     const issue = await show(context, 1);
