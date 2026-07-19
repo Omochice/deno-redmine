@@ -4,6 +4,7 @@ import {
   context,
   invalidResponseHandlers,
   validResponseHandlers,
+  wikiPage,
 } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -23,15 +24,13 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
         `${context.endpoint}/projects/:id/wiki/:page.json`,
         ({ params }) => {
           return HttpResponse.json({
-            wiki_page: {
+            wiki_page: wikiPage({
               title: params.page,
               version: 1,
               text: "# page content",
               author: { id: 1, name: "Admin" },
               comments: null,
-              created_on: "2023-01-01T00:00:00Z",
-              updated_on: "2023-01-01T00:00:00Z",
-            },
+            }),
           });
         },
       ),
@@ -50,16 +49,14 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
           ({ request, params }) => {
             capturedInclude = new URL(request.url).searchParams.get("include");
             return HttpResponse.json({
-              wiki_page: {
+              wiki_page: wikiPage({
                 title: params.page,
                 version: 1,
                 text: "# page content",
                 author: { id: 1, name: "Admin" },
                 comments: null,
-                created_on: "2023-01-01T00:00:00Z",
-                updated_on: "2023-01-01T00:00:00Z",
                 attachments: [{ id: 7, filename: "note.txt" }],
-              },
+              }),
             });
           },
         ),

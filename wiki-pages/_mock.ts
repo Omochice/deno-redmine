@@ -7,6 +7,25 @@ export const context = {
   endpoint: "http://redmine.example.com",
 };
 
+/**
+ * Build a `wiki_page` response payload, letting each caller override only the
+ * fields it cares about. Keeps the response shape defined in one place.
+ */
+export function wikiPage(
+  overrides: Record<string, unknown> = {},
+): Record<string, unknown> {
+  return {
+    title: "sample-title",
+    version: 3,
+    text: "# sample page",
+    author: { id: 1, name: "Admin User", login: "admin" },
+    comments: "Updated via API",
+    created_on: "2023-01-01T00:00:00Z",
+    updated_on: "2023-01-02T00:00:00Z",
+    ...overrides,
+  };
+}
+
 export const validResponseHandlers = [
   http.get(
     `${context.endpoint}/projects/:id/wiki/index.json`,
@@ -33,19 +52,10 @@ export const validResponseHandlers = [
   http.get(`${context.endpoint}/projects/:id/wiki/:page.json`, ({ params }) => {
     const { id, page } = params;
     return HttpResponse.json({
-      wiki_page: {
+      wiki_page: wikiPage({
         title: page,
-        version: 3,
         text: `# sample page on project ${id}`,
-        author: {
-          id: 1,
-          name: "Admin User",
-          login: "admin",
-        },
-        comments: "Updated via API",
-        created_on: "2023-01-01T00:00:00Z",
-        updated_on: "2023-01-02T00:00:00Z",
-      },
+      }),
     });
   }),
   http.get(
@@ -53,19 +63,11 @@ export const validResponseHandlers = [
     ({ params }) => {
       const { id, page, version } = params;
       return HttpResponse.json({
-        wiki_page: {
+        wiki_page: wikiPage({
           title: page,
           version: Number(version),
           text: `# sample page on project ${id}`,
-          author: {
-            id: 1,
-            name: "Admin User",
-            login: "admin",
-          },
-          comments: "Updated via API",
-          created_on: "2023-01-01T00:00:00Z",
-          updated_on: "2023-01-02T00:00:00Z",
-        },
+        }),
       });
     },
   ),
@@ -117,9 +119,8 @@ export const validResponseHandlers = [
   http.delete(
     `${context.endpoint}/projects/:id/wiki/:page.json`,
     () => {
-      return HttpResponse.json({
-        status: STATUS_CODE.NoContent,
-      });
+      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+      return new HttpResponse(null, { status: STATUS_CODE.NoContent });
     },
   ),
 ];
