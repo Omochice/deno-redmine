@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/issue-categories/list.ts";
-import { show } from "../throwable/issue-categories/show.ts";
-import { create } from "../throwable/issue-categories/create.ts";
-import { update } from "../throwable/issue-categories/update.ts";
-import { deleteIssueCategory } from "../throwable/issue-categories/delete.ts";
-import { fetchList as fetchProjects } from "../throwable/projects/list.ts";
+import { fetchList } from "../issue-categories/list.ts";
+import { show } from "../issue-categories/show.ts";
+import { create } from "../issue-categories/create.ts";
+import { update } from "../issue-categories/update.ts";
+import { deleteIssueCategory } from "../issue-categories/delete.ts";
+import { fetchList as fetchProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Issue Categories API",

@@ -1,7 +1,7 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { show } from "../throwable/my-account/show.ts";
-import { update } from "../throwable/my-account/update.ts";
+import { show } from "../my-account/show.ts";
+import { update } from "../my-account/update.ts";
 
 Deno.test({
   name: "E2E: My Account API",

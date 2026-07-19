@@ -4,7 +4,7 @@ import {
   listDocumentCategories,
   listIssuePriorities,
   listTimeEntryActivities,
-} from "../throwable/enumerations/list.ts";
+} from "../enumerations/list.ts";
 
 Deno.test("E2E: Enumerations API", async (t) => {
   // The e2e Redmine is provisioned without loading Redmine's default data, so

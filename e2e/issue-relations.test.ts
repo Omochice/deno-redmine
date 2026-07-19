@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/issue-relations/list.ts";
-import { show } from "../throwable/issue-relations/show.ts";
-import { create } from "../throwable/issue-relations/create.ts";
-import { deleteRelation } from "../throwable/issue-relations/delete.ts";
-import { listIssues } from "../throwable/issues/list.ts";
-import { fetchList as fetchProjects } from "../throwable/projects/list.ts";
+import { fetchList } from "../issue-relations/list.ts";
+import { show } from "../issue-relations/show.ts";
+import { create } from "../issue-relations/create.ts";
+import { deleteRelation } from "../issue-relations/delete.ts";
+import { listIssues } from "../issues/list.ts";
+import { fetchList as fetchProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Issue Relations API",

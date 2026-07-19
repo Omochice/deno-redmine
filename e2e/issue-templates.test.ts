@@ -1,6 +1,6 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { list } from "../throwable/issue-templates/list.ts";
+import { list } from "../issue-templates/list.ts";
 
 Deno.test({
   name: "E2E: Issue Templates API",

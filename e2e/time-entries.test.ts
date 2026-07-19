@@ -1,12 +1,12 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/time-entries/list.ts";
-import { show } from "../throwable/time-entries/show.ts";
-import { create } from "../throwable/time-entries/create.ts";
-import { update } from "../throwable/time-entries/update.ts";
-import { deleteTimeEntry } from "../throwable/time-entries/delete.ts";
-import { fetchList as fetchProjects } from "../throwable/projects/list.ts";
-import { listIssues } from "../throwable/issues/list.ts";
+import { fetchList } from "../time-entries/list.ts";
+import { show } from "../time-entries/show.ts";
+import { create } from "../time-entries/create.ts";
+import { update } from "../time-entries/update.ts";
+import { deleteTimeEntry } from "../time-entries/delete.ts";
+import { fetchList as fetchProjects } from "../projects/list.ts";
+import { listIssues } from "../issues/list.ts";
 
 Deno.test({
   name: "E2E: Time Entries API",

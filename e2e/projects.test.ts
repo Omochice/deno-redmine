@@ -1,12 +1,12 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/projects/list.ts";
-import { show } from "../throwable/projects/show.ts";
-import { create } from "../throwable/projects/create.ts";
-import { update } from "../throwable/projects/update.ts";
-import { deleteProject } from "../throwable/projects/delete.ts";
-import { archive, unarchive } from "../throwable/projects/archive.ts";
-import { close, reopen } from "../throwable/projects/close.ts";
+import { fetchList } from "../projects/list.ts";
+import { show } from "../projects/show.ts";
+import { create } from "../projects/create.ts";
+import { update } from "../projects/update.ts";
+import { deleteProject } from "../projects/delete.ts";
+import { archive, unarchive } from "../projects/archive.ts";
+import { close, reopen } from "../projects/close.ts";
 
 Deno.test({
   name: "E2E: Projects API",

@@ -1,9 +1,9 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/files/list.ts";
-import { create } from "../throwable/files/create.ts";
-import { upload } from "../throwable/files/upload.ts";
-import { fetchList as fetchProjects } from "../throwable/projects/list.ts";
+import { fetchList } from "../files/list.ts";
+import { create } from "../files/create.ts";
+import { upload } from "../files/upload.ts";
+import { fetchList as fetchProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Files API",

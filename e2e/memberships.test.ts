@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/memberships/list.ts";
-import { show } from "../throwable/memberships/show.ts";
-import { create } from "../throwable/memberships/create.ts";
-import { update } from "../throwable/memberships/update.ts";
-import { deleteMembership } from "../throwable/memberships/delete.ts";
-import { fetchList as fetchProjects } from "../throwable/projects/list.ts";
+import { fetchList } from "../memberships/list.ts";
+import { show } from "../memberships/show.ts";
+import { create } from "../memberships/create.ts";
+import { update } from "../memberships/update.ts";
+import { deleteMembership } from "../memberships/delete.ts";
+import { fetchList as fetchProjects } from "../projects/list.ts";
 
 // The library has no `users`/`roles` resources yet, so these are fetched
 // directly against the raw REST API, mirroring e2e/setup.ts's seeding

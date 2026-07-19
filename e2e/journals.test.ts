@@ -1,12 +1,12 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { listIssues } from "../throwable/issues/list.ts";
-import { show } from "../throwable/issues/show.ts";
-import { createIssue } from "../throwable/issues/create.ts";
-import { update } from "../throwable/issues/update.ts";
-import { deleteIssue } from "../throwable/issues/delete.ts";
-import { fetchList as fetchProjects } from "../throwable/projects/list.ts";
-import { update as updateJournal } from "../throwable/journals/update.ts";
+import { listIssues } from "../issues/list.ts";
+import { show } from "../issues/show.ts";
+import { createIssue } from "../issues/create.ts";
+import { update } from "../issues/update.ts";
+import { deleteIssue } from "../issues/delete.ts";
+import { fetchList as fetchProjects } from "../projects/list.ts";
+import { update as updateJournal } from "../journals/update.ts";
 
 Deno.test({
   name: "E2E: Journals API",

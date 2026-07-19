@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/wiki-pages/list.ts";
-import { show } from "../throwable/wiki-pages/show.ts";
-import { create } from "../throwable/wiki-pages/create.ts";
-import { deleteWiki } from "../throwable/wiki-pages/delete.ts";
-import { upload } from "../throwable/files/upload.ts";
-import { fetchList as fetchProjects } from "../throwable/projects/list.ts";
+import { fetchList } from "../wiki-pages/list.ts";
+import { show } from "../wiki-pages/show.ts";
+import { create } from "../wiki-pages/create.ts";
+import { deleteWiki } from "../wiki-pages/delete.ts";
+import { upload } from "../files/upload.ts";
+import { fetchList as fetchProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Wiki Pages API",

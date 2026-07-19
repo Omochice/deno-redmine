@@ -1,8 +1,8 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { listIssues } from "../throwable/issues/list.ts";
-import { addWatcher } from "../throwable/issues/add-watcher.ts";
-import { removeWatcher } from "../throwable/issues/remove-watcher.ts";
+import { listIssues } from "../issues/list.ts";
+import { addWatcher } from "../issues/add-watcher.ts";
+import { removeWatcher } from "../issues/remove-watcher.ts";
 
 async function fetchCurrentUserId(): Promise<number | undefined> {
   const response = await fetch(`${e2eContext.endpoint}/users/current.json`, {

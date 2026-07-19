@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/versions/list.ts";
-import { show } from "../throwable/versions/show.ts";
-import { create } from "../throwable/versions/create.ts";
-import { update } from "../throwable/versions/update.ts";
-import { deleteVersion } from "../throwable/versions/delete.ts";
-import { fetchList as fetchProjects } from "../throwable/projects/list.ts";
+import { fetchList } from "../versions/list.ts";
+import { show } from "../versions/show.ts";
+import { create } from "../versions/create.ts";
+import { update } from "../versions/update.ts";
+import { deleteVersion } from "../versions/delete.ts";
+import { fetchList as fetchProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Versions API",

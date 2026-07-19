@@ -1,8 +1,8 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { show } from "../throwable/attachments/show.ts";
-import { update } from "../throwable/attachments/update.ts";
-import { deleteAttachment } from "../throwable/attachments/delete.ts";
+import { show } from "../attachments/show.ts";
+import { update } from "../attachments/update.ts";
+import { deleteAttachment } from "../attachments/delete.ts";
 
 const headers = {
   "Content-Type": "application/json",

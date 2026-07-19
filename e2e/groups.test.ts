@@ -1,12 +1,12 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/groups/list.ts";
-import { show } from "../throwable/groups/show.ts";
-import { create } from "../throwable/groups/create.ts";
-import { update } from "../throwable/groups/update.ts";
-import { deleteGroup } from "../throwable/groups/delete.ts";
-import { addUser } from "../throwable/groups/add-user.ts";
-import { removeUser } from "../throwable/groups/remove-user.ts";
+import { fetchList } from "../groups/list.ts";
+import { show } from "../groups/show.ts";
+import { create } from "../groups/create.ts";
+import { update } from "../groups/update.ts";
+import { deleteGroup } from "../groups/delete.ts";
+import { addUser } from "../groups/add-user.ts";
+import { removeUser } from "../groups/remove-user.ts";
 
 async function currentUserId(): Promise<number | undefined> {
   const response = await fetch(

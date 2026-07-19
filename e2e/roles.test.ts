@@ -1,7 +1,7 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/roles/list.ts";
-import { show } from "../throwable/roles/show.ts";
+import { fetchList } from "../roles/list.ts";
+import { show } from "../roles/show.ts";
 
 Deno.test({
   name: "E2E: Roles API",

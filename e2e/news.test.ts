@@ -1,12 +1,12 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/news/list.ts";
-import { fetchListByProject } from "../throwable/news/list-by-project.ts";
-import { show } from "../throwable/news/show.ts";
-import { create } from "../throwable/news/create.ts";
-import { update } from "../throwable/news/update.ts";
-import { deleteNews } from "../throwable/news/delete.ts";
-import { fetchList as fetchProjects } from "../throwable/projects/list.ts";
+import { fetchList } from "../news/list.ts";
+import { fetchListByProject } from "../news/list-by-project.ts";
+import { show } from "../news/show.ts";
+import { create } from "../news/create.ts";
+import { update } from "../news/update.ts";
+import { deleteNews } from "../news/delete.ts";
+import { fetchList as fetchProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: News API",

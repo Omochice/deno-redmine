@@ -1,10 +1,10 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/users/list.ts";
-import { show } from "../throwable/users/show.ts";
-import { create } from "../throwable/users/create.ts";
-import { update } from "../throwable/users/update.ts";
-import { deleteUser } from "../throwable/users/delete.ts";
+import { fetchList } from "../users/list.ts";
+import { show } from "../users/show.ts";
+import { create } from "../users/create.ts";
+import { update } from "../users/update.ts";
+import { deleteUser } from "../users/delete.ts";
 
 Deno.test({
   name: "E2E: Users API",

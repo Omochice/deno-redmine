@@ -1,6 +1,6 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../throwable/issue-statuses/list.ts";
+import { fetchList } from "../issue-statuses/list.ts";
 
 Deno.test("E2E: Issue Statuses API", async (t) => {
   await t.step(
