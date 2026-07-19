@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/Omochice/deno-redmine/compare/v2.3.0...v2.3.1) (2026-07-19)
+
+
+### Bug Fixes
+
+* register missing module/operation entry points in jsr exports ([#435](https://github.com/Omochice/deno-redmine/issues/435)) ([5e7acab](https://github.com/Omochice/deno-redmine/commit/5e7acabbac1cf4cc50c6d2db9ce47890f875e982))
+
 ## [2.3.0](https://github.com/Omochice/deno-redmine/compare/v2.2.0...v2.3.0) (2026-07-19)
 
 
