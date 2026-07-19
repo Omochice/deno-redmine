@@ -1,5 +1,9 @@
 import type { Context } from "../../context.ts";
-import { addRelatedIssue, removeRelatedIssue } from "./related-issue.ts";
+import {
+  addRelatedIssue,
+  type RelatedIssueParams,
+  removeRelatedIssue,
+} from "./related-issue.ts";
 
 export class Client {
   readonly #context: Context;
@@ -11,49 +15,24 @@ export class Client {
   /**
    * Relate an issue to the revision of the project repository
    *
-   * @param projectId Project identifier
-   * @param rev Revision identifier
-   * @param issueId Issue identifier to relate
-   * @param repositoryId Repository identifier; when omitted the project's
-   * default repository is used
+   * @param params Parameters to relate an issue to the revision
    */
   addRelatedIssue(
-    projectId: number,
-    rev: string,
-    issueId: number,
-    repositoryId?: string,
+    params: RelatedIssueParams,
   ): ReturnType<typeof addRelatedIssue> {
-    return addRelatedIssue(
-      this.#context,
-      projectId,
-      rev,
-      issueId,
-      repositoryId,
-    );
+    return addRelatedIssue(this.#context, params);
   }
 
   /**
    * Remove the relation between an issue and the revision of the project
    * repository
    *
-   * @param projectId Project identifier
-   * @param rev Revision identifier
-   * @param issueId Related issue identifier to remove
-   * @param repositoryId Repository identifier; when omitted the project's
-   * default repository is used
+   * @param params Parameters to remove the relation between an issue and
+   * the revision
    */
   removeRelatedIssue(
-    projectId: number,
-    rev: string,
-    issueId: number,
-    repositoryId?: string,
+    params: RelatedIssueParams,
   ): ReturnType<typeof removeRelatedIssue> {
-    return removeRelatedIssue(
-      this.#context,
-      projectId,
-      rev,
-      issueId,
-      repositoryId,
-    );
+    return removeRelatedIssue(this.#context, params);
   }
 }

@@ -8,22 +8,30 @@ import { wikiDetail } from "./validator.ts";
 export type Include = "attachments";
 
 /**
+ * Parameters to identify the wiki page to show
+ */
+export type ShowWikiPageParams = {
+  /** Project identifier */
+  projectId: number;
+  /** Title for wiki page */
+  title: string;
+  /** Version of the wiki page */
+  version?: number;
+  /** Associations to include in the response */
+  includes?: Include[];
+};
+
+/**
  * Show the wiki page in the project
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
- * @param title Title for wiki page
- * @param version Version of the wiki page
- * @param includes Associations to include in the response
+ * @param params Parameters to identify the wiki page
  * @returns Wiki page object
  */
 export async function show(
   context: Context,
-  projectId: number,
-  title: string,
-  version?: number,
-  includes?: Include[],
+  { projectId, title, version, includes }: ShowWikiPageParams,
 ): Promise<WikiDetail> {
   const opts = {
     method: "GET",

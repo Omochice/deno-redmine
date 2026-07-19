@@ -16,24 +16,29 @@ function revisionSegments(
   return [...withRepository, "revisions", rev];
 }
 
+export type RelatedIssueParams = {
+  /** Project identifier */
+  projectId: number;
+  /** Revision identifier */
+  rev: string;
+  /** Issue identifier to relate/remove */
+  issueId: number;
+  /** Repository identifier; when omitted the project's default repository is used */
+  repositoryId?: string;
+};
+
 /**
  * Relate an issue to the revision of the project repository
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
- * @param rev Revision identifier
- * @param issueId Issue identifier to relate
- * @param repositoryId Repository identifier; when omitted the project's
- * default repository is used
+ * @param params Parameters to relate an issue to the revision
  */
 export async function addRelatedIssue(
   context: Context,
-  projectId: number,
-  rev: string,
-  issueId: number,
-  repositoryId?: string,
+  params: RelatedIssueParams,
 ): Promise<void> {
+  const { projectId, rev, issueId, repositoryId } = params;
   const url = buildUrl(
     context.endpoint,
     ...revisionSegments(projectId, rev, repositoryId),
@@ -57,19 +62,14 @@ export async function addRelatedIssue(
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
- * @param rev Revision identifier
- * @param issueId Related issue identifier to remove
- * @param repositoryId Repository identifier; when omitted the project's
- * default repository is used
+ * @param params Parameters to remove the relation between an issue and the
+ * revision
  */
 export async function removeRelatedIssue(
   context: Context,
-  projectId: number,
-  rev: string,
-  issueId: number,
-  repositoryId?: string,
+  params: RelatedIssueParams,
 ): Promise<void> {
+  const { projectId, rev, issueId, repositoryId } = params;
   const url = buildUrl(
     context.endpoint,
     ...revisionSegments(projectId, rev, repositoryId),
