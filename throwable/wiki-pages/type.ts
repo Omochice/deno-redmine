@@ -29,12 +29,20 @@ type Attachment = {
   filename: string;
 };
 
+export type Upload = {
+  token: string;
+  filename?: string;
+  contentType?: string;
+  description?: string;
+};
+
 export type WikiContent = {
   title: string;
   text: string;
   comments?: string;
   version?: number;
   parentTitle?: string;
+  uploads?: Upload[];
 };
 
 /** Characters that cannot be used in wiki title */

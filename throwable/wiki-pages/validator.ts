@@ -97,12 +97,13 @@ export const wikiDetail = pipe(
  * @returns Converted one
  */
 export function makeWikiPutRequest(wiki: WikiContent) {
-  const { text, comments, version, parentTitle } = wiki;
+  const { text, comments, version, parentTitle, uploads } = wiki;
   return {
     wiki_page: objectToSnake({
       text,
       comments,
       version,
+      uploads,
       parentTitle: parentTitle == null ? undefined : sanitizeTitle(parentTitle),
     }),
   };
