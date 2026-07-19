@@ -4,6 +4,7 @@ import { fetchList } from "../result/wiki-pages/list.ts";
 import { show } from "../result/wiki-pages/show.ts";
 import { create } from "../result/wiki-pages/create.ts";
 import { deleteWiki } from "../result/wiki-pages/delete.ts";
+import { upload } from "../result/files/upload.ts";
 import { fetchList as fetchProjects } from "../result/projects/list.ts";
 
 Deno.test({
@@ -82,6 +83,45 @@ Deno.test({
           .toBe(
             true,
           );
+      },
+    );
+
+    await t.step(
+      "PUT with uploads should attach a file readable via include=attachments",
+      async () => {
+        const uploadResult = await upload(
+          e2eContext,
+          new TextEncoder().encode("e2e attachment content"),
+          "e2e-attachment.txt",
+        );
+        expect(uploadResult.isOk()).toBe(true);
+        const token = uploadResult._unsafeUnwrap();
+
+        const result = await create(e2eContext, projectId, {
+          title: "E2ECreatedPage",
+          text: "Updated by E2E test with attachment",
+          uploads: [
+            {
+              token,
+              filename: "e2e-attachment.txt",
+              contentType: "text/plain",
+            },
+          ],
+        });
+        expect(result.isOk()).toBe(true);
+
+        const showResult = await show(
+          e2eContext,
+          projectId,
+          "E2ECreatedPage",
+          undefined,
+          ["attachments"],
+        );
+        expect(showResult.isOk()).toBe(true);
+        const attachments = showResult._unsafeUnwrap().attachments;
+        expect(attachments).toBeDefined();
+        expect(attachments!.some((a) => a.filename === "e2e-attachment.txt"))
+          .toBe(true);
       },
     );
 
