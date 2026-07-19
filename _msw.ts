@@ -19,8 +19,6 @@ export function unprocessableEntity() {
  * A 404 Not Found response with an empty body.
  */
 export function notFound() {
-  return HttpResponse.json({}, {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-    status: STATUS_CODE.NotFound,
-  });
+  // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+  return new HttpResponse(null, { status: STATUS_CODE.NotFound });
 }
