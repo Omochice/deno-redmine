@@ -7,7 +7,7 @@ export const context = {
   endpoint: "http://redmine.example.com",
 };
 
-export interface WikiPagePayload {
+export type WikiPagePayload = {
   title: string;
   version: number;
   text: string;
@@ -16,7 +16,7 @@ export interface WikiPagePayload {
   created_on: string;
   updated_on: string;
   attachments?: { id: number; filename: string }[];
-}
+};
 
 /**
  * Build a `wiki_page` response payload, letting each caller override only the
