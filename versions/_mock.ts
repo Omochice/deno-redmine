@@ -1,5 +1,6 @@
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { STATUS_CODE } from "jsr:@std/http@1.1.2/status";
+import { notFound, unprocessableEntity } from "../_msw.ts";
 
 export const context = {
   apiKey: "sample",
@@ -70,68 +71,33 @@ export const validHandlers = [
 
 export const invalidHandlers = [
   http.get(`${context.endpoint}/projects/422/versions.json`, () => {
-    return HttpResponse.json({
-      errors: ["sample error"],
-    }, {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-      status: STATUS_CODE.UnprocessableEntity,
-      statusText: "Unprocessable Entity",
-    });
+    return unprocessableEntity();
   }),
   http.get(`${context.endpoint}/projects/404/versions.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-    return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+    return notFound();
   }),
   http.get(`${context.endpoint}/versions/422.json`, () => {
-    return HttpResponse.json({
-      errors: ["sample error"],
-    }, {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-      status: STATUS_CODE.UnprocessableEntity,
-      statusText: "Unprocessable Entity",
-    });
+    return unprocessableEntity();
   }),
   http.get(`${context.endpoint}/versions/404.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-    return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+    return notFound();
   }),
   http.post(`${context.endpoint}/projects/422/versions.json`, () => {
-    return HttpResponse.json({
-      errors: ["sample error"],
-    }, {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-      status: STATUS_CODE.UnprocessableEntity,
-      statusText: "Unprocessable Entity",
-    });
+    return unprocessableEntity();
   }),
   http.post(`${context.endpoint}/projects/404/versions.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-    return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+    return notFound();
   }),
   http.put(`${context.endpoint}/versions/422.json`, () => {
-    return HttpResponse.json({
-      errors: ["sample error"],
-    }, {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-      status: STATUS_CODE.UnprocessableEntity,
-      statusText: "Unprocessable Entity",
-    });
+    return unprocessableEntity();
   }),
   http.put(`${context.endpoint}/versions/404.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-    return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+    return notFound();
   }),
   http.delete(`${context.endpoint}/versions/422.json`, () => {
-    return HttpResponse.json({
-      errors: ["sample error"],
-    }, {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-      status: STATUS_CODE.UnprocessableEntity,
-      statusText: "Unprocessable Entity",
-    });
+    return unprocessableEntity();
   }),
   http.delete(`${context.endpoint}/versions/404.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-    return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+    return notFound();
   }),
 ];

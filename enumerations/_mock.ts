@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "npm:msw@2.15.0";
-import { STATUS_CODE } from "jsr:@std/http@1.1.2/status";
+import { notFound, unprocessableEntity } from "../_msw.ts";
 
 export const context = {
   apiKey: "sample",
@@ -52,57 +52,36 @@ export const validHandlers = [
 
 export const invalidHandlers = [
   http.get(`${context.endpoint}/enumerations/issue_priorities.json`, () => {
-    return HttpResponse.json({
-      errors: ["sample error"],
-    }, {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-      status: STATUS_CODE.UnprocessableEntity,
-      statusText: "Unprocessable Entity",
-    });
+    return unprocessableEntity();
   }),
   http.get(
     `${context.endpoint}/enumerations/time_entry_activities.json`,
     () => {
-      return HttpResponse.json({
-        errors: ["sample error"],
-      }, {
-        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-        status: STATUS_CODE.UnprocessableEntity,
-        statusText: "Unprocessable Entity",
-      });
+      return unprocessableEntity();
     },
   ),
   http.get(
     `${context.endpoint}/enumerations/document_categories.json`,
     () => {
-      return HttpResponse.json({
-        errors: ["sample error"],
-      }, {
-        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-        status: STATUS_CODE.UnprocessableEntity,
-        statusText: "Unprocessable Entity",
-      });
+      return unprocessableEntity();
     },
   ),
 ];
 
 export const notFoundHandlers = [
   http.get(`${context.endpoint}/enumerations/issue_priorities.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-    return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+    return notFound();
   }),
   http.get(
     `${context.endpoint}/enumerations/time_entry_activities.json`,
     () => {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-      return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+      return notFound();
     },
   ),
   http.get(
     `${context.endpoint}/enumerations/document_categories.json`,
     () => {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
-      return new HttpResponse(null, { status: STATUS_CODE.NotFound });
+      return notFound();
     },
   ),
 ];
