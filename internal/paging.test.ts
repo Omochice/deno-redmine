@@ -1,5 +1,5 @@
 import { expect } from "jsr:@std/expect@1.0.20";
-import { fetchAllPages, type Page } from "./paging.ts";
+import { fetchAllPages, type Page, walkPages } from "./paging.ts";
 
 const nextTick = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
@@ -130,6 +130,113 @@ Deno.test("stops at the requested limit and slices off the over-fetch", async ()
     { limit: 100, offset: 100 },
     { limit: 50, offset: 200 },
   ]);
+});
+
+Deno.test("walkPages yields every item in ascending offset order", async () => {
+  const result = await Array.fromAsync(walkPages(finiteSource(23), {
+    pageSize: 10,
+  }));
+  expect(result).toStrictEqual(range(0, 23));
+});
+
+Deno.test("walkPages fetches nothing beyond the first page when the consumer breaks inside it", async () => {
+  const calls: number[] = [];
+  const source = finiteSource(100);
+  const counted: typeof source = (limit, offset) => {
+    calls.push(offset);
+    return source(limit, offset);
+  };
+  const collected: number[] = [];
+  for await (const item of walkPages(counted, { pageSize: 10 })) {
+    collected.push(item);
+    if (collected.length >= 10) {
+      break;
+    }
+  }
+  expect(collected).toStrictEqual(range(0, 10));
+  expect(calls).toStrictEqual([0]);
+});
+
+Deno.test("walkPages wastes at most the read-ahead window when the consumer breaks later", async () => {
+  const calls: number[] = [];
+  const source = finiteSource(100);
+  const counted: typeof source = (limit, offset) => {
+    calls.push(offset);
+    return source(limit, offset);
+  };
+  const collected: number[] = [];
+  for await (
+    const item of walkPages(counted, { pageSize: 10, concurrency: 3 })
+  ) {
+    collected.push(item);
+    if (collected.length >= 11) {
+      break;
+    }
+  }
+  expect(collected).toStrictEqual(range(0, 11));
+  // First page, the initial window of three, and the one refill that replaces
+  // the consumed page; the remaining five pages are never requested.
+  expect(calls).toStrictEqual([0, 10, 20, 30, 40]);
+});
+
+Deno.test("walkPages surfaces a page failure only after every earlier item is yielded", async () => {
+  const collected: number[] = [];
+  await expect((async () => {
+    const pages = walkPages<number>(
+      async (limit, offset) => {
+        if (offset === 20) {
+          throw new Error("page 20 failed");
+        }
+        // The failing page settles first; ordered surfacing must still deliver
+        // the whole preceding page.
+        await new Promise<void>((resolve) => setTimeout(resolve, 5));
+        return {
+          items: range(offset, Math.min(offset + limit, 30)),
+          totalCount: 30,
+        };
+      },
+      { pageSize: 10 },
+    );
+    for await (const item of pages) {
+      collected.push(item);
+    }
+  })()).rejects.toThrow("page 20 failed");
+  expect(collected).toStrictEqual(range(0, 20));
+});
+
+Deno.test("walkPages leaves no unhandled rejection behind when the consumer stops early", async () => {
+  // Read-ahead pages that reject after the consumer breaks would surface as
+  // unhandled rejections and crash the test run if the generator did not
+  // capture them.
+  const collected: number[] = [];
+  for await (
+    const item of walkPages<number>(
+      (limit, offset) => {
+        if (offset === 0) {
+          return Promise.resolve({
+            items: range(0, limit),
+            totalCount: 40,
+          });
+        }
+        return new Promise((_resolve, reject) =>
+          setTimeout(() => reject(new Error(`page ${offset} failed`)), 1)
+        );
+      },
+      { pageSize: 10 },
+    )
+  ) {
+    collected.push(item);
+    if (collected.length >= 10) {
+      break;
+    }
+  }
+  await new Promise<void>((resolve) => setTimeout(resolve, 10));
+  expect(collected).toStrictEqual(range(0, 10));
+});
+
+Deno.test("walkPages rejects a pageSize outside Redmine's 1-to-100 range on first iteration", async () => {
+  const pages = walkPages(finiteSource(50), { pageSize: 101 });
+  await expect(pages.next()).rejects.toThrow(RangeError);
 });
 
 Deno.test("stops early when the source is exhausted before the limit", async () => {

@@ -18,7 +18,7 @@ export type Page<T> = {
 export type FetchPage<T> = (limit: number, offset: number) => Promise<Page<T>>;
 
 /**
- * Options controlling how {@link fetchAllPages} walks a paged resource.
+ * Options controlling how {@link walkPages} walks a paged resource.
  */
 export type PagingOptions = {
   /**
@@ -27,8 +27,8 @@ export type PagingOptions = {
    */
   pageSize: number;
   /**
-   * Upper bound on the number of items to return. When set, paging walks
-   * sequentially and stops as soon as this many items are collected, which
+   * Upper bound on the number of items to yield. When set, paging walks
+   * sequentially and stops as soon as this many items are yielded, which
    * skips the `total_count` probe and avoids over-fetching the final page.
    */
   limit?: number;
@@ -45,23 +45,27 @@ export type PagingOptions = {
 const DEFAULT_CONCURRENCY = 6;
 
 /**
- * Walk every page of a Redmine list resource and return the aggregated items
- * in page order.
+ * Walk every page of a Redmine list resource and yield the items in page
+ * order.
  *
  * With `options.limit` set the walk is sequential and stops once enough items
- * are collected. Without it, the first page is fetched (its reported total
- * drives how many pages remain) and the rest are fetched with bounded
- * parallelism.
+ * are yielded. Without it, the first page is fetched (its reported total
+ * drives how many pages remain) and later pages are read ahead with bounded
+ * parallelism, so an early `break` leaves at most `concurrency` requests
+ * wasted instead of fetching the whole resource.
+ *
+ * A page failure surfaces once iteration reaches that page, so every item
+ * before it is guaranteed to have been yielded already.
  *
  * @typeParam T Element type of the list
  * @param fetchPage Fetches and parses a single page
  * @param options Page size, optional item cap, and concurrency bound
- * @returns Every item across all pages, in ascending offset order
+ * @returns Items across all pages, in ascending offset order
  */
-export async function fetchAllPages<T>(
+export async function* walkPages<T>(
   fetchPage: FetchPage<T>,
   options: PagingOptions,
-): Promise<T[]> {
+): AsyncGenerator<T> {
   if (
     !Number.isInteger(options.pageSize) ||
     options.pageSize < 1 ||
@@ -72,64 +76,109 @@ export async function fetchAllPages<T>(
     );
   }
   if (options.limit !== undefined) {
-    return await collectUpToLimit(fetchPage, options.pageSize, options.limit);
+    yield* walkUpToLimit(fetchPage, options.pageSize, options.limit);
+    return;
   }
-  return await collectAll(
+  yield* walkWithReadAhead(
     fetchPage,
     options.pageSize,
     Math.max(1, options.concurrency ?? DEFAULT_CONCURRENCY),
   );
 }
 
-async function collectUpToLimit<T>(
+/**
+ * Walk every page of a Redmine list resource and return the aggregated items
+ * in page order.
+ *
+ * Thin aggregation over {@link walkPages}; see there for the walking
+ * strategy.
+ *
+ * @typeParam T Element type of the list
+ * @param fetchPage Fetches and parses a single page
+ * @param options Page size, optional item cap, and concurrency bound
+ * @returns Every item across all pages, in ascending offset order
+ */
+export async function fetchAllPages<T>(
+  fetchPage: FetchPage<T>,
+  options: PagingOptions,
+): Promise<T[]> {
+  return await Array.fromAsync(walkPages(fetchPage, options));
+}
+
+async function* walkUpToLimit<T>(
   fetchPage: FetchPage<T>,
   pageSize: number,
   limit: number,
-): Promise<T[]> {
-  const items: T[] = [];
-  while (items.length < limit) {
-    const fetchSize = Math.min(pageSize, limit - items.length);
-    const page = await fetchPage(fetchSize, items.length);
-    items.push(...page.items);
+): AsyncGenerator<T> {
+  let count = 0;
+  while (count < limit) {
+    const fetchSize = Math.min(pageSize, limit - count);
+    const page = await fetchPage(fetchSize, count);
+    for (const item of page.items) {
+      yield item;
+      count++;
+      // Guards against a server returning more items than requested pushing
+      // the walk past the cap.
+      if (count >= limit) {
+        return;
+      }
+    }
     // A short page means the resource is exhausted, so there is nothing left
     // to walk even though the requested limit is not yet reached.
     if (page.items.length < fetchSize) {
-      break;
+      return;
     }
   }
-  return items.slice(0, limit);
 }
 
-async function collectAll<T>(
+type SettledPage<T> =
+  | { ok: true; page: Page<T> }
+  | { ok: false; error: unknown };
+
+async function* walkWithReadAhead<T>(
   fetchPage: FetchPage<T>,
   pageSize: number,
   concurrency: number,
-): Promise<T[]> {
+): AsyncGenerator<T> {
   // The first full page also reports total_count, so no separate probe request
   // is needed.
   const first = await fetchPage(pageSize, 0);
-  if (first.totalCount <= pageSize) {
-    return first.items;
-  }
+  yield* first.items;
   const offsets: number[] = [];
   for (let offset = pageSize; offset < first.totalCount; offset += pageSize) {
     offsets.push(offset);
   }
-  // Results are written back at their page index so aggregation order is
-  // independent of the order in which concurrent requests settle.
-  const pages: T[][] = new Array(offsets.length);
   let next = 0;
-  const worker = async (): Promise<void> => {
-    // `next++` reads and advances synchronously before any await, so each
-    // worker claims a distinct index without further coordination.
-    for (let index = next++; index < offsets.length; index = next++) {
-      pages[index] = (await fetchPage(pageSize, offsets[index])).items;
+  let current = 0;
+  const inflight = new Map<number, Promise<SettledPage<T>>>();
+  const fill = () => {
+    while (inflight.size < concurrency && next < offsets.length) {
+      const index = next++;
+      // Read-ahead promises must never reject: a rejection settling while
+      // iteration is still consuming earlier pages (or after the consumer
+      // broke out) would be detected as unhandled. Failures are carried as
+      // values instead and re-thrown once iteration reaches the failing page.
+      inflight.set(
+        index,
+        fetchPage(pageSize, offsets[index]).then(
+          (page) => ({ ok: true as const, page }),
+          (error) => ({ ok: false as const, error }),
+        ),
+      );
     }
   };
-  const workers = Array.from(
-    { length: Math.min(concurrency, offsets.length) },
-    () => worker(),
-  );
-  await Promise.all(workers);
-  return [first.items, ...pages].flat();
+  fill();
+  // Awaiting pages in index order keeps yields ordered and makes a failing
+  // page surface only after every earlier item has been yielded, regardless
+  // of the order in which the read-ahead requests settle.
+  while (current < offsets.length) {
+    const settled = await inflight.get(current)!;
+    inflight.delete(current);
+    current++;
+    if (!settled.ok) {
+      throw settled.error;
+    }
+    fill();
+    yield* settled.page.items;
+  }
 }
