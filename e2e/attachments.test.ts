@@ -1,8 +1,8 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { show } from "../result/attachments/show.ts";
-import { update } from "../result/attachments/update.ts";
-import { deleteAttachment } from "../result/attachments/delete.ts";
+import { show } from "../throwable/attachments/show.ts";
+import { update } from "../throwable/attachments/update.ts";
+import { deleteAttachment } from "../throwable/attachments/delete.ts";
 
 const headers = {
   "Content-Type": "application/json",
@@ -114,9 +114,7 @@ Deno.test({
     await t.step(
       "GET /attachments/:id.json should return an attachment",
       async () => {
-        const result = await show(e2eContext, attachmentId);
-        expect(result.isOk()).toBe(true);
-        const attachment = result._unsafeUnwrap();
+        const attachment = await show(e2eContext, attachmentId);
         expect(attachment.id).toStrictEqual(attachmentId);
         expect(attachment.filename).toStrictEqual(
           "e2e-attachment.txt",
@@ -129,14 +127,12 @@ Deno.test({
     await t.step(
       "PATCH /attachments/:id.json should update an attachment",
       async () => {
-        const result = await update(e2eContext, attachmentId, {
+        await update(e2eContext, attachmentId, {
           description: "Updated by E2E test",
         });
-        expect(result.isOk()).toBe(true);
 
-        const showResult = await show(e2eContext, attachmentId);
-        expect(showResult.isOk()).toBe(true);
-        expect(showResult._unsafeUnwrap().description).toStrictEqual(
+        const shown = await show(e2eContext, attachmentId);
+        expect(shown.description).toStrictEqual(
           "Updated by E2E test",
         );
       },
@@ -145,11 +141,9 @@ Deno.test({
     await t.step(
       "DELETE /attachments/:id.json should delete an attachment",
       async () => {
-        const result = await deleteAttachment(e2eContext, attachmentId);
-        expect(result.isOk()).toBe(true);
+        await deleteAttachment(e2eContext, attachmentId);
 
-        const showResult = await show(e2eContext, attachmentId);
-        expect(showResult.isErr()).toBe(true);
+        await expect(show(e2eContext, attachmentId)).rejects.toThrow();
       },
     );
   },

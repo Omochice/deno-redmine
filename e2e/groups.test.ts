@@ -1,12 +1,12 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../result/groups/list.ts";
-import { show } from "../result/groups/show.ts";
-import { create } from "../result/groups/create.ts";
-import { update } from "../result/groups/update.ts";
-import { deleteGroup } from "../result/groups/delete.ts";
-import { addUser } from "../result/groups/add-user.ts";
-import { removeUser } from "../result/groups/remove-user.ts";
+import { fetchList } from "../throwable/groups/list.ts";
+import { show } from "../throwable/groups/show.ts";
+import { create } from "../throwable/groups/create.ts";
+import { update } from "../throwable/groups/update.ts";
+import { deleteGroup } from "../throwable/groups/delete.ts";
+import { addUser } from "../throwable/groups/add-user.ts";
+import { removeUser } from "../throwable/groups/remove-user.ts";
 
 async function currentUserId(): Promise<number | undefined> {
   const response = await fetch(
@@ -33,36 +33,31 @@ Deno.test({
     const groupName = `E2E Group ${Date.now()}`;
 
     await t.step("POST /groups.json should create a group", async () => {
-      const result = await create(e2eContext, { name: groupName });
-      expect(result.isOk()).toBe(true);
+      await create(e2eContext, { name: groupName });
     });
 
     let groupId: number | undefined;
     await t.step("GET /groups.json should list the created group", async () => {
-      const result = await fetchList(e2eContext);
-      expect(result.isOk()).toBe(true);
-      const created = result._unsafeUnwrap().find((g) => g.name === groupName);
+      const groups = await fetchList(e2eContext);
+      const created = groups.find((g) => g.name === groupName);
       expect(created).toBeDefined();
       groupId = created!.id;
     });
 
     await t.step("GET /groups/:id.json should return the group", async () => {
       expect(groupId).toBeDefined();
-      const result = await show(e2eContext, groupId!);
-      expect(result.isOk()).toBe(true);
-      expect(result._unsafeUnwrap().id).toStrictEqual(groupId);
-      expect(result._unsafeUnwrap().name).toStrictEqual(groupName);
+      const group = await show(e2eContext, groupId!);
+      expect(group.id).toStrictEqual(groupId);
+      expect(group.name).toStrictEqual(groupName);
     });
 
     const updatedName = `${groupName} Updated`;
     await t.step("PUT /groups/:id.json should update the group", async () => {
       expect(groupId).toBeDefined();
-      const result = await update(e2eContext, groupId!, { name: updatedName });
-      expect(result.isOk()).toBe(true);
+      await update(e2eContext, groupId!, { name: updatedName });
 
-      const showResult = await show(e2eContext, groupId!);
-      expect(showResult.isOk()).toBe(true);
-      expect(showResult._unsafeUnwrap().name).toStrictEqual(updatedName);
+      const group = await show(e2eContext, groupId!);
+      expect(group.name).toStrictEqual(updatedName);
     });
 
     await t.step(
@@ -74,11 +69,8 @@ Deno.test({
         if (userId === undefined) {
           return;
         }
-        const addResult = await addUser(e2eContext, groupId!, userId);
-        expect(addResult.isOk()).toBe(true);
-
-        const removeResult = await removeUser(e2eContext, groupId!, userId);
-        expect(removeResult.isOk()).toBe(true);
+        await addUser(e2eContext, groupId!, userId);
+        await removeUser(e2eContext, groupId!, userId);
       },
     );
 
@@ -86,11 +78,9 @@ Deno.test({
       "DELETE /groups/:id.json should delete the group",
       async () => {
         expect(groupId).toBeDefined();
-        const result = await deleteGroup(e2eContext, groupId!);
-        expect(result.isOk()).toBe(true);
+        await deleteGroup(e2eContext, groupId!);
 
-        const showResult = await show(e2eContext, groupId!);
-        expect(showResult.isErr()).toBe(true);
+        await expect(show(e2eContext, groupId!)).rejects.toThrow();
       },
     );
   },
