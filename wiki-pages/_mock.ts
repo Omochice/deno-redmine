@@ -18,10 +18,6 @@ export type WikiPagePayload = {
   attachments?: { id: number; filename: string }[];
 };
 
-/**
- * Build a `wiki_page` response payload, letting each caller override only the
- * fields it cares about. Keeps the response shape defined in one place.
- */
 export function wikiPage(
   overrides: Partial<WikiPagePayload> = {},
 ): WikiPagePayload {

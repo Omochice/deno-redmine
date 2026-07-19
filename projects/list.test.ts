@@ -17,9 +17,8 @@ Deno.test("GET /projects.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.use(...invalidHandlers);
-      // Simulate an endpoint that returns an error
-      context.endpoint += "/422";
-      await expect(fetchList(context)).rejects.toThrow();
+      const c = { ...context, endpoint: `${context.endpoint}/422` };
+      await expect(fetchList(c)).rejects.toThrow();
     },
   );
 });
