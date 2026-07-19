@@ -25,7 +25,7 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
         ({ params }) => {
           return HttpResponse.json({
             wiki_page: wikiPage({
-              title: params.page,
+              title: String(params.page),
               version: 1,
               text: "# page content",
               author: { id: 1, name: "Admin" },
@@ -50,7 +50,7 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
             capturedInclude = new URL(request.url).searchParams.get("include");
             return HttpResponse.json({
               wiki_page: wikiPage({
-                title: params.page,
+                title: String(params.page),
                 version: 1,
                 text: "# page content",
                 author: { id: 1, name: "Admin" },

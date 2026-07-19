@@ -7,13 +7,24 @@ export const context = {
   endpoint: "http://redmine.example.com",
 };
 
+export interface WikiPagePayload {
+  title: string;
+  version: number;
+  text: string;
+  author: { id: number; name: string; login?: string };
+  comments: string | null;
+  created_on: string;
+  updated_on: string;
+  attachments?: { id: number; filename: string }[];
+}
+
 /**
  * Build a `wiki_page` response payload, letting each caller override only the
  * fields it cares about. Keeps the response shape defined in one place.
  */
 export function wikiPage(
-  overrides: Record<string, unknown> = {},
-): Record<string, unknown> {
+  overrides: Partial<WikiPagePayload> = {},
+): WikiPagePayload {
   return {
     title: "sample-title",
     version: 3,
@@ -53,7 +64,7 @@ export const validResponseHandlers = [
     const { id, page } = params;
     return HttpResponse.json({
       wiki_page: wikiPage({
-        title: page,
+        title: String(page),
         text: `# sample page on project ${id}`,
       }),
     });
@@ -64,7 +75,7 @@ export const validResponseHandlers = [
       const { id, page, version } = params;
       return HttpResponse.json({
         wiki_page: wikiPage({
-          title: page,
+          title: String(page),
           version: Number(version),
           text: `# sample page on project ${id}`,
         }),
