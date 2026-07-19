@@ -1,7 +1,7 @@
 import type { Context } from "../../context.ts";
 import type { WikiContent } from "./type.ts";
 import { fetchList } from "./list.ts";
-import { show } from "./show.ts";
+import { type Include, show } from "./show.ts";
 import { update } from "./update.ts";
 import { create } from "./create.ts";
 import { deleteWiki } from "./delete.ts";
@@ -38,9 +38,16 @@ export class Client {
   show(
     projectId: number,
     title: string,
+    version: number | undefined,
+    includes: Include[],
+  ): ReturnType<typeof show>;
+  show(
+    projectId: number,
+    title: string,
     version?: number,
+    includes?: Include[],
   ): ReturnType<typeof show> {
-    return show(this.#context, projectId, title, version);
+    return show(this.#context, projectId, title, version, includes);
   }
 
   /**
