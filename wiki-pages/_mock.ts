@@ -7,6 +7,36 @@ export const context = {
   endpoint: "http://redmine.example.com",
 };
 
+export type WikiPagePayload = {
+  title: string;
+  version: number;
+  text: string;
+  author: { id: number; name: string; login?: string };
+  comments: string | null;
+  created_on: string;
+  updated_on: string;
+  attachments?: { id: number; filename: string }[];
+};
+
+/**
+ * Build a `wiki_page` response payload, letting each caller override only the
+ * fields it cares about. Keeps the response shape defined in one place.
+ */
+export function wikiPage(
+  overrides: Partial<WikiPagePayload> = {},
+): WikiPagePayload {
+  return {
+    title: "sample-title",
+    version: 3,
+    text: "# sample page",
+    author: { id: 1, name: "Admin User", login: "admin" },
+    comments: "Updated via API",
+    created_on: "2023-01-01T00:00:00Z",
+    updated_on: "2023-01-02T00:00:00Z",
+    ...overrides,
+  };
+}
+
 export const validResponseHandlers = [
   http.get(
     `${context.endpoint}/projects/:id/wiki/index.json`,
@@ -33,19 +63,10 @@ export const validResponseHandlers = [
   http.get(`${context.endpoint}/projects/:id/wiki/:page.json`, ({ params }) => {
     const { id, page } = params;
     return HttpResponse.json({
-      wiki_page: {
-        title: page,
-        version: 3,
+      wiki_page: wikiPage({
+        title: String(page),
         text: `# sample page on project ${id}`,
-        author: {
-          id: 1,
-          name: "Admin User",
-          login: "admin",
-        },
-        comments: "Updated via API",
-        created_on: "2023-01-01T00:00:00Z",
-        updated_on: "2023-01-02T00:00:00Z",
-      },
+      }),
     });
   }),
   http.get(
@@ -53,19 +74,11 @@ export const validResponseHandlers = [
     ({ params }) => {
       const { id, page, version } = params;
       return HttpResponse.json({
-        wiki_page: {
-          title: page,
+        wiki_page: wikiPage({
+          title: String(page),
           version: Number(version),
           text: `# sample page on project ${id}`,
-          author: {
-            id: 1,
-            name: "Admin User",
-            login: "admin",
-          },
-          comments: "Updated via API",
-          created_on: "2023-01-01T00:00:00Z",
-          updated_on: "2023-01-02T00:00:00Z",
-        },
+        }),
       });
     },
   ),
@@ -117,9 +130,8 @@ export const validResponseHandlers = [
   http.delete(
     `${context.endpoint}/projects/:id/wiki/:page.json`,
     () => {
-      return HttpResponse.json({
-        status: STATUS_CODE.NoContent,
-      });
+      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
+      return new HttpResponse(null, { status: STATUS_CODE.NoContent });
     },
   ),
 ];
