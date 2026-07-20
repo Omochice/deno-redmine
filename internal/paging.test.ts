@@ -11,8 +11,6 @@ function range(start: number, end: number): number[] {
   return values;
 }
 
-// A finite source of ascending integers, returning at most `limit` of them
-// from `offset` and reporting the fixed total.
 function finiteSource(
   total: number,
 ): (limit: number, offset: number) => Promise<Page<number>> {
@@ -205,8 +203,6 @@ Deno.test("walkPages surfaces a page failure only after every earlier item is yi
 });
 
 Deno.test("walkPages surfaces a synchronously thrown page failure in order too", async () => {
-  // A non-async fetchPage can throw before ever producing a promise; that
-  // failure must still wait its turn instead of escaping the read-ahead fill.
   const collected: number[] = [];
   await expect((async () => {
     const pages = walkPages<number>(
