@@ -124,6 +124,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - run: nix run .#test-coverage
       - uses: k1LoW/octocov-action@b3b6ee60482a667950f87553abf1df63217235d9 # v1.5.1
+        with:
+          config: octocov.yaml
   e2e:
     needs: path-filter
     if: needs.path-filter.outputs.e2e == 'true' || needs.path-filter.outputs.deno == 'true' || needs.path-filter.outputs.flake == 'true'
