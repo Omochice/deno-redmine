@@ -12,7 +12,7 @@ import { assertResponse } from "../error.ts";
  * @param context REST endpoint context
  * @returns Array of role id/name pairs
  */
-export async function fetchList(context: Context): Promise<IdName[]> {
+export async function list(context: Context): Promise<IdName[]> {
   const url = buildUrl(context.endpoint, "roles.json");
   const response = await fetch(url, {
     method: "GET",

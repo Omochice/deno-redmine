@@ -1,6 +1,6 @@
 import type { Context } from "../context.ts";
 import type { WikiContent } from "./type.ts";
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { show, type ShowWikiPageParams } from "./show.ts";
 import { update } from "./update.ts";
 import { create } from "./create.ts";
@@ -18,8 +18,8 @@ export class Client {
    * @param projectId The project ID
    * @returns Wiki pages
    */
-  list(projectId: number): ReturnType<typeof fetchList> {
-    return fetchList(this.#context, projectId);
+  list(projectId: number): ReturnType<typeof list> {
+    return list(this.#context, projectId);
   }
 
   /**

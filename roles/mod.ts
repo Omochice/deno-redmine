@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { show } from "./show.ts";
 
 export class Client {
@@ -12,8 +12,8 @@ export class Client {
   /**
    * Returns all roles.
    */
-  list(): ReturnType<typeof fetchList> {
-    return fetchList(this.#context);
+  list(): ReturnType<typeof list> {
+    return list(this.#context);
   }
 
   /**

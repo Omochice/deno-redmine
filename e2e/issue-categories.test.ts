@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../issue-categories/list.ts";
+import { list } from "../issue-categories/list.ts";
 import { show } from "../issue-categories/show.ts";
 import { create } from "../issue-categories/create.ts";
 import { update } from "../issue-categories/update.ts";
 import { deleteIssueCategory } from "../issue-categories/delete.ts";
-import { fetchList as fetchProjects } from "../projects/list.ts";
+import { list as fetchProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Issue Categories API",
@@ -26,7 +26,7 @@ Deno.test({
     await t.step(
       "GET /projects/:project_id/issue_categories.json should return issue categories",
       async () => {
-        const categories = await fetchList(e2eContext, project!.id);
+        const categories = await list(e2eContext, project!.id);
         expect(categories.length).toBeGreaterThan(0);
         const created = categories.find((c) =>
           c.name === "E2E Created Category"
@@ -38,7 +38,7 @@ Deno.test({
     await t.step(
       "GET /issue_categories/:id.json should return an issue category",
       async () => {
-        const categories = await fetchList(e2eContext, project!.id);
+        const categories = await list(e2eContext, project!.id);
         const category = categories.find((c) =>
           c.name === "E2E Created Category"
         );
@@ -56,7 +56,7 @@ Deno.test({
     await t.step(
       "PUT /issue_categories/:id.json should update an issue category",
       async () => {
-        const categories = await fetchList(e2eContext, project!.id);
+        const categories = await list(e2eContext, project!.id);
         const category = categories.find((c) =>
           c.name === "E2E Created Category"
         );
@@ -76,7 +76,7 @@ Deno.test({
     await t.step(
       "DELETE /issue_categories/:id.json should delete an issue category",
       async () => {
-        const categories = await fetchList(e2eContext, project!.id);
+        const categories = await list(e2eContext, project!.id);
         const category = categories.find((c) =>
           c.name === "E2E Updated Category"
         );

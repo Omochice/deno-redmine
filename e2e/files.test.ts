@@ -1,9 +1,9 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../files/list.ts";
+import { list } from "../files/list.ts";
 import { create } from "../files/create.ts";
 import { upload } from "../files/upload.ts";
-import { fetchList as fetchProjects } from "../projects/list.ts";
+import { list as fetchProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Files API",
@@ -41,7 +41,7 @@ Deno.test({
     await t.step(
       "GET /projects/:project_id/files.json should return files",
       async () => {
-        const files = await fetchList(e2eContext, project!.id);
+        const files = await list(e2eContext, project!.id);
         const created = files.find((f) => f.filename === filename);
         expect(created).toBeDefined();
       },

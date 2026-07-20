@@ -1,4 +1,4 @@
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { expect } from "jsr:@std/expect@1.0.20";
 
 import {
@@ -14,12 +14,12 @@ server.listen();
 Deno.test("GET /projects/:id/wiki/index.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validResponseHandlers);
-    const wikis = await fetchList(context, 1);
+    const wikis = await list(context, 1);
     expect(wikis.length).toBe(2);
   });
   await t.step("If got 422, should throw", async () => {
     server.resetHandlers(...invalidResponseHandlers);
-    await expect(fetchList(context, 2)).rejects.toThrow(
+    await expect(list(context, 2)).rejects.toThrow(
       "Unprocessable Entity",
     );
   });

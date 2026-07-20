@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 
 export class Client {
   readonly #context: Context;
@@ -11,7 +11,7 @@ export class Client {
   /**
    * Return the list of custom fields
    */
-  list(): ReturnType<typeof fetchList> {
-    return fetchList(this.#context);
+  list(): ReturnType<typeof list> {
+    return list(this.#context);
   }
 }

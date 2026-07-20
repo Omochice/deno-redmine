@@ -4,7 +4,7 @@ import type {
   ListIssueQuery,
   UpdateIssueQuery,
 } from "./type.ts";
-import { listIssues } from "./list.ts";
+import { list } from "./list.ts";
 import { type Include, show } from "./show.ts";
 import { update } from "./update.ts";
 import { createIssue } from "./create.ts";
@@ -24,8 +24,8 @@ export class Client {
    *
    * @param option The query option
    */
-  list(option: Partial<ListIssueQuery>): ReturnType<typeof listIssues> {
-    return listIssues(this.#context, option);
+  list(option: Partial<ListIssueQuery>): ReturnType<typeof list> {
+    return list(this.#context, option);
   }
 
   /**

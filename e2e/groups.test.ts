@@ -1,6 +1,6 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../groups/list.ts";
+import { list } from "../groups/list.ts";
 import { show } from "../groups/show.ts";
 import { create } from "../groups/create.ts";
 import { update } from "../groups/update.ts";
@@ -38,7 +38,7 @@ Deno.test({
 
     let groupId: number | undefined;
     await t.step("GET /groups.json should list the created group", async () => {
-      const groups = await fetchList(e2eContext);
+      const groups = await list(e2eContext);
       const created = groups.find((g) => g.name === groupName);
       expect(created).toBeDefined();
       groupId = created!.id;

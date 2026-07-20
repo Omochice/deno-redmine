@@ -20,7 +20,7 @@ const responseSchema = object({
  * @param context REST endpoint context
  * @returns Users
  */
-export async function fetchList(context: Context): Promise<User[]> {
+export async function list(context: Context): Promise<User[]> {
   return await fetchAllPages(async (limit, offset) => {
     const endpoint = buildUrl(context.endpoint, "users.json");
     endpoint.search = new URLSearchParams({

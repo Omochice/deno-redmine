@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { show } from "./show.ts";
 import { create } from "./create.ts";
 import type { CreateUserQuery, UpdateUserQuery } from "./type.ts";
@@ -16,8 +16,8 @@ export class Client {
   /**
    * Returns all users.
    */
-  list(): ReturnType<typeof fetchList> {
-    return fetchList(this.#context);
+  list(): ReturnType<typeof list> {
+    return list(this.#context);
   }
 
   /**

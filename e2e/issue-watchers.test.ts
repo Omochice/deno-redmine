@@ -1,6 +1,6 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { listIssues } from "../issues/list.ts";
+import { list } from "../issues/list.ts";
 import { addWatcher } from "../issues/add-watcher.ts";
 import { removeWatcher } from "../issues/remove-watcher.ts";
 
@@ -22,7 +22,7 @@ async function fetchCurrentUserId(): Promise<number | undefined> {
 Deno.test({
   name: "E2E: Issue watchers API",
   fn: async (t) => {
-    const issues = await listIssues(e2eContext, { limit: 1 });
+    const issues = await list(e2eContext, { limit: 1 });
     const issue = issues[0];
     if (issue === undefined) {
       // Nothing to watch when the seeded project holds no issues.

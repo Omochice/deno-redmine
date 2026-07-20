@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../memberships/list.ts";
+import { list } from "../memberships/list.ts";
 import { show } from "../memberships/show.ts";
 import { create } from "../memberships/create.ts";
 import { update } from "../memberships/update.ts";
 import { deleteMembership } from "../memberships/delete.ts";
-import { fetchList as fetchProjects } from "../projects/list.ts";
+import { list as fetchProjects } from "../projects/list.ts";
 
 // The library has no `users`/`roles` resources yet, so these are fetched
 // directly against the raw REST API, mirroring e2e/setup.ts's seeding
@@ -73,7 +73,7 @@ Deno.test({
     await t.step(
       "GET /projects/:project_id/memberships.json should return memberships",
       async () => {
-        const memberships = await fetchList(e2eContext, project!.id);
+        const memberships = await list(e2eContext, project!.id);
         expect(memberships.length).toBeGreaterThan(0);
         const created = memberships.find((m) => m.user?.id === userId);
         expect(created).toBeDefined();

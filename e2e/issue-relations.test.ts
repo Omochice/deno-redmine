@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../issue-relations/list.ts";
+import { list } from "../issue-relations/list.ts";
 import { show } from "../issue-relations/show.ts";
 import { create } from "../issue-relations/create.ts";
 import { deleteRelation } from "../issue-relations/delete.ts";
-import { listIssues } from "../issues/list.ts";
-import { fetchList as fetchProjects } from "../projects/list.ts";
+import { list as fetchIssues } from "../issues/list.ts";
+import { list as fetchProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Issue Relations API",
@@ -14,7 +14,7 @@ Deno.test({
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
-    const issues = await listIssues(e2eContext, {
+    const issues = await fetchIssues(e2eContext, {
       projectId: project!.id,
     });
     expect(issues.length).toBeGreaterThan(0);
@@ -63,7 +63,7 @@ Deno.test({
     await t.step(
       "GET /issues/:issue_id/relations.json should return relations",
       async () => {
-        const relations = await fetchList(e2eContext, firstIssue.id);
+        const relations = await list(e2eContext, firstIssue.id);
         const relation = relations.find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
@@ -75,7 +75,7 @@ Deno.test({
     await t.step(
       "GET /relations/:id.json should return a relation",
       async () => {
-        const relations = await fetchList(e2eContext, firstIssue.id);
+        const relations = await list(e2eContext, firstIssue.id);
         const relation = relations.find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
@@ -92,7 +92,7 @@ Deno.test({
     await t.step(
       "DELETE /relations/:id.json should delete a relation",
       async () => {
-        const relations = await fetchList(e2eContext, firstIssue.id);
+        const relations = await list(e2eContext, firstIssue.id);
         const relation = relations.find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );

@@ -13,7 +13,7 @@ import { wikis } from "./validator.ts";
  * @param projectId Project identifier
  * @returns Wiki pages
  */
-export async function fetchList(
+export async function list(
   context: Context,
   projectId: number,
 ): Promise<Wiki[]> {

@@ -21,7 +21,7 @@ const responseSchema = object({
  * @param filter Optional filters (projectId, spentOn, userId, from, to)
  * @returns Time entries
  */
-export async function fetchList(
+export async function list(
   context: Context,
   filter: Partial<ListTimeEntryQuery> = {},
 ): Promise<TimeEntry[]> {

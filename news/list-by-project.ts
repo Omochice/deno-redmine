@@ -12,7 +12,7 @@ import { listNewsResponse } from "./validator.ts";
  * @param projectId Project identifier
  * @return Array of News
  */
-export async function fetchListByProject(
+export async function listByProject(
   context: Context,
   projectId: number,
 ): Promise<News[]> {

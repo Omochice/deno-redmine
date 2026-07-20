@@ -13,7 +13,7 @@ import { listCustomFieldResponse } from "./validator.ts";
  * @param context REST endpoint context
  * @return Array of CustomField
  */
-export async function fetchList(context: Context): Promise<CustomField[]> {
+export async function list(context: Context): Promise<CustomField[]> {
   const endpoint = buildUrl(context.endpoint, "custom_fields.json");
   const response = await fetch(
     endpoint,

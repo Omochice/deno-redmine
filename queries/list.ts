@@ -11,7 +11,7 @@ import { listQueryResponse } from "./validator.ts";
  * @param context REST endpoint context
  * @return Array of Query
  */
-export async function fetchList(context: Context): Promise<Query[]> {
+export async function list(context: Context): Promise<Query[]> {
   const endpoint = buildUrl(context.endpoint, "queries.json");
   const response = await fetch(
     endpoint,

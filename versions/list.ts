@@ -17,7 +17,7 @@ const responseSchema = object({
  * @param projectId Project identifier
  * @returns Versions
  */
-export async function fetchList(
+export async function list(
   context: Context,
   projectId: number,
 ): Promise<Version[]> {

@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { show } from "./show.ts";
 import { create } from "./create.ts";
 import type { CreateRelationQuery } from "./type.ts";
@@ -17,8 +17,8 @@ export class Client {
    *
    * @param issueId Issue identifier
    */
-  list(issueId: number): ReturnType<typeof fetchList> {
-    return fetchList(this.#context, issueId);
+  list(issueId: number): ReturnType<typeof list> {
+    return list(this.#context, issueId);
   }
 
   /**
