@@ -126,7 +126,14 @@
             pkgs.renovate
           ];
           # keep-sorted end
-          default = actions ++ deno ++ renovate ++ [ treefmt.config.build.wrapper ];
+          default =
+            actions
+            ++ deno
+            ++ renovate
+            ++ [
+              pkgs.octocov
+              treefmt.config.build.wrapper
+            ];
         };
       in
       {
