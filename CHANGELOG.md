@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.0.0](https://github.com/Omochice/deno-redmine/compare/v2.3.1...v3.0.0) (2026-07-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* list, listByProject, search, and the enumerations list functions return AsyncGenerator<T> instead of Promise<T[]>. Iterate with `for await` or collect with `await Array.fromAsync(list(context))`.
+* fetchList and listIssues are renamed to list, and fetchListByProject to listByProject. Update imports accordingly, e.g. `import { list } from "@omochice/redmine/issues/list"`.
+* the package no longer returns neverthrow `ResultAsync` values. The default export (`.`) and every `./result/*` subpath are removed; consumers use the throwing API (`.`/`./throwable/*`) with try/catch instead of `.isOk()`/`.isErr()`/`_unsafeUnwrap()`. The `convertError` export is also removed from `./error`.
+* bundle over-long function arguments into options objects ([#434](https://github.com/Omochice/deno-redmine/issues/434))
+
+### Features
+
+* bundle over-long function arguments into options objects ([#434](https://github.com/Omochice/deno-redmine/issues/434)) ([5ea4f26](https://github.com/Omochice/deno-redmine/commit/5ea4f267c5a27c9708a9cc38b34dba900cf8f155))
+* drop the neverthrow Result layer for the throwing API at the package root ([#438](https://github.com/Omochice/deno-redmine/issues/438)) ([feb9d19](https://github.com/Omochice/deno-redmine/commit/feb9d19ab930c71ab141c587b966fd7d12135587))
+* return AsyncGenerator from list functions ([#445](https://github.com/Omochice/deno-redmine/issues/445)) ([45e19b0](https://github.com/Omochice/deno-redmine/commit/45e19b0355f35ed5b06251bc5c39d455cd88aa07))
+* unify list function names to list ([#444](https://github.com/Omochice/deno-redmine/issues/444)) ([0db9a8f](https://github.com/Omochice/deno-redmine/commit/0db9a8fece41f4305baa6b8ce2c80e24dab8a1aa))
+
 ## [2.3.1](https://github.com/Omochice/deno-redmine/compare/v2.3.0...v2.3.1) (2026-07-19)
 
 
