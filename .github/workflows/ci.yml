@@ -107,7 +107,8 @@ jobs:
         run: nix run .#check-renovate-config
   coverage:
     needs: path-filter
-    if: needs.path-filter.outputs.deno == 'true' || needs.path-filter.outputs.flake == 'true'
+    if: >-
+      (needs.path-filter.outputs.deno == 'true' || needs.path-filter.outputs.flake == 'true') && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -123,7 +124,17 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - run: nix run .#test-coverage
+      - name: Expose the nix-provided octocov on PATH
+        run: |
+          nix develop --command bash <<'EOF' >> "$GITHUB_PATH"
+          set -euo pipefail
+          octocov_path="$(command -v octocov)"
+          dirname "$octocov_path"
+          EOF
       - uses: k1LoW/octocov-action@b3b6ee60482a667950f87553abf1df63217235d9 # v1.5.1
+        with:
+          config: octocov.yaml
+          check-existence: true
   e2e:
     needs: path-filter
     if: needs.path-filter.outputs.e2e == 'true' || needs.path-filter.outputs.deno == 'true' || needs.path-filter.outputs.flake == 'true'
