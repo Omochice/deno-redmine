@@ -13,7 +13,7 @@ const responseSchema = object({
   limit: number(),
 });
 
-export async function fetchList(context: Context): Promise<Project[]> {
+export async function list(context: Context): Promise<Project[]> {
   return await fetchAllPages(async (limit, offset) => {
     const endpoint = buildUrl(context.endpoint, "projects.json");
     endpoint.search = new URLSearchParams({

@@ -11,7 +11,7 @@ import { listIssueStatusResponse } from "./validator.ts";
  * @param context REST endpoint context
  * @return Array of IssueStatus
  */
-export async function fetchList(context: Context): Promise<IssueStatus[]> {
+export async function list(context: Context): Promise<IssueStatus[]> {
   const endpoint = buildUrl(context.endpoint, "issue_statuses.json");
   const response = await fetch(
     endpoint,

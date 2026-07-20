@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { listIssues } from "../issues/list.ts";
+import { list } from "../issues/list.ts";
 import { show } from "../issues/show.ts";
 import { createIssue } from "../issues/create.ts";
 import { update } from "../issues/update.ts";
 import { deleteIssue } from "../issues/delete.ts";
-import { fetchList as fetchProjects } from "../projects/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 import { update as updateJournal } from "../journals/update.ts";
 
 Deno.test({
@@ -18,13 +18,13 @@ Deno.test({
     await t.step(
       "POST /issues.json should create an issue to attach a journal to",
       async () => {
-        const projects = await fetchProjects(e2eContext);
+        const projects = await listProjects(e2eContext);
         const project = projects.find((p) =>
           p.identifier === "e2e-test-project"
         );
         expect(project).toBeDefined();
 
-        const issues = await listIssues(e2eContext, {
+        const issues = await list(e2eContext, {
           projectId: project!.id,
         });
         expect(issues.length).toBeGreaterThan(0);
@@ -39,7 +39,7 @@ Deno.test({
 
         // createIssue does not return the created id, so it is looked up
         // by subject, mirroring the pattern in e2e/issues.test.ts.
-        const listAfter = await listIssues(e2eContext, {
+        const listAfter = await list(e2eContext, {
           projectId: project!.id,
         });
         const createdIssue = listAfter.find((i) => i.subject === subject);

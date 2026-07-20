@@ -1,11 +1,11 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../wiki-pages/list.ts";
+import { list } from "../wiki-pages/list.ts";
 import { show } from "../wiki-pages/show.ts";
 import { create } from "../wiki-pages/create.ts";
 import { deleteWiki } from "../wiki-pages/delete.ts";
 import { upload } from "../files/upload.ts";
-import { fetchList as fetchProjects } from "../projects/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Wiki Pages API",
@@ -13,7 +13,7 @@ Deno.test({
     let projectId: number;
 
     await t.step("resolve test project", async () => {
-      const projects = await fetchProjects(e2eContext);
+      const projects = await listProjects(e2eContext);
       const project = projects.find((p) => p.identifier === "e2e-test-project");
       expect(project).toBeDefined();
       projectId = project!.id;
@@ -22,7 +22,7 @@ Deno.test({
     await t.step(
       "GET /projects/:id/wiki/index.json should return wiki pages",
       async () => {
-        const pages = await fetchList(e2eContext, projectId);
+        const pages = await list(e2eContext, projectId);
         expect(pages.length).toBeGreaterThan(0);
       },
     );

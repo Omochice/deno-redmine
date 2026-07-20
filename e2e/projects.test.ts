@@ -1,6 +1,6 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../projects/list.ts";
+import { list } from "../projects/list.ts";
 import { show } from "../projects/show.ts";
 import { create } from "../projects/create.ts";
 import { update } from "../projects/update.ts";
@@ -12,12 +12,12 @@ Deno.test({
   name: "E2E: Projects API",
   fn: async (t) => {
     await t.step("GET /projects.json should return projects", async () => {
-      const projects = await fetchList(e2eContext);
+      const projects = await list(e2eContext);
       expect(projects.length).toBeGreaterThan(0);
     });
 
     await t.step("GET /projects/:id.json should return a project", async () => {
-      const projects = await fetchList(e2eContext);
+      const projects = await list(e2eContext);
       expect(projects.length).toBeGreaterThan(0);
       const projectId = projects[0].id;
 
@@ -33,7 +33,7 @@ Deno.test({
     });
 
     await t.step("PUT /projects/:id.json should update a project", async () => {
-      const projects = await fetchList(e2eContext);
+      const projects = await list(e2eContext);
       const project = projects.find((p) =>
         p.identifier === "e2e-created-project"
       );
@@ -63,7 +63,7 @@ Deno.test({
         // an id from the try block: that id is unavailable exactly when the
         // lookup is the step that failed.
         try {
-          const projects = await fetchList(e2eContext);
+          const projects = await list(e2eContext);
           const created = projects.find((p) => p.identifier === identifier);
           expect(created).toBeDefined();
 
@@ -84,7 +84,7 @@ Deno.test({
           ).toStrictEqual(true);
         } finally {
           try {
-            const cleanupList = await fetchList(e2eContext);
+            const cleanupList = await list(e2eContext);
             const leftover = cleanupList.find((p) =>
               p.identifier === identifier
             );
@@ -102,7 +102,7 @@ Deno.test({
     await t.step(
       "PUT /projects/:id/archive.json should archive and unarchive",
       async () => {
-        const projects = await fetchList(e2eContext);
+        const projects = await list(e2eContext);
         const project = projects.find((p) =>
           p.identifier === "e2e-created-project"
         );
@@ -116,7 +116,7 @@ Deno.test({
     await t.step(
       "PUT /projects/:id/close.json should close and reopen",
       async () => {
-        const projects = await fetchList(e2eContext);
+        const projects = await list(e2eContext);
         const project = projects.find((p) =>
           p.identifier === "e2e-created-project"
         );
@@ -130,7 +130,7 @@ Deno.test({
     await t.step(
       "DELETE /projects/:id.json should delete a project",
       async () => {
-        const projects = await fetchList(e2eContext);
+        const projects = await list(e2eContext);
         const project = projects.find((p) =>
           p.identifier === "e2e-created-project"
         );

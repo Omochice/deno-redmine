@@ -11,7 +11,7 @@ import { listTrackerResponse } from "./validator.ts";
  * @param context REST endpoint context
  * @return Array of Tracker
  */
-export async function fetchList(context: Context): Promise<Tracker[]> {
+export async function list(context: Context): Promise<Tracker[]> {
   const endpoint = buildUrl(context.endpoint, "trackers.json");
   const response = await fetch(
     endpoint,

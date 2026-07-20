@@ -1,4 +1,4 @@
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
 import { expect } from "jsr:@std/expect@1.0.20";
@@ -9,7 +9,7 @@ server.listen();
 Deno.test("GET /users.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.use(...validHandlers);
-    const users = await fetchList(context);
+    const users = await list(context);
     expect(users).toBeDefined();
   });
 
@@ -17,7 +17,7 @@ Deno.test("GET /users.json", async (t) => {
     "if got 200, should return users with camelCase fields",
     async () => {
       server.use(...validHandlers);
-      const users = await fetchList(context);
+      const users = await list(context);
       expect(users.length).toStrictEqual(2);
       expect(users[1].login).toStrictEqual("admin");
       expect(users[1].admin).toStrictEqual(true);
@@ -33,13 +33,13 @@ Deno.test("GET /users.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const c = { ...context, endpoint: `${context.endpoint}/422` };
-      await expect(fetchList(c)).rejects.toThrow();
+      await expect(list(c)).rejects.toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const c = { ...context, endpoint: `${context.endpoint}/404` };
-    await expect(fetchList(c)).rejects.toThrow();
+    await expect(list(c)).rejects.toThrow();
   });
 });

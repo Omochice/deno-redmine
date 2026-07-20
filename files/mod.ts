@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { create } from "./create.ts";
 import { upload } from "./upload.ts";
 import type { CreateFileQuery } from "./type.ts";
@@ -16,8 +16,8 @@ export class Client {
    *
    * @param projectId Project identifier
    */
-  list(projectId: number): ReturnType<typeof fetchList> {
-    return fetchList(this.#context, projectId);
+  list(projectId: number): ReturnType<typeof list> {
+    return list(this.#context, projectId);
   }
 
   /**

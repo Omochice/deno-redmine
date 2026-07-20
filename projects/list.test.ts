@@ -1,4 +1,4 @@
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
 import { expect } from "jsr:@std/expect@1.0.20";
@@ -9,7 +9,7 @@ server.listen();
 Deno.test("GET /projects.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.use(...validHandlers);
-    const r = await fetchList(context);
+    const r = await list(context);
     expect(r).toBeDefined();
   });
 
@@ -18,7 +18,7 @@ Deno.test("GET /projects.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const c = { ...context, endpoint: `${context.endpoint}/422` };
-      await expect(fetchList(c)).rejects.toThrow();
+      await expect(list(c)).rejects.toThrow();
     },
   );
 });

@@ -8,7 +8,7 @@ import { listResponse, toListOption } from "./validator.ts";
 
 const pageSize = 100;
 
-export async function listIssues(
+export async function list(
   context: Context,
   option: Partial<ListIssueQuery> = {},
 ): Promise<Issue[]> {

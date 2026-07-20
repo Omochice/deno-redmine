@@ -22,7 +22,7 @@ const pageSize = 100;
  * @param projectId Project identifier
  * @returns Memberships
  */
-export async function fetchList(
+export async function list(
   context: Context,
   projectId: number,
 ): Promise<Membership[]> {

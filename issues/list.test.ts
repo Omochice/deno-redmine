@@ -1,4 +1,4 @@
-import { listIssues } from "./list.ts";
+import { list } from "./list.ts";
 import { expect } from "jsr:@std/expect@1.0.20";
 
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
@@ -11,7 +11,7 @@ server.listen();
 Deno.test("GET /issues.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
-    const issues = await listIssues(context);
+    const issues = await list(context);
     expect(issues).toBeDefined();
   });
 
@@ -19,7 +19,7 @@ Deno.test("GET /issues.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      await expect(listIssues(context)).rejects.toThrow();
+      await expect(list(context)).rejects.toThrow();
     },
   );
 });
@@ -78,14 +78,14 @@ function pagingHandler(
   });
 }
 
-Deno.test("listIssues limit option", async (t) => {
+Deno.test("list limit option", async (t) => {
   await t.step(
     "returns at most `limit` issues with a single page request when limit <= page size",
     async () => {
       const requests: RecordedRequest[] = [];
       server.resetHandlers(pagingHandler(5, requests));
 
-      const issues = await listIssues(context, { limit: 1 });
+      const issues = await list(context, { limit: 1 });
 
       expect(issues.length).toStrictEqual(1);
       expect(requests.length).toStrictEqual(1);
@@ -99,7 +99,7 @@ Deno.test("listIssues limit option", async (t) => {
       const requests: RecordedRequest[] = [];
       server.resetHandlers(pagingHandler(300, requests));
 
-      const issues = await listIssues(context, { limit: 150 });
+      const issues = await list(context, { limit: 150 });
 
       expect(issues.length).toStrictEqual(150);
       expect(requests).toStrictEqual([
@@ -115,7 +115,7 @@ Deno.test("listIssues limit option", async (t) => {
       const requests: RecordedRequest[] = [];
       server.resetHandlers(pagingHandler(150, requests));
 
-      const issues = await listIssues(context, {});
+      const issues = await list(context, {});
 
       expect(issues.length).toStrictEqual(150);
       expect(requests).toStrictEqual([
@@ -131,7 +131,7 @@ Deno.test("listIssues limit option", async (t) => {
       const requests: RecordedRequest[] = [];
       server.resetHandlers(pagingHandler(5, requests));
 
-      await expect(listIssues(context, { limit: 1.5 })).rejects.toThrow();
+      await expect(list(context, { limit: 1.5 })).rejects.toThrow();
       expect(requests.length).toStrictEqual(0);
     },
   );
@@ -142,7 +142,7 @@ Deno.test("listIssues limit option", async (t) => {
       const requests: RecordedRequest[] = [];
       server.resetHandlers(pagingHandler(5, requests));
 
-      await expect(listIssues(context, { limit: -1 })).rejects.toThrow();
+      await expect(list(context, { limit: -1 })).rejects.toThrow();
       expect(requests.length).toStrictEqual(0);
     },
   );
@@ -153,7 +153,7 @@ Deno.test("listIssues limit option", async (t) => {
       const requests: RecordedRequest[] = [];
       server.resetHandlers(pagingHandler(5, requests));
 
-      await expect(listIssues(context, { limit: 0 })).rejects.toThrow();
+      await expect(list(context, { limit: 0 })).rejects.toThrow();
       expect(requests.length).toStrictEqual(0);
     },
   );

@@ -1,6 +1,6 @@
 import type { Context } from "../context.ts";
-import { fetchList } from "./list.ts";
-import { fetchListByProject } from "./list-by-project.ts";
+import { list } from "./list.ts";
+import { listByProject } from "./list-by-project.ts";
 import { type Include, show } from "./show.ts";
 import { create } from "./create.ts";
 import { update } from "./update.ts";
@@ -17,8 +17,8 @@ export class Client {
   /**
    * Return the list of news across all projects
    */
-  list(): ReturnType<typeof fetchList> {
-    return fetchList(this.#context);
+  list(): ReturnType<typeof list> {
+    return list(this.#context);
   }
 
   /**
@@ -26,8 +26,8 @@ export class Client {
    *
    * @param projectId Project identifier
    */
-  listByProject(projectId: number): ReturnType<typeof fetchListByProject> {
-    return fetchListByProject(this.#context, projectId);
+  listByProject(projectId: number): ReturnType<typeof listByProject> {
+    return listByProject(this.#context, projectId);
   }
 
   /**

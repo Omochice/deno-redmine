@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { show } from "./show.ts";
 import { create } from "./create.ts";
 import type { ProjectQuery } from "./type.ts";
@@ -19,8 +19,8 @@ export class Client {
    * Returns all projects
    * This includes all public projects and private projects where user have access to.
    */
-  list(): ReturnType<typeof fetchList> {
-    return fetchList(this.#context);
+  list(): ReturnType<typeof list> {
+    return list(this.#context);
   }
 
   /**

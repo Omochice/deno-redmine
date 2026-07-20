@@ -1,4 +1,4 @@
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
@@ -10,8 +10,8 @@ server.listen();
 Deno.test("GET /time_entries.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.use(...validHandlers);
-    const list = await fetchList(context);
-    expect(list).toBeDefined();
+    const entries = await list(context);
+    expect(entries).toBeDefined();
   });
 
   await t.step(
@@ -19,19 +19,19 @@ Deno.test("GET /time_entries.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const c = { ...context, endpoint: `${context.endpoint}/422` };
-      await expect(fetchList(c)).rejects.toThrow();
+      await expect(list(c)).rejects.toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const c = { ...context, endpoint: `${context.endpoint}/404` };
-    await expect(fetchList(c)).rejects.toThrow();
+    await expect(list(c)).rejects.toThrow();
   });
 
   await t.step("should map camelCase fields from the response", async () => {
     server.use(...validHandlers);
-    const entries = await fetchList(context);
+    const entries = await list(context);
     const entry = entries.find((timeEntry) => timeEntry.id === 3);
     expect(entry).toBeDefined();
     expect(entry!.project).toStrictEqual({ id: 1, name: "Demo" });
@@ -60,7 +60,7 @@ Deno.test("GET /time_entries.json", async (t) => {
           });
         }),
       );
-      await fetchList(context, {
+      await list(context, {
         projectId: 1,
         userId: 2,
         spentOn: new Date("2026-07-01"),
@@ -90,7 +90,7 @@ Deno.test("GET /time_entries.json", async (t) => {
           });
         }),
       );
-      await fetchList(context, { projectId: undefined });
+      await list(context, { projectId: undefined });
       expect(captured?.has("project_id")).toStrictEqual(false);
       expect(!captured?.toString().includes("undefined")).toBe(true);
     },

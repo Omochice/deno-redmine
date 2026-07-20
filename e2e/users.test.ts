@@ -1,6 +1,6 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../users/list.ts";
+import { list } from "../users/list.ts";
 import { show } from "../users/show.ts";
 import { create } from "../users/create.ts";
 import { update } from "../users/update.ts";
@@ -31,7 +31,7 @@ Deno.test({
     await t.step(
       "GET /users.json should return users",
       async () => {
-        const users = await fetchList(e2eContext);
+        const users = await list(e2eContext);
         expect(users.length).toBeGreaterThan(0);
         const created = users.find((u) => u.login === login);
         expect(created).toBeDefined();
@@ -39,7 +39,7 @@ Deno.test({
     );
 
     await t.step("GET /users/:id.json should return a user", async () => {
-      const users = await fetchList(e2eContext);
+      const users = await list(e2eContext);
       const user = users.find((u) => u.login === login);
       expect(user).toBeDefined();
 
@@ -52,7 +52,7 @@ Deno.test({
     });
 
     await t.step("PUT /users/:id.json should update a user", async () => {
-      const users = await fetchList(e2eContext);
+      const users = await list(e2eContext);
       const user = users.find((u) => u.login === login);
       expect(user).toBeDefined();
 
@@ -68,7 +68,7 @@ Deno.test({
     await t.step(
       "DELETE /users/:id.json should delete a user",
       async () => {
-        const users = await fetchList(e2eContext);
+        const users = await list(e2eContext);
         const user = users.find((u) => u.login === login);
         expect(user).toBeDefined();
 

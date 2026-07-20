@@ -1,17 +1,17 @@
 import { expect } from "jsr:@std/expect@1.0.20";
 import { e2eContext } from "./context.ts";
-import { fetchList } from "../time-entries/list.ts";
+import { list } from "../time-entries/list.ts";
 import { show } from "../time-entries/show.ts";
 import { create } from "../time-entries/create.ts";
 import { update } from "../time-entries/update.ts";
 import { deleteTimeEntry } from "../time-entries/delete.ts";
-import { fetchList as fetchProjects } from "../projects/list.ts";
-import { listIssues } from "../issues/list.ts";
+import { list as listProjects } from "../projects/list.ts";
+import { list as listIssues } from "../issues/list.ts";
 
 Deno.test({
   name: "E2E: Time Entries API",
   fn: async (t) => {
-    const projects = await fetchProjects(e2eContext);
+    const projects = await listProjects(e2eContext);
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
@@ -56,7 +56,7 @@ Deno.test({
     await t.step(
       "GET /time_entries.json?project_id=... should return time entries",
       async () => {
-        const timeEntries = await fetchList(e2eContext, {
+        const timeEntries = await list(e2eContext, {
           projectId: project!.id,
         });
         expect(timeEntries.length).toBeGreaterThan(0);
@@ -70,7 +70,7 @@ Deno.test({
     await t.step(
       "GET /time_entries/:id.json should return a time entry",
       async () => {
-        const timeEntries = await fetchList(e2eContext, {
+        const timeEntries = await list(e2eContext, {
           projectId: project!.id,
         });
         const timeEntry = timeEntries.find((e) =>
@@ -90,7 +90,7 @@ Deno.test({
     await t.step(
       "PUT /time_entries/:id.json should update a time entry",
       async () => {
-        const timeEntries = await fetchList(e2eContext, {
+        const timeEntries = await list(e2eContext, {
           projectId: project!.id,
         });
         const timeEntry = timeEntries.find((e) =>
@@ -114,7 +114,7 @@ Deno.test({
     await t.step(
       "DELETE /time_entries/:id.json should delete a time entry",
       async () => {
-        const timeEntries = await fetchList(e2eContext, {
+        const timeEntries = await list(e2eContext, {
           projectId: project!.id,
         });
         const timeEntry = timeEntries.find((e) =>

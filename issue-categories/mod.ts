@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { show } from "./show.ts";
 import { create } from "./create.ts";
 import type {
@@ -21,8 +21,8 @@ export class Client {
    *
    * @param projectId Project identifier
    */
-  list(projectId: number): ReturnType<typeof fetchList> {
-    return fetchList(this.#context, projectId);
+  list(projectId: number): ReturnType<typeof list> {
+    return list(this.#context, projectId);
   }
 
   /**

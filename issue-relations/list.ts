@@ -17,7 +17,7 @@ const responseSchema = object({
  * @param issueId Issue identifier
  * @returns Relations
  */
-export async function fetchList(
+export async function list(
   context: Context,
   issueId: number,
 ): Promise<Relation[]> {

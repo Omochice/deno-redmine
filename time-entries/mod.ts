@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { fetchList } from "./list.ts";
+import { list } from "./list.ts";
 import { show } from "./show.ts";
 import { create } from "./create.ts";
 import type {
@@ -22,8 +22,8 @@ export class Client {
    *
    * @param filter Optional filters (projectId, spentOn, userId, from, to)
    */
-  list(filter?: Partial<ListTimeEntryQuery>): ReturnType<typeof fetchList> {
-    return fetchList(this.#context, filter);
+  list(filter?: Partial<ListTimeEntryQuery>): ReturnType<typeof list> {
+    return list(this.#context, filter);
   }
 
   /**

@@ -69,7 +69,7 @@ export const toUpdateTimeEntryQuery = pipe(
 );
 
 // The filter values are serialized to strings here (rather than left as
-// number/Date) because URLSearchParams only accepts strings, and fetchList
+// number/Date) because URLSearchParams only accepts strings, and list
 // spreads this object directly into the query string alongside limit/offset.
 export const toListTimeEntryQuery = pipe(
   partial(object({
