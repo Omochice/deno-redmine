@@ -10,7 +10,7 @@ server.listen();
 Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.use(...validHandlers);
-    const memberships = await list(context, 1);
+    const memberships = await Array.fromAsync(list(context, 1));
     expect(memberships).toBeDefined();
   });
 
@@ -18,7 +18,7 @@ Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
     "if got 200, should return memberships with camelCase fields",
     async () => {
       server.use(...validHandlers);
-      const memberships = await list(context, 1);
+      const memberships = await Array.fromAsync(list(context, 1));
       expect(memberships[0].user).toStrictEqual({
         id: 17,
         name: "David Robert",
@@ -35,13 +35,13 @@ Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.use(...invalidHandlers);
-      await expect(list(context, 422)).rejects.toThrow();
+      await expect(Array.fromAsync(list(context, 422))).rejects.toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
-    await expect(list(context, 404)).rejects.toThrow();
+    await expect(Array.fromAsync(list(context, 404))).rejects.toThrow();
   });
 
   await t.step(
@@ -68,7 +68,7 @@ Deno.test("GET /projects/:project_id/memberships.json", async (t) => {
           },
         ),
       );
-      const memberships = await list(context, 1);
+      const memberships = await Array.fromAsync(list(context, 1));
       expect(memberships.length).toStrictEqual(total);
       expect(memberships[0].id).toStrictEqual(1);
       expect(memberships[total - 1].id).toStrictEqual(total);

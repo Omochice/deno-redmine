@@ -10,7 +10,7 @@ server.listen();
 Deno.test("GET /time_entries.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.use(...validHandlers);
-    const entries = await list(context);
+    const entries = await Array.fromAsync(list(context));
     expect(entries).toBeDefined();
   });
 
@@ -19,19 +19,19 @@ Deno.test("GET /time_entries.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const c = { ...context, endpoint: `${context.endpoint}/422` };
-      await expect(list(c)).rejects.toThrow();
+      await expect(Array.fromAsync(list(c))).rejects.toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
     const c = { ...context, endpoint: `${context.endpoint}/404` };
-    await expect(list(c)).rejects.toThrow();
+    await expect(Array.fromAsync(list(c))).rejects.toThrow();
   });
 
   await t.step("should map camelCase fields from the response", async () => {
     server.use(...validHandlers);
-    const entries = await list(context);
+    const entries = await Array.fromAsync(list(context));
     const entry = entries.find((timeEntry) => timeEntry.id === 3);
     expect(entry).toBeDefined();
     expect(entry!.project).toStrictEqual({ id: 1, name: "Demo" });
@@ -60,13 +60,13 @@ Deno.test("GET /time_entries.json", async (t) => {
           });
         }),
       );
-      await list(context, {
+      await Array.fromAsync(list(context, {
         projectId: 1,
         userId: 2,
         spentOn: new Date("2026-07-01"),
         from: new Date("2026-07-01"),
         to: new Date("2026-07-31"),
-      });
+      }));
       expect(captured?.get("project_id")).toStrictEqual("1");
       expect(captured?.get("user_id")).toStrictEqual("2");
       expect(captured?.get("spent_on")).toStrictEqual("2026-07-01");
@@ -90,7 +90,7 @@ Deno.test("GET /time_entries.json", async (t) => {
           });
         }),
       );
-      await list(context, { projectId: undefined });
+      await Array.fromAsync(list(context, { projectId: undefined }));
       expect(captured?.has("project_id")).toStrictEqual(false);
       expect(!captured?.toString().includes("undefined")).toBe(true);
     },

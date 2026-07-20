@@ -8,7 +8,7 @@ import { list as listProjects } from "../projects/list.ts";
 Deno.test({
   name: "E2E: Files API",
   fn: async (t) => {
-    const projects = await listProjects(e2eContext);
+    const projects = await Array.fromAsync(listProjects(e2eContext));
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
@@ -41,7 +41,7 @@ Deno.test({
     await t.step(
       "GET /projects/:project_id/files.json should return files",
       async () => {
-        const files = await list(e2eContext, project!.id);
+        const files = await Array.fromAsync(list(e2eContext, project!.id));
         const created = files.find((f) => f.filename === filename);
         expect(created).toBeDefined();
       },

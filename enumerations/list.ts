@@ -35,37 +35,37 @@ async function fetchEnumerations(
  * Fetch issue priorities
  *
  * @param context REST endpoint context
- * @return Array of Enumeration
+ * @return Yields each Enumeration
  */
-export async function listIssuePriorities(
+export async function* listIssuePriorities(
   context: Context,
-): Promise<Enumeration[]> {
+): AsyncGenerator<Enumeration> {
   const body = await fetchEnumerations(context, "issue_priorities.json");
-  return parse(listIssuePriorityResponse, body).issue_priorities;
+  yield* parse(listIssuePriorityResponse, body).issue_priorities;
 }
 
 /**
  * Fetch time entry activities
  *
  * @param context REST endpoint context
- * @return Array of Enumeration
+ * @return Yields each Enumeration
  */
-export async function listTimeEntryActivities(
+export async function* listTimeEntryActivities(
   context: Context,
-): Promise<Enumeration[]> {
+): AsyncGenerator<Enumeration> {
   const body = await fetchEnumerations(context, "time_entry_activities.json");
-  return parse(listTimeEntryActivityResponse, body).time_entry_activities;
+  yield* parse(listTimeEntryActivityResponse, body).time_entry_activities;
 }
 
 /**
  * Fetch document categories
  *
  * @param context REST endpoint context
- * @return Array of Enumeration
+ * @return Yields each Enumeration
  */
-export async function listDocumentCategories(
+export async function* listDocumentCategories(
   context: Context,
-): Promise<Enumeration[]> {
+): AsyncGenerator<Enumeration> {
   const body = await fetchEnumerations(context, "document_categories.json");
-  return parse(listDocumentCategoryResponse, body).document_categories;
+  yield* parse(listDocumentCategoryResponse, body).document_categories;
 }

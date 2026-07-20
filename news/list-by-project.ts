@@ -10,12 +10,12 @@ import { listNewsResponse } from "./validator.ts";
  *
  * @param context REST endpoint context
  * @param projectId Project identifier
- * @return Array of News
+ * @return Yields each News
  */
-export async function listByProject(
+export async function* listByProject(
   context: Context,
   projectId: number,
-): Promise<News[]> {
+): AsyncGenerator<News> {
   const endpoint = buildUrl(
     context.endpoint,
     "projects",
@@ -33,5 +33,5 @@ export async function listByProject(
     },
   );
   await assertResponse(response);
-  return parse(listNewsResponse, await response.json()).news;
+  yield* parse(listNewsResponse, await response.json()).news;
 }

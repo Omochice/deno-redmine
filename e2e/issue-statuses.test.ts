@@ -6,7 +6,7 @@ Deno.test("E2E: Issue Statuses API", async (t) => {
   await t.step(
     "GET /issue_statuses.json should return default issue statuses",
     async () => {
-      const statuses = await list(e2eContext);
+      const statuses = await Array.fromAsync(list(e2eContext));
       expect(
         statuses.length,
         "Redmine should have default issue statuses",

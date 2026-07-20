@@ -18,15 +18,15 @@ Deno.test({
     await t.step(
       "POST /issues.json should create an issue to attach a journal to",
       async () => {
-        const projects = await listProjects(e2eContext);
+        const projects = await Array.fromAsync(listProjects(e2eContext));
         const project = projects.find((p) =>
           p.identifier === "e2e-test-project"
         );
         expect(project).toBeDefined();
 
-        const issues = await list(e2eContext, {
+        const issues = await Array.fromAsync(list(e2eContext, {
           projectId: project!.id,
-        });
+        }));
         expect(issues.length).toBeGreaterThan(0);
 
         await createIssue(e2eContext, {
@@ -39,9 +39,9 @@ Deno.test({
 
         // createIssue does not return the created id, so it is looked up
         // by subject, mirroring the pattern in e2e/issues.test.ts.
-        const listAfter = await list(e2eContext, {
+        const listAfter = await Array.fromAsync(list(e2eContext, {
           projectId: project!.id,
-        });
+        }));
         const createdIssue = listAfter.find((i) => i.subject === subject);
         expect(createdIssue).toBeDefined();
         issueId = createdIssue!.id;

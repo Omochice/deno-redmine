@@ -10,7 +10,7 @@ server.listen();
 Deno.test("GET /queries.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
-    const queries = await list(context);
+    const queries = await Array.fromAsync(list(context));
     expect(queries).toBeDefined();
   });
 
@@ -18,7 +18,7 @@ Deno.test("GET /queries.json", async (t) => {
     "if got 200, should return queries with camelCase fields",
     async () => {
       server.resetHandlers(...validHandlers);
-      const queries = await list(context);
+      const queries = await Array.fromAsync(list(context));
       expect(queries.length).toStrictEqual(3);
       expect(queries[0]).toStrictEqual({
         id: 1,
@@ -39,7 +39,7 @@ Deno.test("GET /queries.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      await expect(list(context)).rejects.toThrow();
+      await expect(Array.fromAsync(list(context))).rejects.toThrow();
     },
   );
 });

@@ -13,7 +13,9 @@ Deno.test("E2E: Enumerations API", async (t) => {
   await t.step(
     "GET /enumerations/issue_priorities.json should return an array",
     async () => {
-      const priorities = await listIssuePriorities(e2eContext);
+      const priorities = await Array.fromAsync(
+        listIssuePriorities(e2eContext),
+      );
       expect(Array.isArray(priorities)).toBe(true);
     },
   );
@@ -21,7 +23,9 @@ Deno.test("E2E: Enumerations API", async (t) => {
   await t.step(
     "GET /enumerations/time_entry_activities.json should return an array",
     async () => {
-      const activities = await listTimeEntryActivities(e2eContext);
+      const activities = await Array.fromAsync(
+        listTimeEntryActivities(e2eContext),
+      );
       expect(Array.isArray(activities)).toBe(true);
     },
   );
@@ -29,7 +33,9 @@ Deno.test("E2E: Enumerations API", async (t) => {
   await t.step(
     "GET /enumerations/document_categories.json should return an array",
     async () => {
-      const categories = await listDocumentCategories(e2eContext);
+      const categories = await Array.fromAsync(
+        listDocumentCategories(e2eContext),
+      );
       expect(Array.isArray(categories)).toBe(true);
     },
   );

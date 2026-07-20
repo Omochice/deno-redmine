@@ -15,12 +15,12 @@ const responseSchema = object({
  *
  * @param context REST endpoint context
  * @param projectId Project identifier
- * @returns Versions
+ * @returns Yields each Version
  */
-export async function list(
+export async function* list(
   context: Context,
   projectId: number,
-): Promise<Version[]> {
+): AsyncGenerator<Version> {
   const url = buildUrl(
     context.endpoint,
     "projects",
@@ -39,5 +39,5 @@ export async function list(
     },
   });
   await assertResponse(response);
-  return parse(responseSchema, await response.json()).versions;
+  yield* parse(responseSchema, await response.json()).versions;
 }

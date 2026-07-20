@@ -22,7 +22,7 @@ async function fetchCurrentUserId(): Promise<number | undefined> {
 Deno.test({
   name: "E2E: Issue watchers API",
   fn: async (t) => {
-    const issues = await list(e2eContext, { limit: 1 });
+    const issues = await Array.fromAsync(list(e2eContext, { limit: 1 }));
     const issue = issues[0];
     if (issue === undefined) {
       // Nothing to watch when the seeded project holds no issues.

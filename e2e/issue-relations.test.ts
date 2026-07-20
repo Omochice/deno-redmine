@@ -10,13 +10,13 @@ import { list as listProjects } from "../projects/list.ts";
 Deno.test({
   name: "E2E: Issue Relations API",
   fn: async (t) => {
-    const projects = await listProjects(e2eContext);
+    const projects = await Array.fromAsync(listProjects(e2eContext));
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
-    const issues = await listIssues(e2eContext, {
+    const issues = await Array.fromAsync(listIssues(e2eContext, {
       projectId: project!.id,
-    });
+    }));
     expect(issues.length).toBeGreaterThan(0);
     const firstIssue = issues[0];
 
@@ -63,7 +63,9 @@ Deno.test({
     await t.step(
       "GET /issues/:issue_id/relations.json should return relations",
       async () => {
-        const relations = await list(e2eContext, firstIssue.id);
+        const relations = await Array.fromAsync(
+          list(e2eContext, firstIssue.id),
+        );
         const relation = relations.find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
@@ -75,7 +77,9 @@ Deno.test({
     await t.step(
       "GET /relations/:id.json should return a relation",
       async () => {
-        const relations = await list(e2eContext, firstIssue.id);
+        const relations = await Array.fromAsync(
+          list(e2eContext, firstIssue.id),
+        );
         const relation = relations.find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );
@@ -92,7 +96,9 @@ Deno.test({
     await t.step(
       "DELETE /relations/:id.json should delete a relation",
       async () => {
-        const relations = await list(e2eContext, firstIssue.id);
+        const relations = await Array.fromAsync(
+          list(e2eContext, firstIssue.id),
+        );
         const relation = relations.find((r) =>
           r.issueToId === targetIssueId && r.relationType === "relates"
         );

@@ -11,9 +11,9 @@ import { listCustomFieldResponse } from "./validator.ts";
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @return Array of CustomField
+ * @return Yields each CustomField
  */
-export async function list(context: Context): Promise<CustomField[]> {
+export async function* list(context: Context): AsyncGenerator<CustomField> {
   const endpoint = buildUrl(context.endpoint, "custom_fields.json");
   const response = await fetch(
     endpoint,
@@ -26,5 +26,5 @@ export async function list(context: Context): Promise<CustomField[]> {
     },
   );
   await assertResponse(response);
-  return parse(listCustomFieldResponse, await response.json()).custom_fields;
+  yield* parse(listCustomFieldResponse, await response.json()).custom_fields;
 }

@@ -6,7 +6,7 @@ Deno.test("E2E: Custom Fields API", async (t) => {
   await t.step(
     "GET /custom_fields.json should return an array of custom fields",
     async () => {
-      const customFields = await list(e2eContext);
+      const customFields = await Array.fromAsync(list(e2eContext));
       expect(Array.isArray(customFields)).toBe(true);
       // e2e/setup.ts seeds an "E2E CF" issue custom field, so the list is
       // non-empty and contains it.

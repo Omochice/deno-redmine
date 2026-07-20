@@ -1,6 +1,6 @@
 import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
-import { fetchAllPages } from "../internal/paging.ts";
+import { walkPages } from "../internal/paging.ts";
 import type { Context } from "../context.ts";
 import type { SearchQuery, SearchResult } from "./type.ts";
 import { searchResultSchema, toSearchParams } from "./validator.ts";
@@ -19,14 +19,14 @@ const responseSchema = object({
  *
  * @param context REST endpoint context
  * @param query The search query, whose only required field is `q`
- * @returns Search results across every page
+ * @returns Search results, yielded one at a time across every page
  */
-export async function search(
+export async function* search(
   context: Context,
   query: SearchQuery,
-): Promise<SearchResult[]> {
+): AsyncGenerator<SearchResult> {
   const base = toSearchParams(query);
-  return await fetchAllPages(async (limit, offset) => {
+  yield* walkPages(async (limit, offset) => {
     const endpoint = buildUrl(context.endpoint, "search.json");
     const params = new URLSearchParams(base);
     params.set("limit", `${limit}`);

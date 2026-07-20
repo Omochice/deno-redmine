@@ -86,25 +86,6 @@ export async function* walkPages<T>(
   );
 }
 
-/**
- * Walk every page of a Redmine list resource and return the aggregated items
- * in page order.
- *
- * Thin aggregation over {@link walkPages}; see there for the walking
- * strategy.
- *
- * @typeParam T Element type of the list
- * @param fetchPage Fetches and parses a single page
- * @param options Page size, optional item cap, and concurrency bound
- * @returns Every item across all pages, in ascending offset order
- */
-export async function fetchAllPages<T>(
-  fetchPage: FetchPage<T>,
-  options: PagingOptions,
-): Promise<T[]> {
-  return await Array.fromAsync(walkPages(fetchPage, options));
-}
-
 async function* walkUpToLimit<T>(
   fetchPage: FetchPage<T>,
   pageSize: number,

@@ -9,7 +9,7 @@ server.listen();
 Deno.test("GET /projects.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.use(...validHandlers);
-    const r = await list(context);
+    const r = await Array.fromAsync(list(context));
     expect(r).toBeDefined();
   });
 
@@ -18,7 +18,7 @@ Deno.test("GET /projects.json", async (t) => {
     async () => {
       server.use(...invalidHandlers);
       const c = { ...context, endpoint: `${context.endpoint}/422` };
-      await expect(list(c)).rejects.toThrow();
+      await expect(Array.fromAsync(list(c))).rejects.toThrow();
     },
   );
 });

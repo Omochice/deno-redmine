@@ -10,7 +10,7 @@ import { list as listProjects } from "../projects/list.ts";
 Deno.test({
   name: "E2E: Issue Categories API",
   fn: async (t) => {
-    const projects = await listProjects(e2eContext);
+    const projects = await Array.fromAsync(listProjects(e2eContext));
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
@@ -26,7 +26,9 @@ Deno.test({
     await t.step(
       "GET /projects/:project_id/issue_categories.json should return issue categories",
       async () => {
-        const categories = await list(e2eContext, project!.id);
+        const categories = await Array.fromAsync(
+          list(e2eContext, project!.id),
+        );
         expect(categories.length).toBeGreaterThan(0);
         const created = categories.find((c) =>
           c.name === "E2E Created Category"
@@ -38,7 +40,9 @@ Deno.test({
     await t.step(
       "GET /issue_categories/:id.json should return an issue category",
       async () => {
-        const categories = await list(e2eContext, project!.id);
+        const categories = await Array.fromAsync(
+          list(e2eContext, project!.id),
+        );
         const category = categories.find((c) =>
           c.name === "E2E Created Category"
         );
@@ -56,7 +60,9 @@ Deno.test({
     await t.step(
       "PUT /issue_categories/:id.json should update an issue category",
       async () => {
-        const categories = await list(e2eContext, project!.id);
+        const categories = await Array.fromAsync(
+          list(e2eContext, project!.id),
+        );
         const category = categories.find((c) =>
           c.name === "E2E Created Category"
         );
@@ -76,7 +82,9 @@ Deno.test({
     await t.step(
       "DELETE /issue_categories/:id.json should delete an issue category",
       async () => {
-        const categories = await list(e2eContext, project!.id);
+        const categories = await Array.fromAsync(
+          list(e2eContext, project!.id),
+        );
         const category = categories.find((c) =>
           c.name === "E2E Updated Category"
         );

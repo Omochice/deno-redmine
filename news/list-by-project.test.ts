@@ -9,7 +9,7 @@ server.listen();
 Deno.test("GET /projects/:project_id/news.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.use(...validHandlers);
-    const news = await listByProject(context, 1);
+    const news = await Array.fromAsync(listByProject(context, 1));
     expect(news).toBeDefined();
   });
 
@@ -17,7 +17,7 @@ Deno.test("GET /projects/:project_id/news.json", async (t) => {
     "if got 200, should return news with camelCase fields",
     async () => {
       server.use(...validHandlers);
-      const news = await listByProject(context, 1);
+      const news = await Array.fromAsync(listByProject(context, 1));
       expect(news.length).toStrictEqual(2);
       expect(news[0]).toStrictEqual({
         id: 1,
@@ -35,12 +35,14 @@ Deno.test("GET /projects/:project_id/news.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.use(...invalidHandlers);
-      await expect(listByProject(context, 422)).rejects.toThrow();
+      await expect(Array.fromAsync(listByProject(context, 422))).rejects
+        .toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
-    await expect(listByProject(context, 404)).rejects.toThrow();
+    await expect(Array.fromAsync(listByProject(context, 404))).rejects
+      .toThrow();
   });
 });
