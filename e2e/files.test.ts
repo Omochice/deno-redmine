@@ -3,12 +3,12 @@ import { e2eContext } from "./context.ts";
 import { list } from "../files/list.ts";
 import { create } from "../files/create.ts";
 import { upload } from "../files/upload.ts";
-import { list as fetchProjects } from "../projects/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Files API",
   fn: async (t) => {
-    const projects = await fetchProjects(e2eContext);
+    const projects = await listProjects(e2eContext);
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 

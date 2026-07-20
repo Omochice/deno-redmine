@@ -5,7 +5,7 @@ import { show } from "../wiki-pages/show.ts";
 import { create } from "../wiki-pages/create.ts";
 import { deleteWiki } from "../wiki-pages/delete.ts";
 import { upload } from "../files/upload.ts";
-import { list as fetchProjects } from "../projects/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Wiki Pages API",
@@ -13,7 +13,7 @@ Deno.test({
     let projectId: number;
 
     await t.step("resolve test project", async () => {
-      const projects = await fetchProjects(e2eContext);
+      const projects = await listProjects(e2eContext);
       const project = projects.find((p) => p.identifier === "e2e-test-project");
       expect(project).toBeDefined();
       projectId = project!.id;

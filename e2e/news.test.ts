@@ -6,12 +6,12 @@ import { show } from "../news/show.ts";
 import { create } from "../news/create.ts";
 import { update } from "../news/update.ts";
 import { deleteNews } from "../news/delete.ts";
-import { list as fetchProjects } from "../projects/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: News API",
   fn: async (t) => {
-    const projects = await fetchProjects(e2eContext);
+    const projects = await listProjects(e2eContext);
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 

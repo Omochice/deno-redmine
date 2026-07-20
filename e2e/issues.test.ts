@@ -5,7 +5,7 @@ import { show } from "../issues/show.ts";
 import { createIssue } from "../issues/create.ts";
 import { update } from "../issues/update.ts";
 import { deleteIssue } from "../issues/delete.ts";
-import { list as fetchProjects } from "../projects/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Issues API",
@@ -29,7 +29,7 @@ Deno.test({
     });
 
     await t.step("POST /issues.json should create an issue", async () => {
-      const projects = await fetchProjects(e2eContext);
+      const projects = await listProjects(e2eContext);
       const project = projects.find((p) => p.identifier === "e2e-test-project");
       expect(project).toBeDefined();
 
@@ -67,7 +67,7 @@ Deno.test({
         );
         expect(customField).toBeDefined();
 
-        const projects = await fetchProjects(e2eContext);
+        const projects = await listProjects(e2eContext);
         const project = projects.find((p) =>
           p.identifier === "e2e-test-project"
         );
@@ -129,7 +129,7 @@ Deno.test({
     await t.step(
       "GET /issues.json with limit: 1 should return exactly one issue",
       async () => {
-        const projects = await fetchProjects(e2eContext);
+        const projects = await listProjects(e2eContext);
         const project = projects.find((p) =>
           p.identifier === "e2e-test-project"
         );

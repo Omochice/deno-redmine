@@ -5,7 +5,7 @@ import { show } from "../memberships/show.ts";
 import { create } from "../memberships/create.ts";
 import { update } from "../memberships/update.ts";
 import { deleteMembership } from "../memberships/delete.ts";
-import { list as fetchProjects } from "../projects/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 
 // The library has no `users`/`roles` resources yet, so these are fetched
 // directly against the raw REST API, mirroring e2e/setup.ts's seeding
@@ -43,7 +43,7 @@ async function fetchFirstRoleId(): Promise<number | undefined> {
 Deno.test({
   name: "E2E: Memberships API",
   fn: async (t) => {
-    const projects = await fetchProjects(e2eContext);
+    const projects = await listProjects(e2eContext);
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 

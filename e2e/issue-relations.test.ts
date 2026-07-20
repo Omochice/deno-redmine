@@ -4,17 +4,17 @@ import { list } from "../issue-relations/list.ts";
 import { show } from "../issue-relations/show.ts";
 import { create } from "../issue-relations/create.ts";
 import { deleteRelation } from "../issue-relations/delete.ts";
-import { list as fetchIssues } from "../issues/list.ts";
-import { list as fetchProjects } from "../projects/list.ts";
+import { list as listIssues } from "../issues/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Issue Relations API",
   fn: async (t) => {
-    const projects = await fetchProjects(e2eContext);
+    const projects = await listProjects(e2eContext);
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
-    const issues = await fetchIssues(e2eContext, {
+    const issues = await listIssues(e2eContext, {
       projectId: project!.id,
     });
     expect(issues.length).toBeGreaterThan(0);

@@ -5,12 +5,12 @@ import { show } from "../issue-categories/show.ts";
 import { create } from "../issue-categories/create.ts";
 import { update } from "../issue-categories/update.ts";
 import { deleteIssueCategory } from "../issue-categories/delete.ts";
-import { list as fetchProjects } from "../projects/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Issue Categories API",
   fn: async (t) => {
-    const projects = await fetchProjects(e2eContext);
+    const projects = await listProjects(e2eContext);
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 

@@ -5,12 +5,12 @@ import { show } from "../versions/show.ts";
 import { create } from "../versions/create.ts";
 import { update } from "../versions/update.ts";
 import { deleteVersion } from "../versions/delete.ts";
-import { list as fetchProjects } from "../projects/list.ts";
+import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
   name: "E2E: Versions API",
   fn: async (t) => {
-    const projects = await fetchProjects(e2eContext);
+    const projects = await listProjects(e2eContext);
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
