@@ -1,5 +1,6 @@
 import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
+import { fetchAllPages } from "../internal/paging.ts";
 import type { Context } from "../context.ts";
 import type { Membership } from "./type.ts";
 import { membershipSchema } from "./validator.ts";
@@ -25,16 +26,9 @@ export async function fetchList(
   context: Context,
   projectId: number,
 ): Promise<Membership[]> {
-  const opts: RequestInit = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Redmine-API-Key": context.apiKey,
-    },
-  };
-  // The memberships listing is paginated (default limit 25), so walk the pages
-  // sequentially until every membership has been collected.
-  const fetchPage = async (offset: number) => {
+  // The memberships listing is paginated (default limit 25), so walk every
+  // page until each membership has been collected.
+  return await fetchAllPages(async (limit, offset) => {
     const url = buildUrl(
       context.endpoint,
       "projects",
@@ -42,18 +36,18 @@ export async function fetchList(
       "memberships.json",
     );
     url.search = new URLSearchParams({
-      limit: `${pageSize}`,
+      limit: `${limit}`,
       offset: `${offset}`,
     }).toString();
-    const response = await fetch(url, opts);
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Redmine-API-Key": context.apiKey,
+      },
+    });
     await assertResponse(response);
-    return parse(responseSchema, await response.json());
-  };
-
-  const first = await fetchPage(0);
-  const memberships = [...first.memberships];
-  for (let offset = pageSize; offset < first.total_count; offset += pageSize) {
-    memberships.push(...(await fetchPage(offset)).memberships);
-  }
-  return memberships;
+    const parsed = parse(responseSchema, await response.json());
+    return { items: parsed.memberships, totalCount: parsed.total_count };
+  }, { pageSize });
 }
