@@ -11,13 +11,13 @@ import { list as listIssues } from "../issues/list.ts";
 Deno.test({
   name: "E2E: Time Entries API",
   fn: async (t) => {
-    const projects = await listProjects(e2eContext);
+    const projects = await Array.fromAsync(listProjects(e2eContext));
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
-    const issues = await listIssues(e2eContext, {
+    const issues = await Array.fromAsync(listIssues(e2eContext, {
       projectId: project!.id,
-    });
+    }));
     expect(issues.length).toBeGreaterThan(0);
     const issue = issues[0];
 
@@ -56,9 +56,9 @@ Deno.test({
     await t.step(
       "GET /time_entries.json?project_id=... should return time entries",
       async () => {
-        const timeEntries = await list(e2eContext, {
+        const timeEntries = await Array.fromAsync(list(e2eContext, {
           projectId: project!.id,
-        });
+        }));
         expect(timeEntries.length).toBeGreaterThan(0);
         const created = timeEntries.find((e) =>
           e.comments === "E2E Created Time Entry"
@@ -70,9 +70,9 @@ Deno.test({
     await t.step(
       "GET /time_entries/:id.json should return a time entry",
       async () => {
-        const timeEntries = await list(e2eContext, {
+        const timeEntries = await Array.fromAsync(list(e2eContext, {
           projectId: project!.id,
-        });
+        }));
         const timeEntry = timeEntries.find((e) =>
           e.comments === "E2E Created Time Entry"
         );
@@ -90,9 +90,9 @@ Deno.test({
     await t.step(
       "PUT /time_entries/:id.json should update a time entry",
       async () => {
-        const timeEntries = await list(e2eContext, {
+        const timeEntries = await Array.fromAsync(list(e2eContext, {
           projectId: project!.id,
-        });
+        }));
         const timeEntry = timeEntries.find((e) =>
           e.comments === "E2E Created Time Entry"
         );
@@ -114,9 +114,9 @@ Deno.test({
     await t.step(
       "DELETE /time_entries/:id.json should delete a time entry",
       async () => {
-        const timeEntries = await list(e2eContext, {
+        const timeEntries = await Array.fromAsync(list(e2eContext, {
           projectId: project!.id,
-        });
+        }));
         const timeEntry = timeEntries.find((e) =>
           e.comments === "E2E Updated Time Entry"
         );

@@ -10,7 +10,7 @@ server.listen();
 Deno.test("GET /search.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
-    const items = await search(context, { q: "E2E" });
+    const items = await Array.fromAsync(search(context, { q: "E2E" }));
     expect(items).toBeDefined();
   });
 
@@ -18,7 +18,7 @@ Deno.test("GET /search.json", async (t) => {
     "if got 200, should return results with camelCase fields",
     async () => {
       server.resetHandlers(...validHandlers);
-      const items = await search(context, { q: "E2E" });
+      const items = await Array.fromAsync(search(context, { q: "E2E" }));
       expect(items.length).toStrictEqual(3);
       expect(items[0].id).toStrictEqual(1);
       expect(items[0].type).toStrictEqual("issue");
@@ -44,14 +44,14 @@ Deno.test("GET /search.json", async (t) => {
           });
         }),
       );
-      await search(context, {
+      await Array.fromAsync(search(context, {
         q: "E2E",
         allWords: true,
         wikiPages: true,
         openIssues: false,
         scope: "all",
         attachments: true,
-      });
+      }));
       expect(capturedUrl).toBeDefined();
       expect(capturedUrl!.searchParams.get("q")).toStrictEqual("E2E");
       expect(capturedUrl!.searchParams.get("all_words")).toStrictEqual("1");
@@ -68,13 +68,15 @@ Deno.test("GET /search.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      await expect(search(context, { q: "422" })).rejects.toThrow();
+      await expect(Array.fromAsync(search(context, { q: "422" })))
+        .rejects.toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...invalidHandlers);
-    await expect(search(context, { q: "404" })).rejects.toThrow();
+    await expect(Array.fromAsync(search(context, { q: "404" })))
+      .rejects.toThrow();
   });
 
   await t.step(
@@ -102,7 +104,7 @@ Deno.test("GET /search.json", async (t) => {
           });
         }),
       );
-      const items = await search(context, { q: "E2E" });
+      const items = await Array.fromAsync(search(context, { q: "E2E" }));
       expect(items.length).toStrictEqual(total);
       expect(items[0].id).toStrictEqual(1);
       expect(items[total - 1].id).toStrictEqual(total);

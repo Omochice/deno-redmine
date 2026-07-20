@@ -1,6 +1,6 @@
 import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
-import { fetchAllPages } from "../internal/paging.ts";
+import { walkPages } from "../internal/paging.ts";
 import type { Context } from "../context.ts";
 import type { Membership } from "./type.ts";
 import { membershipSchema } from "./validator.ts";
@@ -20,15 +20,15 @@ const pageSize = 100;
  *
  * @param context REST endpoint context
  * @param projectId Project identifier
- * @returns Memberships
+ * @returns Memberships, yielded one at a time across every page
  */
-export async function list(
+export async function* list(
   context: Context,
   projectId: number,
-): Promise<Membership[]> {
+): AsyncGenerator<Membership> {
   // The memberships listing is paginated (default limit 25), so walk every
   // page until each membership has been collected.
-  return await fetchAllPages(async (limit, offset) => {
+  yield* walkPages(async (limit, offset) => {
     const url = buildUrl(
       context.endpoint,
       "projects",

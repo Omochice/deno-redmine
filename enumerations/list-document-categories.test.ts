@@ -14,7 +14,7 @@ server.listen();
 Deno.test("GET /enumerations/document_categories.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
-    const categories = await listDocumentCategories(context);
+    const categories = await Array.fromAsync(listDocumentCategories(context));
     expect(categories).toBeDefined();
   });
 
@@ -22,7 +22,9 @@ Deno.test("GET /enumerations/document_categories.json", async (t) => {
     "if got 200, should return document categories with camelCase fields",
     async () => {
       server.resetHandlers(...validHandlers);
-      const categories = await listDocumentCategories(context);
+      const categories = await Array.fromAsync(
+        listDocumentCategories(context),
+      );
       expect(categories.length).toStrictEqual(2);
       expect(categories[0]).toStrictEqual({
         id: 1,
@@ -37,12 +39,14 @@ Deno.test("GET /enumerations/document_categories.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      await expect(listDocumentCategories(context)).rejects.toThrow();
+      await expect(Array.fromAsync(listDocumentCategories(context))).rejects
+        .toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...notFoundHandlers);
-    await expect(listDocumentCategories(context)).rejects.toThrow();
+    await expect(Array.fromAsync(listDocumentCategories(context))).rejects
+      .toThrow();
   });
 });

@@ -9,7 +9,7 @@ Deno.test({
     await t.step(
       "GET /roles.json should return a list of roles",
       async () => {
-        const roles = await list(e2eContext);
+        const roles = await Array.fromAsync(list(e2eContext));
         expect(Array.isArray(roles)).toBe(true);
       },
     );
@@ -17,7 +17,7 @@ Deno.test({
     await t.step(
       "GET /roles/:id.json should return a role",
       async () => {
-        const roles = await list(e2eContext);
+        const roles = await Array.fromAsync(list(e2eContext));
         const role = roles[0];
         // e2e/setup.ts seeds a role so this normally runs. A freshly
         // provisioned Redmine loads no default roles, so guard the listing

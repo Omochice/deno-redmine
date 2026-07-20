@@ -43,7 +43,7 @@ async function fetchFirstRoleId(): Promise<number | undefined> {
 Deno.test({
   name: "E2E: Memberships API",
   fn: async (t) => {
-    const projects = await listProjects(e2eContext);
+    const projects = await Array.fromAsync(listProjects(e2eContext));
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
@@ -73,7 +73,9 @@ Deno.test({
     await t.step(
       "GET /projects/:project_id/memberships.json should return memberships",
       async () => {
-        const memberships = await list(e2eContext, project!.id);
+        const memberships = await Array.fromAsync(
+          list(e2eContext, project!.id),
+        );
         expect(memberships.length).toBeGreaterThan(0);
         const created = memberships.find((m) => m.user?.id === userId);
         expect(created).toBeDefined();

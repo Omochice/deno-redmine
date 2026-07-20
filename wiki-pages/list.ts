@@ -11,12 +11,12 @@ import { wikis } from "./validator.ts";
  *
  * @param context REST endpoint context
  * @param projectId Project identifier
- * @returns Wiki pages
+ * @returns Yields each Wiki page
  */
-export async function list(
+export async function* list(
   context: Context,
   projectId: number,
-): Promise<Wiki[]> {
+): AsyncGenerator<Wiki> {
   const opts = {
     method: "GET",
     headers: {
@@ -34,5 +34,5 @@ export async function list(
 
   const r = await fetch(url, opts);
   await assertResponse(r);
-  return parse(wikis, await r.json());
+  yield* parse(wikis, await r.json());
 }

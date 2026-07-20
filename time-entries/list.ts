@@ -1,6 +1,6 @@
 import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
-import { fetchAllPages } from "../internal/paging.ts";
+import { walkPages } from "../internal/paging.ts";
 import type { Context } from "../context.ts";
 import type { ListTimeEntryQuery, TimeEntry } from "./type.ts";
 import { timeEntrySchema, toListTimeEntryQuery } from "./validator.ts";
@@ -19,14 +19,14 @@ const responseSchema = object({
  *
  * @param context REST endpoint context
  * @param filter Optional filters (projectId, spentOn, userId, from, to)
- * @returns Time entries
+ * @returns Time entries, yielded one at a time across every page
  */
-export async function list(
+export async function* list(
   context: Context,
   filter: Partial<ListTimeEntryQuery> = {},
-): Promise<TimeEntry[]> {
+): AsyncGenerator<TimeEntry> {
   const query = parse(toListTimeEntryQuery, filter);
-  return await fetchAllPages(async (limit, offset) => {
+  yield* walkPages(async (limit, offset) => {
     const endpoint = buildUrl(context.endpoint, "time_entries.json");
     endpoint.search = new URLSearchParams({
       limit: `${limit}`,

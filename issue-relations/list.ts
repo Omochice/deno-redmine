@@ -15,12 +15,12 @@ const responseSchema = object({
  *
  * @param context REST endpoint context
  * @param issueId Issue identifier
- * @returns Relations
+ * @returns Yields each Relation
  */
-export async function list(
+export async function* list(
   context: Context,
   issueId: number,
-): Promise<Relation[]> {
+): AsyncGenerator<Relation> {
   const url = buildUrl(
     context.endpoint,
     "issues",
@@ -35,5 +35,5 @@ export async function list(
     },
   });
   await assertResponse(response);
-  return parse(responseSchema, await response.json()).relations;
+  yield* parse(responseSchema, await response.json()).relations;
 }

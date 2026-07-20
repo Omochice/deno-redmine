@@ -10,7 +10,7 @@ server.listen();
 Deno.test("GET /news.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
-    const news = await list(context);
+    const news = await Array.fromAsync(list(context));
     expect(news).toBeDefined();
   });
 
@@ -18,7 +18,7 @@ Deno.test("GET /news.json", async (t) => {
     "if got 200, should return news with camelCase fields",
     async () => {
       server.resetHandlers(...validHandlers);
-      const news = await list(context);
+      const news = await Array.fromAsync(list(context));
       expect(news.length).toStrictEqual(2);
       expect(news[0]).toStrictEqual({
         id: 1,
@@ -36,7 +36,7 @@ Deno.test("GET /news.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      await expect(list(context)).rejects.toThrow();
+      await expect(Array.fromAsync(list(context))).rejects.toThrow();
     },
   );
 });

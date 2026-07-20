@@ -14,7 +14,7 @@ server.listen();
 Deno.test("GET /enumerations/issue_priorities.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
-    const priorities = await listIssuePriorities(context);
+    const priorities = await Array.fromAsync(listIssuePriorities(context));
     expect(priorities).toBeDefined();
   });
 
@@ -22,7 +22,7 @@ Deno.test("GET /enumerations/issue_priorities.json", async (t) => {
     "if got 200, should return issue priorities with camelCase fields",
     async () => {
       server.resetHandlers(...validHandlers);
-      const priorities = await listIssuePriorities(context);
+      const priorities = await Array.fromAsync(listIssuePriorities(context));
       expect(priorities.length).toStrictEqual(3);
       expect(priorities[1]).toStrictEqual({
         id: 4,
@@ -37,12 +37,14 @@ Deno.test("GET /enumerations/issue_priorities.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      await expect(listIssuePriorities(context)).rejects.toThrow();
+      await expect(Array.fromAsync(listIssuePriorities(context))).rejects
+        .toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...notFoundHandlers);
-    await expect(listIssuePriorities(context)).rejects.toThrow();
+    await expect(Array.fromAsync(listIssuePriorities(context))).rejects
+      .toThrow();
   });
 });

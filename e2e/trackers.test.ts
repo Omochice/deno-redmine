@@ -6,7 +6,7 @@ Deno.test("E2E: Trackers API", async (t) => {
   await t.step(
     "GET /trackers.json should return default trackers",
     async () => {
-      const trackers = await list(e2eContext);
+      const trackers = await Array.fromAsync(list(e2eContext));
       expect(
         trackers.length,
         "Redmine should have default trackers",

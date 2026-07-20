@@ -9,7 +9,7 @@ server.listen();
 Deno.test("GET /groups.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
-    const r = await list(context);
+    const r = await Array.fromAsync(list(context));
     expect(r).toBeDefined();
   });
 
@@ -17,7 +17,7 @@ Deno.test("GET /groups.json", async (t) => {
     "if got 200, should return groups as id/name pairs",
     async () => {
       server.resetHandlers(...validHandlers);
-      const groups = await list(context);
+      const groups = await Array.fromAsync(list(context));
       expect(groups.length).toStrictEqual(2);
       expect(groups[0]).toStrictEqual({ id: 53, name: "Managers" });
       expect(groups[1]).toStrictEqual({
@@ -31,7 +31,7 @@ Deno.test("GET /groups.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      await expect(list(context)).rejects.toThrow();
+      await expect(Array.fromAsync(list(context))).rejects.toThrow();
     },
   );
 });

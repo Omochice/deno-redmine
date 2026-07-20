@@ -10,9 +10,9 @@ import { assertResponse } from "../error.ts";
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @returns Array of role id/name pairs
+ * @returns Yields each role as an id/name pair
  */
-export async function list(context: Context): Promise<IdName[]> {
+export async function* list(context: Context): AsyncGenerator<IdName> {
   const url = buildUrl(context.endpoint, "roles.json");
   const response = await fetch(url, {
     method: "GET",
@@ -22,5 +22,5 @@ export async function list(context: Context): Promise<IdName[]> {
     },
   });
   await assertResponse(response);
-  return parse(roleListResponse, await response.json()).roles;
+  yield* parse(roleListResponse, await response.json()).roles;
 }

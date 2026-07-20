@@ -14,7 +14,9 @@ server.listen();
 Deno.test("GET /enumerations/time_entry_activities.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
-    const activities = await listTimeEntryActivities(context);
+    const activities = await Array.fromAsync(
+      listTimeEntryActivities(context),
+    );
     expect(activities).toBeDefined();
   });
 
@@ -22,7 +24,9 @@ Deno.test("GET /enumerations/time_entry_activities.json", async (t) => {
     "if got 200, should return time entry activities with camelCase fields",
     async () => {
       server.resetHandlers(...validHandlers);
-      const activities = await listTimeEntryActivities(context);
+      const activities = await Array.fromAsync(
+        listTimeEntryActivities(context),
+      );
       expect(activities.length).toStrictEqual(2);
       expect(activities[1]).toStrictEqual({
         id: 9,
@@ -37,12 +41,14 @@ Deno.test("GET /enumerations/time_entry_activities.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      await expect(listTimeEntryActivities(context)).rejects.toThrow();
+      await expect(Array.fromAsync(listTimeEntryActivities(context))).rejects
+        .toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...notFoundHandlers);
-    await expect(listTimeEntryActivities(context)).rejects.toThrow();
+    await expect(Array.fromAsync(listTimeEntryActivities(context))).rejects
+      .toThrow();
   });
 });

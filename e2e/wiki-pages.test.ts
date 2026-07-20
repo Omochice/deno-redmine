@@ -13,7 +13,7 @@ Deno.test({
     let projectId: number;
 
     await t.step("resolve test project", async () => {
-      const projects = await listProjects(e2eContext);
+      const projects = await Array.fromAsync(listProjects(e2eContext));
       const project = projects.find((p) => p.identifier === "e2e-test-project");
       expect(project).toBeDefined();
       projectId = project!.id;
@@ -22,7 +22,7 @@ Deno.test({
     await t.step(
       "GET /projects/:id/wiki/index.json should return wiki pages",
       async () => {
-        const pages = await list(e2eContext, projectId);
+        const pages = await Array.fromAsync(list(e2eContext, projectId));
         expect(pages.length).toBeGreaterThan(0);
       },
     );

@@ -38,7 +38,7 @@ Deno.test({
 
     let groupId: number | undefined;
     await t.step("GET /groups.json should list the created group", async () => {
-      const groups = await list(e2eContext);
+      const groups = await Array.fromAsync(list(e2eContext));
       const created = groups.find((g) => g.name === groupName);
       expect(created).toBeDefined();
       groupId = created!.id;

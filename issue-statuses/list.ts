@@ -9,9 +9,9 @@ import { listIssueStatusResponse } from "./validator.ts";
  * Fetch issue statuses
  *
  * @param context REST endpoint context
- * @return Array of IssueStatus
+ * @return Yields each IssueStatus
  */
-export async function list(context: Context): Promise<IssueStatus[]> {
+export async function* list(context: Context): AsyncGenerator<IssueStatus> {
   const endpoint = buildUrl(context.endpoint, "issue_statuses.json");
   const response = await fetch(
     endpoint,
@@ -24,5 +24,5 @@ export async function list(context: Context): Promise<IssueStatus[]> {
     },
   );
   await assertResponse(response);
-  return parse(listIssueStatusResponse, await response.json()).issue_statuses;
+  yield* parse(listIssueStatusResponse, await response.json()).issue_statuses;
 }

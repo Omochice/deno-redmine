@@ -1,6 +1,6 @@
 import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
-import { fetchAllPages } from "../internal/paging.ts";
+import { walkPages } from "../internal/paging.ts";
 import { type Project } from "./type.ts";
 import { projectSchema } from "./validator.ts";
 import type { Context } from "../context.ts";
@@ -13,8 +13,8 @@ const responseSchema = object({
   limit: number(),
 });
 
-export async function list(context: Context): Promise<Project[]> {
-  return await fetchAllPages(async (limit, offset) => {
+export async function* list(context: Context): AsyncGenerator<Project> {
+  yield* walkPages(async (limit, offset) => {
     const endpoint = buildUrl(context.endpoint, "projects.json");
     endpoint.search = new URLSearchParams({
       limit: `${limit}`,

@@ -11,12 +11,12 @@ Deno.test({
   name: "E2E: Issues API",
   fn: async (t) => {
     await t.step("GET /issues.json should return issues", async () => {
-      const issues = await list(e2eContext, {});
+      const issues = await Array.fromAsync(list(e2eContext, {}));
       expect(issues.length).toBeGreaterThan(0);
     });
 
     await t.step("GET /issues/:id.json should return an issue", async () => {
-      const issues = await list(e2eContext, {});
+      const issues = await Array.fromAsync(list(e2eContext, {}));
       expect(issues.length).toBeGreaterThan(0);
       const issueId = issues[0].id;
 
@@ -29,13 +29,13 @@ Deno.test({
     });
 
     await t.step("POST /issues.json should create an issue", async () => {
-      const projects = await listProjects(e2eContext);
+      const projects = await Array.fromAsync(listProjects(e2eContext));
       const project = projects.find((p) => p.identifier === "e2e-test-project");
       expect(project).toBeDefined();
 
-      const issues = await list(e2eContext, {
+      const issues = await Array.fromAsync(list(e2eContext, {
         projectId: project!.id,
-      });
+      }));
       expect(issues.length).toBeGreaterThan(0);
 
       await createIssue(e2eContext, {
@@ -67,15 +67,15 @@ Deno.test({
         );
         expect(customField).toBeDefined();
 
-        const projects = await listProjects(e2eContext);
+        const projects = await Array.fromAsync(listProjects(e2eContext));
         const project = projects.find((p) =>
           p.identifier === "e2e-test-project"
         );
         expect(project).toBeDefined();
 
-        const issues = await list(e2eContext, {
+        const issues = await Array.fromAsync(list(e2eContext, {
           projectId: project!.id,
-        });
+        }));
         expect(issues.length).toBeGreaterThan(0);
 
         const subject = "E2E Issue With Custom Field";
@@ -88,9 +88,9 @@ Deno.test({
           customFields: [{ id: customField!.id, value: "e2e custom value" }],
         });
 
-        const listAfter = await list(e2eContext, {
+        const listAfter = await Array.fromAsync(list(e2eContext, {
           projectId: project!.id,
-        });
+        }));
         const created = listAfter.find((i) => i.subject === subject);
         expect(created).toBeDefined();
 
@@ -104,7 +104,7 @@ Deno.test({
     );
 
     await t.step("PUT /issues/:id.json should update an issue", async () => {
-      const issues = await list(e2eContext, {});
+      const issues = await Array.fromAsync(list(e2eContext, {}));
       const issue = issues.find((i) => i.subject === "E2E Created Issue");
       expect(issue).toBeDefined();
 
@@ -129,15 +129,15 @@ Deno.test({
     await t.step(
       "GET /issues.json with limit: 1 should return exactly one issue",
       async () => {
-        const projects = await listProjects(e2eContext);
+        const projects = await Array.fromAsync(listProjects(e2eContext));
         const project = projects.find((p) =>
           p.identifier === "e2e-test-project"
         );
         expect(project).toBeDefined();
 
-        const issues = await list(e2eContext, {
+        const issues = await Array.fromAsync(list(e2eContext, {
           projectId: project!.id,
-        });
+        }));
         expect(issues.length).toBeGreaterThan(0);
 
         // Ensure at least two issues exist on the server so that a
@@ -156,12 +156,14 @@ Deno.test({
         // Cleanup looks the issue up by subject because createIssue does
         // not return the created id.
         try {
-          const limited = await list(e2eContext, { limit: 1 });
+          const limited = await Array.fromAsync(
+            list(e2eContext, { limit: 1 }),
+          );
           expect(limited.length).toStrictEqual(1);
         } finally {
-          const cleanupList = await list(e2eContext, {
+          const cleanupList = await Array.fromAsync(list(e2eContext, {
             projectId: project!.id,
-          });
+          }));
           // Delete every match, not just one: runs that predate this
           // cleanup left issues with the same subject behind.
           const leftovers = cleanupList.filter((i) => i.subject === subject);
@@ -173,7 +175,7 @@ Deno.test({
     );
 
     await t.step("DELETE /issues/:id.json should delete an issue", async () => {
-      const issues = await list(e2eContext, {});
+      const issues = await Array.fromAsync(list(e2eContext, {}));
       const issue = issues.find((i) => i.subject === "E2E Updated Issue");
       expect(issue).toBeDefined();
 

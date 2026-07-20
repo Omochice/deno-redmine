@@ -14,9 +14,9 @@ const responseSchema = object({
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @returns Groups as id/name pairs
+ * @returns Yields each group as an id/name pair
  */
-export async function list(context: Context): Promise<IdName[]> {
+export async function* list(context: Context): AsyncGenerator<IdName> {
   const url = buildUrl(context.endpoint, "groups.json");
   const response = await fetch(url, {
     method: "GET",
@@ -26,5 +26,5 @@ export async function list(context: Context): Promise<IdName[]> {
     },
   });
   await assertResponse(response);
-  return parse(responseSchema, await response.json()).groups;
+  yield* parse(responseSchema, await response.json()).groups;
 }

@@ -11,12 +11,12 @@ import { list as listProjects } from "../projects/list.ts";
 Deno.test({
   name: "E2E: News API",
   fn: async (t) => {
-    const projects = await listProjects(e2eContext);
+    const projects = await Array.fromAsync(listProjects(e2eContext));
     const project = projects.find((p) => p.identifier === "e2e-test-project");
     expect(project).toBeDefined();
 
     await t.step("GET /news.json should return the seeded news", async () => {
-      const news = await list(e2eContext);
+      const news = await Array.fromAsync(list(e2eContext));
       const seeded = news.find((n) => n.title === "E2E News");
       expect(seeded).toBeDefined();
       expect(seeded!.summary).toStrictEqual("E2E news summary");
@@ -29,7 +29,9 @@ Deno.test({
     await t.step(
       "GET /projects/:project_id/news.json should return the project news",
       async () => {
-        const news = await listByProject(e2eContext, project!.id);
+        const news = await Array.fromAsync(
+          listByProject(e2eContext, project!.id),
+        );
         const seeded = news.find((n) => n.title === "E2E News");
         expect(seeded).toBeDefined();
         // A news created without a summary is rendered as an empty string
@@ -54,7 +56,9 @@ Deno.test({
     );
 
     const findByTitle = async (title: string) => {
-      const news = await listByProject(e2eContext, project!.id);
+      const news = await Array.fromAsync(
+        listByProject(e2eContext, project!.id),
+      );
       return news.find((n) => n.title === title);
     };
 

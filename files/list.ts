@@ -15,12 +15,12 @@ const responseSchema = object({
  *
  * @param context REST endpoint context
  * @param projectId Project identifier
- * @returns Files
+ * @returns Yields each ProjectFile
  */
-export async function list(
+export async function* list(
   context: Context,
   projectId: number,
-): Promise<ProjectFile[]> {
+): AsyncGenerator<ProjectFile> {
   const url = buildUrl(
     context.endpoint,
     "projects",
@@ -35,5 +35,5 @@ export async function list(
     },
   });
   await assertResponse(response);
-  return parse(responseSchema, await response.json()).files;
+  yield* parse(responseSchema, await response.json()).files;
 }

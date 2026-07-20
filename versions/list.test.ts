@@ -9,7 +9,7 @@ server.listen();
 Deno.test("GET /projects/:project_id/versions.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.use(...validHandlers);
-    const versions = await list(context, 1);
+    const versions = await Array.fromAsync(list(context, 1));
     expect(versions).toBeDefined();
   });
 
@@ -17,12 +17,12 @@ Deno.test("GET /projects/:project_id/versions.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.use(...invalidHandlers);
-      await expect(list(context, 422)).rejects.toThrow();
+      await expect(Array.fromAsync(list(context, 422))).rejects.toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.use(...invalidHandlers);
-    await expect(list(context, 404)).rejects.toThrow();
+    await expect(Array.fromAsync(list(context, 404))).rejects.toThrow();
   });
 });

@@ -9,9 +9,9 @@ import { listQueryResponse } from "./validator.ts";
  * Fetch queries
  *
  * @param context REST endpoint context
- * @return Array of Query
+ * @return Yields each Query
  */
-export async function list(context: Context): Promise<Query[]> {
+export async function* list(context: Context): AsyncGenerator<Query> {
   const endpoint = buildUrl(context.endpoint, "queries.json");
   const response = await fetch(
     endpoint,
@@ -24,5 +24,5 @@ export async function list(context: Context): Promise<Query[]> {
     },
   );
   await assertResponse(response);
-  return parse(listQueryResponse, await response.json()).queries;
+  yield* parse(listQueryResponse, await response.json()).queries;
 }

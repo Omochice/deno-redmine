@@ -9,9 +9,9 @@ import { listNewsResponse } from "./validator.ts";
  * Fetch news across all projects
  *
  * @param context REST endpoint context
- * @return Array of News
+ * @return Yields each News
  */
-export async function list(context: Context): Promise<News[]> {
+export async function* list(context: Context): AsyncGenerator<News> {
   const endpoint = buildUrl(context.endpoint, "news.json");
   const response = await fetch(
     endpoint,
@@ -24,5 +24,5 @@ export async function list(context: Context): Promise<News[]> {
     },
   );
   await assertResponse(response);
-  return parse(listNewsResponse, await response.json()).news;
+  yield* parse(listNewsResponse, await response.json()).news;
 }

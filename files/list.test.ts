@@ -9,7 +9,7 @@ server.listen();
 Deno.test("GET /projects/:project_id/files.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
     server.resetHandlers(...validHandlers);
-    const files = await list(context, 1);
+    const files = await Array.fromAsync(list(context, 1));
     expect(files).toBeDefined();
   });
 
@@ -17,7 +17,7 @@ Deno.test("GET /projects/:project_id/files.json", async (t) => {
     "if got 200, should return files with camelCase fields",
     async () => {
       server.resetHandlers(...validHandlers);
-      const files = await list(context, 1);
+      const files = await Array.fromAsync(list(context, 1));
       expect(files.length).toStrictEqual(2);
       expect(files[0].contentType).toStrictEqual("application/zip");
       expect(files[0].contentUrl).toStrictEqual(
@@ -36,12 +36,12 @@ Deno.test("GET /projects/:project_id/files.json", async (t) => {
     "if get invalid response with error object, should throw",
     async () => {
       server.resetHandlers(...invalidHandlers);
-      await expect(list(context, 422)).rejects.toThrow();
+      await expect(Array.fromAsync(list(context, 422))).rejects.toThrow();
     },
   );
 
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(...invalidHandlers);
-    await expect(list(context, 404)).rejects.toThrow();
+    await expect(Array.fromAsync(list(context, 404))).rejects.toThrow();
   });
 });
