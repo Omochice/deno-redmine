@@ -204,6 +204,36 @@ Deno.test("walkPages surfaces a page failure only after every earlier item is yi
   expect(collected).toStrictEqual(range(0, 20));
 });
 
+Deno.test("walkPages surfaces a synchronously thrown page failure in order too", async () => {
+  // A non-async fetchPage can throw before ever producing a promise; that
+  // failure must still wait its turn instead of escaping the read-ahead fill.
+  const collected: number[] = [];
+  await expect((async () => {
+    const pages = walkPages<number>(
+      (limit, offset) => {
+        if (offset === 20) {
+          throw new Error("page 20 failed");
+        }
+        return new Promise((resolve) =>
+          setTimeout(
+            () =>
+              resolve({
+                items: range(offset, Math.min(offset + limit, 30)),
+                totalCount: 30,
+              }),
+            5,
+          )
+        );
+      },
+      { pageSize: 10 },
+    );
+    for await (const item of pages) {
+      collected.push(item);
+    }
+  })()).rejects.toThrow("page 20 failed");
+  expect(collected).toStrictEqual(range(0, 20));
+});
+
 Deno.test("walkPages leaves no unhandled rejection behind when the consumer stops early", async () => {
   // Read-ahead pages that reject after the consumer breaks would surface as
   // unhandled rejections and crash the test run if the generator did not

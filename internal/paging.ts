@@ -151,20 +151,26 @@ async function* walkWithReadAhead<T>(
   let next = 0;
   let current = 0;
   const inflight = new Map<number, Promise<SettledPage<T>>>();
+  const settle = (index: number): Promise<SettledPage<T>> => {
+    // Read-ahead promises must never reject: a rejection settling while
+    // iteration is still consuming earlier pages (or after the consumer
+    // broke out) would be detected as unhandled. Failures are carried as
+    // values instead and re-thrown once iteration reaches the failing page.
+    try {
+      return fetchPage(pageSize, offsets[index]).then(
+        (page) => ({ ok: true as const, page }),
+        (error) => ({ ok: false as const, error }),
+      );
+    } catch (error) {
+      // A synchronously throwing fetchPage would otherwise escape the settle
+      // wrapping and surface out of order, before earlier pages are yielded.
+      return Promise.resolve({ ok: false as const, error });
+    }
+  };
   const fill = () => {
     while (inflight.size < concurrency && next < offsets.length) {
-      const index = next++;
-      // Read-ahead promises must never reject: a rejection settling while
-      // iteration is still consuming earlier pages (or after the consumer
-      // broke out) would be detected as unhandled. Failures are carried as
-      // values instead and re-thrown once iteration reaches the failing page.
-      inflight.set(
-        index,
-        fetchPage(pageSize, offsets[index]).then(
-          (page) => ({ ok: true as const, page }),
-          (error) => ({ ok: false as const, error }),
-        ),
-      );
+      inflight.set(next, settle(next));
+      next++;
     }
   };
   fill();
