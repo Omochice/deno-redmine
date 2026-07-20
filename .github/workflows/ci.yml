@@ -107,7 +107,12 @@ jobs:
         run: nix run .#check-renovate-config
   coverage:
     needs: path-filter
-    if: needs.path-filter.outputs.deno == 'true' || needs.path-filter.outputs.flake == 'true'
+    # A push to a branch with an open pull request fires both the push and the
+    # pull_request event, so octocov used to run twice and leave two comments.
+    # Run only on pull_request events and on pushes to the default branch (the
+    # latter refreshes the report datastore), never on other branch pushes.
+    if: >-
+      (needs.path-filter.outputs.deno == 'true' || needs.path-filter.outputs.flake == 'true') && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
