@@ -300,7 +300,7 @@ export const listResponse = pipe(
 const listIssueQuery = partial(
   object({
     limit: pipe(number(), integer(), minValue(1)),
-    include: picklist(["attachment", "relations"]),
+    include: picklist(["attachments", "relations"]),
     issueId: union([array(number()), number()]),
     projectId: number(),
     subprojectId: string(),

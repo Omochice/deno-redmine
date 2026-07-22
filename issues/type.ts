@@ -124,7 +124,7 @@ export type CreateIssueQuery = {
 
 export type ListIssueQuery = {
   limit: number;
-  include: "attachment" | "relations";
+  include: "attachments" | "relations";
   issueId: number[] | number;
   projectId: number;
   subprojectId: string;
