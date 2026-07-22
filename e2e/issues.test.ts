@@ -5,6 +5,7 @@ import { show } from "../issues/show.ts";
 import { createIssue } from "../issues/create.ts";
 import { update } from "../issues/update.ts";
 import { deleteIssue } from "../issues/delete.ts";
+import { create as createRelation } from "../issue-relations/create.ts";
 import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
@@ -277,6 +278,79 @@ Deno.test({
             projectId: project!.id,
           }));
           const leftovers = cleanupList.filter((i) => i.subject === subject);
+          for (const leftover of leftovers) {
+            await deleteIssue(e2eContext, leftover.id);
+          }
+        }
+      },
+    );
+
+    await t.step(
+      "GET /issues.json with include: relations should return relations",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        const sourceSubject = "E2E Include Relations Source";
+        const targetSubject = "E2E Include Relations Target";
+        for (const subject of [sourceSubject, targetSubject]) {
+          await createIssue(e2eContext, {
+            projectId: project!.id,
+            trackerId: issues[0].tracker.id,
+            statusId: issues[0].status.id,
+            priorityId: issues[0].priority.id,
+            subject,
+            description: "Created by E2E test to exercise list include",
+          });
+        }
+
+        try {
+          const created = await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }));
+          const source = created.find((i) => i.subject === sourceSubject);
+          const target = created.find((i) => i.subject === targetSubject);
+          expect(source).toBeDefined();
+          expect(target).toBeDefined();
+
+          await createRelation(e2eContext, source!.id, {
+            issueToId: target!.id,
+            relationType: "relates",
+          });
+
+          // The Issue type does not (yet) carry relations, so the cast
+          // below stands in for the fix's widened return type: it lets this
+          // test observe the actual response-stripping bug at runtime
+          // instead of failing to compile before ever hitting the server.
+          const listed = await Array.fromAsync(
+            list(e2eContext, {
+              projectId: project!.id,
+              include: "relations",
+            }),
+          ) as unknown as (
+            { subject: string; relations?: { issueToId?: number }[] }
+          )[];
+          const listedIssue = listed.find((i) => i.subject === sourceSubject);
+          expect(listedIssue).toBeDefined();
+          expect(listedIssue!.relations).toBeDefined();
+          expect(
+            listedIssue!.relations?.some((r) => r.issueToId === target!.id),
+          ).toBe(true);
+        } finally {
+          const cleanupList = await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }));
+          const leftovers = cleanupList.filter((i) =>
+            i.subject === sourceSubject || i.subject === targetSubject
+          );
           for (const leftover of leftovers) {
             await deleteIssue(e2eContext, leftover.id);
           }
