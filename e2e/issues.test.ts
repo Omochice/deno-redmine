@@ -255,18 +255,12 @@ Deno.test({
             return;
           }
 
-          // The Issue type does not (yet) carry attachments, so the cast
-          // below stands in for the fix's widened return type: it lets this
-          // test observe the actual response-stripping bug at runtime
-          // instead of failing to compile before ever hitting the server.
           const listed = await Array.fromAsync(
             list(e2eContext, {
               projectId: project!.id,
               include: "attachments",
             }),
-          ) as unknown as (
-            { subject: string; attachments?: { filename: string }[] }
-          )[];
+          );
           const listedIssue = listed.find((i) => i.subject === subject);
           expect(listedIssue).toBeDefined();
           expect(listedIssue!.attachments).toBeDefined();
@@ -326,18 +320,12 @@ Deno.test({
             relationType: "relates",
           });
 
-          // The Issue type does not (yet) carry relations, so the cast
-          // below stands in for the fix's widened return type: it lets this
-          // test observe the actual response-stripping bug at runtime
-          // instead of failing to compile before ever hitting the server.
           const listed = await Array.fromAsync(
             list(e2eContext, {
               projectId: project!.id,
               include: "relations",
             }),
-          ) as unknown as (
-            { subject: string; relations?: { issueToId?: number }[] }
-          )[];
+          );
           const listedIssue = listed.find((i) => i.subject === sourceSubject);
           expect(listedIssue).toBeDefined();
           expect(listedIssue!.relations).toBeDefined();
