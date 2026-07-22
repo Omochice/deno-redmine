@@ -174,6 +174,116 @@ Deno.test({
       },
     );
 
+    await t.step(
+      "GET /issues.json with include: attachments should return attachments",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        const subject = "E2E Include Attachments Issue";
+        await createIssue(e2eContext, {
+          projectId: project!.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
+          subject,
+          description: "Created by E2E test to exercise list include",
+        });
+
+        try {
+          const created = (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).find((i) => i.subject === subject);
+          expect(created).toBeDefined();
+
+          const headers = {
+            "Content-Type": "application/json",
+            "X-Redmine-API-Key": e2eContext.apiKey,
+          };
+          const filename = "e2e-include-attachment.txt";
+
+          const uploadResponse = await fetch(
+            `${e2eContext.endpoint}/uploads.json`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/octet-stream",
+                "X-Redmine-API-Key": e2eContext.apiKey,
+              },
+              body: new TextEncoder().encode("E2E include attachment content"),
+            },
+          );
+          if (!uploadResponse.ok) {
+            await uploadResponse.body?.cancel();
+            console.warn("Skipping: file upload is restricted on this Redmine");
+            return;
+          }
+          const uploadData = await uploadResponse.json();
+          const token = uploadData.upload?.token;
+          if (token === undefined) {
+            console.warn("Skipping: upload did not return a token");
+            return;
+          }
+
+          const attachResponse = await fetch(
+            `${e2eContext.endpoint}/issues/${created!.id}.json`,
+            {
+              method: "PUT",
+              headers,
+              body: JSON.stringify({
+                issue: {
+                  uploads: [
+                    { token, filename, content_type: "text/plain" },
+                  ],
+                },
+              }),
+            },
+          );
+          const attached = attachResponse.ok;
+          await attachResponse.body?.cancel();
+          if (!attached) {
+            console.warn("Skipping: could not attach upload to issue");
+            return;
+          }
+
+          // The Issue type does not (yet) carry attachments, so the cast
+          // below stands in for the fix's widened return type: it lets this
+          // test observe the actual response-stripping bug at runtime
+          // instead of failing to compile before ever hitting the server.
+          const listed = await Array.fromAsync(
+            list(e2eContext, {
+              projectId: project!.id,
+              include: "attachments",
+            }),
+          ) as unknown as (
+            { subject: string; attachments?: { filename: string }[] }
+          )[];
+          const listedIssue = listed.find((i) => i.subject === subject);
+          expect(listedIssue).toBeDefined();
+          expect(listedIssue!.attachments).toBeDefined();
+          expect(
+            listedIssue!.attachments?.some((a) => a.filename === filename),
+          ).toBe(true);
+        } finally {
+          const cleanupList = await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }));
+          const leftovers = cleanupList.filter((i) => i.subject === subject);
+          for (const leftover of leftovers) {
+            await deleteIssue(e2eContext, leftover.id);
+          }
+        }
+      },
+    );
+
     await t.step("DELETE /issues/:id.json should delete an issue", async () => {
       const issues = await Array.fromAsync(list(e2eContext, {}));
       const issue = issues.find((i) => i.subject === "E2E Updated Issue");
