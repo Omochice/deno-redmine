@@ -9,6 +9,10 @@
     "test:e2e": "deno test --allow-net --allow-env e2e/"
   },
   "lock": false,
+  // .direnv holds nix-direnv's copies of flake inputs (including a stale copy
+  // of this repo's own source); globbing them into deno's file resolution
+  // makes local check/lint/fmt/test diverge from CI, which runs without it.
+  "exclude": [".direnv", "coverage"],
   "fmt": {
     "exclude": ["CHANGELOG.md"]
   },
