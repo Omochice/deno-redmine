@@ -17,11 +17,13 @@ export type Include =
 export async function show(
   context: Context,
   id: number,
-  includes?: Include[],
+  includes?: Include | Include[],
 ): Promise<ShowIssue> {
   const url = buildUrl(context.endpoint, "issues", `${id}.json`);
   if (includes !== undefined) {
-    url.search = new URLSearchParams({ include: includes.join(",") })
+    const values = new Set(Array.isArray(includes) ? includes : [includes])
+      .values().toArray();
+    url.search = new URLSearchParams({ include: values.join(",") })
       .toString();
   }
   const response = await fetch(url, {

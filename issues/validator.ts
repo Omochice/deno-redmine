@@ -28,7 +28,6 @@ import type {
   IssueStatus,
   Journal,
   ListIssue,
-  ListIssueQuery,
   Relation,
 } from "./type.ts";
 
@@ -311,10 +310,21 @@ export const listResponse = pipe(
   }),
 );
 
+const listIncludeValue = picklist(["attachments", "relations"]);
+
+// include is semantically a set, so a repeated value is normalized away here
+// rather than sent through to Redmine as-is; Set preserves first-seen order.
+const listInclude = pipe(
+  union([listIncludeValue, array(listIncludeValue)]),
+  transform((value) =>
+    new Set(Array.isArray(value) ? value : [value]).values().toArray()
+  ),
+);
+
 const listIssueQuery = partial(
   object({
     limit: pipe(number(), integer(), minValue(1)),
-    include: picklist(["attachments", "relations"]),
+    include: listInclude,
     issueId: union([array(number()), number()]),
     projectId: number(),
     subprojectId: string(),
@@ -331,7 +341,7 @@ const listIssueQuery = partial(
 
 export const toListOption = pipe(
   listIssueQuery,
-  transform((input: Partial<ListIssueQuery>) => {
+  transform((input) => {
     return {
       ...parse(toQueryObject, input),
       ...parse(toCustomFieldOption, input.customField),

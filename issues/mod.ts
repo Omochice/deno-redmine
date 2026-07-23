@@ -32,9 +32,9 @@ export class Client {
    * Returns the issue of given id.
    *
    * @param id The issue id
-   * @param includes Options to include additional information
+   * @param includes One or more options to include additional information
    */
-  show(id: number, includes?: Include[]): ReturnType<typeof show> {
+  show(id: number, includes?: Include | Include[]): ReturnType<typeof show> {
     return show(this.#context, id, includes);
   }
 
