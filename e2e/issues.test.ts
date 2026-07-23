@@ -5,6 +5,7 @@ import { show } from "../issues/show.ts";
 import { createIssue } from "../issues/create.ts";
 import { update } from "../issues/update.ts";
 import { deleteIssue } from "../issues/delete.ts";
+import { create as createRelation } from "../issue-relations/create.ts";
 import { list as listProjects } from "../projects/list.ts";
 
 Deno.test({
@@ -167,6 +168,177 @@ Deno.test({
           // Delete every match, not just one: runs that predate this
           // cleanup left issues with the same subject behind.
           const leftovers = cleanupList.filter((i) => i.subject === subject);
+          for (const leftover of leftovers) {
+            await deleteIssue(e2eContext, leftover.id);
+          }
+        }
+      },
+    );
+
+    await t.step(
+      "GET /issues.json with include: attachments should return attachments",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        const subject = "E2E Include Attachments Issue";
+        await createIssue(e2eContext, {
+          projectId: project!.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
+          subject,
+          description: "Created by E2E test to exercise list include",
+        });
+
+        try {
+          const created = (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).find((i) => i.subject === subject);
+          expect(created).toBeDefined();
+
+          const headers = {
+            "Content-Type": "application/json",
+            "X-Redmine-API-Key": e2eContext.apiKey,
+          };
+          const filename = "e2e-include-attachment.txt";
+
+          const uploadResponse = await fetch(
+            `${e2eContext.endpoint}/uploads.json`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/octet-stream",
+                "X-Redmine-API-Key": e2eContext.apiKey,
+              },
+              body: new TextEncoder().encode("E2E include attachment content"),
+            },
+          );
+          if (!uploadResponse.ok) {
+            await uploadResponse.body?.cancel();
+            console.warn("Skipping: file upload is restricted on this Redmine");
+            return;
+          }
+          const uploadData = await uploadResponse.json();
+          const token = uploadData.upload?.token;
+          if (token === undefined) {
+            console.warn("Skipping: upload did not return a token");
+            return;
+          }
+
+          const attachResponse = await fetch(
+            `${e2eContext.endpoint}/issues/${created!.id}.json`,
+            {
+              method: "PUT",
+              headers,
+              body: JSON.stringify({
+                issue: {
+                  uploads: [
+                    { token, filename, content_type: "text/plain" },
+                  ],
+                },
+              }),
+            },
+          );
+          const attached = attachResponse.ok;
+          await attachResponse.body?.cancel();
+          if (!attached) {
+            console.warn("Skipping: could not attach upload to issue");
+            return;
+          }
+
+          const listed = await Array.fromAsync(
+            list(e2eContext, {
+              projectId: project!.id,
+              include: "attachments",
+            }),
+          );
+          const listedIssue = listed.find((i) => i.subject === subject);
+          expect(listedIssue).toBeDefined();
+          expect(listedIssue!.attachments).toBeDefined();
+          expect(
+            listedIssue!.attachments?.some((a) => a.filename === filename),
+          ).toBe(true);
+        } finally {
+          const cleanupList = await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }));
+          const leftovers = cleanupList.filter((i) => i.subject === subject);
+          for (const leftover of leftovers) {
+            await deleteIssue(e2eContext, leftover.id);
+          }
+        }
+      },
+    );
+
+    await t.step(
+      "GET /issues.json with include: relations should return relations",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        const sourceSubject = "E2E Include Relations Source";
+        const targetSubject = "E2E Include Relations Target";
+        for (const subject of [sourceSubject, targetSubject]) {
+          await createIssue(e2eContext, {
+            projectId: project!.id,
+            trackerId: issues[0].tracker.id,
+            statusId: issues[0].status.id,
+            priorityId: issues[0].priority.id,
+            subject,
+            description: "Created by E2E test to exercise list include",
+          });
+        }
+
+        try {
+          const created = await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }));
+          const source = created.find((i) => i.subject === sourceSubject);
+          const target = created.find((i) => i.subject === targetSubject);
+          expect(source).toBeDefined();
+          expect(target).toBeDefined();
+
+          await createRelation(e2eContext, source!.id, {
+            issueToId: target!.id,
+            relationType: "relates",
+          });
+
+          const listed = await Array.fromAsync(
+            list(e2eContext, {
+              projectId: project!.id,
+              include: "relations",
+            }),
+          );
+          const listedIssue = listed.find((i) => i.subject === sourceSubject);
+          expect(listedIssue).toBeDefined();
+          expect(listedIssue!.relations).toBeDefined();
+          expect(
+            listedIssue!.relations?.some((r) => r.issueToId === target!.id),
+          ).toBe(true);
+        } finally {
+          const cleanupList = await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }));
+          const leftovers = cleanupList.filter((i) =>
+            i.subject === sourceSubject || i.subject === targetSubject
+          );
           for (const leftover of leftovers) {
             await deleteIssue(e2eContext, leftover.id);
           }

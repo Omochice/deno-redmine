@@ -27,6 +27,7 @@ import type {
   Issue,
   IssueStatus,
   Journal,
+  ListIssue,
   ListIssueQuery,
   Relation,
 } from "./type.ts";
@@ -220,6 +221,19 @@ export const showIssueSchema = object({
   issue: showIssue,
 });
 
+// Only attachments/relations are spread here, not the full include.entries,
+// because the list endpoint only supports include=attachments/relations.
+const listIssueSchema = pipe(
+  object({
+    ...issueSchema.entries,
+    attachments: optional(array(attachments)),
+    relations: optional(array(relation)),
+  }),
+  transform((input) => {
+    return objectToCamel(input) satisfies ListIssue;
+  }),
+);
+
 // Redmine expects dates as YYYY-MM-DD strings. The UTC date part is used
 // rather than the local calendar fields because dateLikeString parses
 // Redmine's date-only strings as UTC midnight, so only UTC keeps a
@@ -287,7 +301,7 @@ export const toCreateRequest = pipe(
 
 export const listResponse = pipe(
   object({
-    issues: array(issueSchema),
+    issues: array(listIssueSchema),
     total_count: number(),
     offset: number(),
     limit: number(),
@@ -300,7 +314,7 @@ export const listResponse = pipe(
 const listIssueQuery = partial(
   object({
     limit: pipe(number(), integer(), minValue(1)),
-    include: picklist(["attachment", "relations"]),
+    include: picklist(["attachments", "relations"]),
     issueId: union([array(number()), number()]),
     projectId: number(),
     subprojectId: string(),

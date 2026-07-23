@@ -90,6 +90,11 @@ export type Include = {
 
 export type ShowIssue = Issue & Include;
 
+// The list endpoint only supports include=attachments/relations (unlike
+// show, which supports the full Include set), so the list result widens
+// Issue with just those two associations rather than the whole Include type.
+export type ListIssue = Issue & Pick<Include, "attachments" | "relations">;
+
 export type UpdateOption = {
   notes?: string;
   privateNotes?: boolean;
@@ -124,7 +129,7 @@ export type CreateIssueQuery = {
 
 export type ListIssueQuery = {
   limit: number;
-  include: "attachment" | "relations";
+  include: "attachments" | "relations";
   issueId: number[] | number;
   projectId: number;
   subprojectId: string;
