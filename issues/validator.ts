@@ -312,8 +312,6 @@ export const listResponse = pipe(
 
 const listIncludeValue = picklist(["attachments", "relations"]);
 
-// include is semantically a set, so a repeated value is normalized away here
-// rather than sent through to Redmine as-is; Set preserves first-seen order.
 const listInclude = pipe(
   union([listIncludeValue, array(listIncludeValue)]),
   transform((value) =>
