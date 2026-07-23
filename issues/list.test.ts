@@ -161,3 +161,74 @@ Deno.test("list limit option", async (t) => {
     },
   );
 });
+
+function includeHandler(includeParams: (string | null)[]) {
+  return http.get(`${context.endpoint}/issues.json`, ({ request }) => {
+    const url = new URL(request.url);
+    includeParams.push(url.searchParams.get("include"));
+    return HttpResponse.json({
+      issues: [],
+      total_count: 0,
+      offset: 0,
+      limit: 100,
+    });
+  });
+}
+
+Deno.test("list include option", async (t) => {
+  await t.step(
+    "sends a single include value as-is",
+    async () => {
+      const includeParams: (string | null)[] = [];
+      server.resetHandlers(includeHandler(includeParams));
+
+      await Array.fromAsync(list(context, { include: "attachments" }));
+
+      expect(includeParams).toStrictEqual(["attachments"]);
+    },
+  );
+
+  await t.step(
+    "sends an array of include values as a comma-joined list",
+    async () => {
+      const includeParams: (string | null)[] = [];
+      server.resetHandlers(includeHandler(includeParams));
+
+      await Array.fromAsync(
+        list(context, { include: ["attachments", "relations"] }),
+      );
+
+      expect(includeParams).toStrictEqual(["attachments,relations"]);
+    },
+  );
+
+  await t.step(
+    "dedups a repeated include value down to one occurrence",
+    async () => {
+      const includeParams: (string | null)[] = [];
+      server.resetHandlers(includeHandler(includeParams));
+
+      await Array.fromAsync(
+        list(context, { include: ["attachments", "attachments"] }),
+      );
+
+      expect(includeParams).toStrictEqual(["attachments"]);
+    },
+  );
+
+  await t.step(
+    "dedups duplicates while preserving first-seen order",
+    async () => {
+      const includeParams: (string | null)[] = [];
+      server.resetHandlers(includeHandler(includeParams));
+
+      await Array.fromAsync(
+        list(context, {
+          include: ["attachments", "relations", "attachments"],
+        }),
+      );
+
+      expect(includeParams).toStrictEqual(["attachments,relations"]);
+    },
+  );
+});
