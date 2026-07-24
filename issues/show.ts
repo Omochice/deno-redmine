@@ -18,7 +18,7 @@ export type Include =
 export async function show(
   context: Context,
   id: number,
-  includes?: Include | Include[],
+  includes?: Include | [Include, ...Include[]],
 ): Promise<ShowIssue> {
   const url = buildUrl(context.endpoint, "issues", `${id}.json`);
   if (includes !== undefined) {

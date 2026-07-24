@@ -94,3 +94,8 @@ Deno.test("GET /issues/:id.json include option", async (t) => {
     },
   );
 });
+
+Deno.test("an empty include array is rejected by the type", () => {
+  // @ts-expect-error include must name at least one value
+  const _includes: Parameters<typeof show>[2] = [];
+});

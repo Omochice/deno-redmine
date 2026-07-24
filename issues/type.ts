@@ -131,7 +131,7 @@ export type ListIncludeValue = "attachments" | "relations";
 
 export type ListIssueQuery = {
   limit: number;
-  include: ListIncludeValue | ListIncludeValue[];
+  include: ListIncludeValue | [ListIncludeValue, ...ListIncludeValue[]];
   issueId: number[] | number;
   projectId: number;
   subprojectId: string;
