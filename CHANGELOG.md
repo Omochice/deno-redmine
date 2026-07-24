@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.1.0](https://github.com/Omochice/deno-redmine/compare/v3.0.0...v3.1.0) (2026-07-24)
+
+
+### Features
+
+* accept a single value or array for issue include ([#453](https://github.com/Omochice/deno-redmine/issues/453)) ([c136a21](https://github.com/Omochice/deno-redmine/commit/c136a21f715e9c761733484a8b8877f402eaa3a0))
+
+
+### Bug Fixes
+
+* return attachments and relations from issue list include ([#450](https://github.com/Omochice/deno-redmine/issues/450)) ([65f50f4](https://github.com/Omochice/deno-redmine/commit/65f50f40bc0a51887ad2e735f3b2dc1b309a8caf))
+
 ## [3.0.0](https://github.com/Omochice/deno-redmine/compare/v2.3.1...v3.0.0) (2026-07-20)
 
 
