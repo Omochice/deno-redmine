@@ -130,20 +130,20 @@ export type CreateIssueQuery = {
 export type ListIncludeValue = "attachments" | "relations";
 
 export type ListIssueQuery = {
-  limit: number;
-  include: ListIncludeValue | [ListIncludeValue, ...ListIncludeValue[]];
-  issueId: number[] | number;
-  projectId: number;
-  subprojectId: string;
-  trackerId: number;
-  statusId: "open" | "closed" | "*" | number;
-  priorityId: number;
-  categoryId: number;
-  fixedVersionId: number;
-  assignedToId: number | "me";
-  authorId: number | "me";
-  parentId: string;
-  customField: {
+  limit?: number;
+  include?: ListIncludeValue | [ListIncludeValue, ...ListIncludeValue[]];
+  issueId?: number[] | number;
+  projectId?: number;
+  subprojectId?: string;
+  trackerId?: number;
+  statusId?: "open" | "closed" | "*" | number;
+  priorityId?: number;
+  categoryId?: number;
+  fixedVersionId?: number;
+  assignedToId?: number | "me";
+  authorId?: number | "me";
+  parentId?: string;
+  customField?: {
     id: number;
     value: string;
   }[];

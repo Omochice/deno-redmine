@@ -10,7 +10,7 @@ const pageSize = 100;
 
 export async function* list(
   context: Context,
-  option: Partial<ListIssueQuery> = {},
+  option: ListIssueQuery = {},
 ): AsyncGenerator<ListIssue> {
   const convertedOption = parse(toListOption, option);
 

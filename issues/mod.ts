@@ -24,7 +24,7 @@ export class Client {
    *
    * @param option The query option
    */
-  list(option: Partial<ListIssueQuery>): ReturnType<typeof list> {
+  list(option: ListIssueQuery): ReturnType<typeof list> {
     return list(this.#context, option);
   }
 
