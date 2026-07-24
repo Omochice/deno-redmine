@@ -237,3 +237,67 @@ Deno.test("an empty include array is rejected by the type", () => {
   // @ts-expect-error include must name at least one value
   const _option: Parameters<typeof list>[1] = { include: [] };
 });
+
+function queryHandler(recorded: URLSearchParams[]) {
+  return http.get(`${context.endpoint}/issues.json`, ({ request }) => {
+    recorded.push(new URL(request.url).searchParams);
+    return HttpResponse.json({
+      issues: [],
+      total_count: 0,
+      offset: 0,
+      limit: 100,
+    });
+  });
+}
+
+Deno.test("list id-based filters", async (t) => {
+  const cases: {
+    name: string;
+    option: Parameters<typeof list>[1];
+    param: string;
+    expected: string;
+  }[] = [
+    {
+      name: "priorityId is sent as priority_id",
+      option: { priorityId: 3 },
+      param: "priority_id",
+      expected: "3",
+    },
+    {
+      name: "categoryId is sent as category_id",
+      option: { categoryId: 7 },
+      param: "category_id",
+      expected: "7",
+    },
+    {
+      name: "fixedVersionId is sent as fixed_version_id",
+      option: { fixedVersionId: 12 },
+      param: "fixed_version_id",
+      expected: "12",
+    },
+    {
+      name: "authorId accepts a numeric id",
+      option: { authorId: 5 },
+      param: "author_id",
+      expected: "5",
+    },
+    {
+      name: "authorId accepts the me literal",
+      option: { authorId: "me" },
+      param: "author_id",
+      expected: "me",
+    },
+  ];
+
+  for (const { name, option, param, expected } of cases) {
+    await t.step(name, async () => {
+      const recorded: URLSearchParams[] = [];
+      server.resetHandlers(queryHandler(recorded));
+
+      await Array.fromAsync(list(context, option));
+
+      expect(recorded.length).toStrictEqual(1);
+      expect(recorded[0].get(param)).toStrictEqual(expected);
+    });
+  }
+});

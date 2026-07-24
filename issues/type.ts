@@ -137,7 +137,11 @@ export type ListIssueQuery = {
   subprojectId: string;
   trackerId: number;
   statusId: "open" | "closed" | "*" | number;
+  priorityId: number;
+  categoryId: number;
+  fixedVersionId: number;
   assignedToId: number | "me";
+  authorId: number | "me";
   parentId: string;
   customField: {
     id: number;
