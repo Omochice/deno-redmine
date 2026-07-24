@@ -127,9 +127,11 @@ export type CreateIssueQuery = {
   customFields?: CustomFieldInput[];
 };
 
+export type ListIncludeValue = "attachments" | "relations";
+
 export type ListIssueQuery = {
   limit: number;
-  include: "attachments" | "relations";
+  include: ListIncludeValue | [ListIncludeValue, ...ListIncludeValue[]];
   issueId: number[] | number;
   projectId: number;
   subprojectId: string;

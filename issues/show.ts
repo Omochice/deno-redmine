@@ -1,5 +1,6 @@
 import { parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
+import { toUniqueArray } from "../internal/array.ts";
 import type { ShowIssue } from "./type.ts";
 import { showIssueSchema } from "./validator.ts";
 import type { Context } from "../context.ts";
@@ -17,11 +18,12 @@ export type Include =
 export async function show(
   context: Context,
   id: number,
-  includes?: Include[],
+  includes?: Include | [Include, ...Include[]],
 ): Promise<ShowIssue> {
   const url = buildUrl(context.endpoint, "issues", `${id}.json`);
   if (includes !== undefined) {
-    url.search = new URLSearchParams({ include: includes.join(",") })
+    const values = toUniqueArray(includes);
+    url.search = new URLSearchParams({ include: values.join(",") })
       .toString();
   }
   const response = await fetch(url, {

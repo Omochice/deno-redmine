@@ -19,6 +19,7 @@ import {
   union,
 } from "jsr:@valibot/valibot@1.4.2";
 import { dateLikeString, idName, toUndefined } from "../internal/validator.ts";
+import { toUniqueArray } from "../internal/array.ts";
 import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
 import type {
   Attachment,
@@ -28,7 +29,6 @@ import type {
   IssueStatus,
   Journal,
   ListIssue,
-  ListIssueQuery,
   Relation,
 } from "./type.ts";
 
@@ -311,10 +311,17 @@ export const listResponse = pipe(
   }),
 );
 
+const listIncludeValue = picklist(["attachments", "relations"]);
+
+const listInclude = pipe(
+  union([listIncludeValue, array(listIncludeValue)]),
+  transform((value) => toUniqueArray(value)),
+);
+
 const listIssueQuery = partial(
   object({
     limit: pipe(number(), integer(), minValue(1)),
-    include: picklist(["attachments", "relations"]),
+    include: listInclude,
     issueId: union([array(number()), number()]),
     projectId: number(),
     subprojectId: string(),
@@ -331,7 +338,7 @@ const listIssueQuery = partial(
 
 export const toListOption = pipe(
   listIssueQuery,
-  transform((input: Partial<ListIssueQuery>) => {
+  transform((input) => {
     return {
       ...parse(toQueryObject, input),
       ...parse(toCustomFieldOption, input.customField),
