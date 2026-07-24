@@ -19,6 +19,7 @@ import {
   union,
 } from "jsr:@valibot/valibot@1.4.2";
 import { dateLikeString, idName, toUndefined } from "../internal/validator.ts";
+import { toUniqueArray } from "../internal/array.ts";
 import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
 import type {
   Attachment,
@@ -314,9 +315,7 @@ const listIncludeValue = picklist(["attachments", "relations"]);
 
 const listInclude = pipe(
   union([listIncludeValue, array(listIncludeValue)]),
-  transform((value) =>
-    new Set(Array.isArray(value) ? value : [value]).values().toArray()
-  ),
+  transform((value) => toUniqueArray(value)),
 );
 
 const listIssueQuery = partial(
