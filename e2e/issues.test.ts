@@ -520,27 +520,40 @@ Deno.test({
           }))).find((i) => i.subject === subject);
           expect(created).toBeDefined();
 
+          // The version and category are provisioned for this test alone, so
+          // filtering by them must narrow the listing to exactly this issue.
           const byVersion = await Array.fromAsync(
             list(e2eContext, { fixedVersionId: version!.id }),
           );
-          expect(byVersion.some((i) => i.subject === subject)).toBe(true);
+          expect(byVersion.map((i) => i.id)).toStrictEqual([created!.id]);
 
+          // categoryId is only honored alongside projectId: Redmine scopes the
+          // category filter to a project and ignores it otherwise.
           const byCategory = await Array.fromAsync(
-            list(e2eContext, { categoryId: category!.id }),
+            list(e2eContext, {
+              projectId: project!.id,
+              categoryId: category!.id,
+            }),
           );
-          expect(byCategory.some((i) => i.subject === subject)).toBe(true);
+          expect(byCategory.map((i) => i.id)).toStrictEqual([created!.id]);
 
-          // priorityId is not unique to this issue, so this only checks
-          // inclusion rather than an exact match like the version/category
-          // filters above.
+          // priority and author are shared with other issues, so rather than an
+          // exact match assert the filter is honored: every result carries the
+          // requested value, and the target issue is among them.
           const byPriority = await Array.fromAsync(
             list(e2eContext, { priorityId: issues[0].priority.id }),
           );
+          expect(
+            byPriority.every((i) => i.priority.id === issues[0].priority.id),
+          )
+            .toBe(true);
           expect(byPriority.some((i) => i.subject === subject)).toBe(true);
 
           const byAuthor = await Array.fromAsync(
             list(e2eContext, { authorId: "me" }),
           );
+          expect(byAuthor.every((i) => i.author.id === created!.author.id))
+            .toBe(true);
           expect(byAuthor.some((i) => i.subject === subject)).toBe(true);
         } finally {
           const cleanupList = await Array.fromAsync(list(e2eContext, {
