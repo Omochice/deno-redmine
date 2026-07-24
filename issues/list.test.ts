@@ -238,6 +238,15 @@ Deno.test("an empty include array is rejected by the type", () => {
   const _option: Parameters<typeof list>[1] = { include: [] };
 });
 
+Deno.test("categoryId requires projectId at the type level", () => {
+  // @ts-expect-error categoryId without projectId is not honored by Redmine
+  const _missingProject: Parameters<typeof list>[1] = { categoryId: 1 };
+  const _withProject: Parameters<typeof list>[1] = {
+    categoryId: 1,
+    projectId: 2,
+  };
+});
+
 function queryHandler(recorded: URLSearchParams[]) {
   return http.get(`${context.endpoint}/issues.json`, ({ request }) => {
     recorded.push(new URL(request.url).searchParams);
@@ -265,7 +274,7 @@ Deno.test("list id-based filters", async (t) => {
     },
     {
       name: "categoryId is sent as category_id",
-      option: { categoryId: 7 },
+      option: { categoryId: 7, projectId: 1 },
       param: "category_id",
       expected: "7",
     },
