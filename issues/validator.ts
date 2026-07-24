@@ -327,7 +327,11 @@ const listIssueQuery = partial(
     subprojectId: string(),
     trackerId: number(),
     statusId: union([picklist(["open", "closed", "*"]), number()]),
+    priorityId: number(),
+    categoryId: number(),
+    fixedVersionId: number(),
     assignedToId: union([number(), literal("me")]),
+    authorId: union([number(), literal("me")]),
     parentId: string(),
     customField: array(object({
       id: number(),

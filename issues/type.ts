@@ -129,18 +129,29 @@ export type CreateIssueQuery = {
 
 export type ListIncludeValue = "attachments" | "relations";
 
-export type ListIssueQuery = {
-  limit: number;
-  include: ListIncludeValue | [ListIncludeValue, ...ListIncludeValue[]];
-  issueId: number[] | number;
-  projectId: number;
-  subprojectId: string;
-  trackerId: number;
-  statusId: "open" | "closed" | "*" | number;
-  assignedToId: number | "me";
-  parentId: string;
-  customField: {
-    id: number;
-    value: string;
-  }[];
-};
+export type ListIssueQuery =
+  & {
+    limit?: number;
+    include?: ListIncludeValue | [ListIncludeValue, ...ListIncludeValue[]];
+    issueId?: number[] | number;
+    projectId?: number;
+    subprojectId?: string;
+    trackerId?: number;
+    statusId?: "open" | "closed" | "*" | number;
+    priorityId?: number;
+    fixedVersionId?: number;
+    assignedToId?: number | "me";
+    authorId?: number | "me";
+    parentId?: string;
+    customField?: {
+      id: number;
+      value: string;
+    }[];
+  }
+  & (
+    // Redmine scopes the category filter to a project and ignores category_id
+    // otherwise, so requiring projectId whenever categoryId is present keeps a
+    // silently-ignored filter from type-checking.
+    | { categoryId?: never }
+    | { categoryId: number; projectId: number }
+  );

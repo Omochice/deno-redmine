@@ -7,6 +7,12 @@ import { update } from "../issues/update.ts";
 import { deleteIssue } from "../issues/delete.ts";
 import { create as createRelation } from "../issue-relations/create.ts";
 import { list as listProjects } from "../projects/list.ts";
+import { create as createVersion } from "../versions/create.ts";
+import { list as listVersions } from "../versions/list.ts";
+import { deleteVersion } from "../versions/delete.ts";
+import { create as createCategory } from "../issue-categories/create.ts";
+import { list as listCategories } from "../issue-categories/list.ts";
+import { deleteIssueCategory } from "../issue-categories/delete.ts";
 
 Deno.test({
   name: "E2E: Issues API",
@@ -464,6 +470,104 @@ Deno.test({
           );
           for (const leftover of leftovers) {
             await deleteIssue(e2eContext, leftover.id);
+          }
+        }
+      },
+    );
+
+    await t.step(
+      "GET /issues.json with id-based filters should narrow the listing",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        const versionName = "E2E Filter Version";
+        await createVersion(e2eContext, project!.id, { name: versionName });
+        const version =
+          (await Array.fromAsync(listVersions(e2eContext, project!.id)))
+            .find((v) => v.name === versionName);
+        expect(version).toBeDefined();
+
+        const categoryName = "E2E Filter Category";
+        await createCategory(e2eContext, project!.id, { name: categoryName });
+        const category =
+          (await Array.fromAsync(listCategories(e2eContext, project!.id)))
+            .find((c) => c.name === categoryName);
+        expect(category).toBeDefined();
+
+        const subject = "E2E Filter Target Issue";
+        await createIssue(e2eContext, {
+          projectId: project!.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
+          fixedVersionId: version!.id,
+          categoryId: category!.id,
+          subject,
+        });
+
+        try {
+          const created = (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).find((i) => i.subject === subject);
+          expect(created).toBeDefined();
+
+          // The version and category are provisioned for this test alone, so
+          // filtering by them must narrow the listing to exactly this issue.
+          const byVersion = await Array.fromAsync(
+            list(e2eContext, { fixedVersionId: version!.id }),
+          );
+          expect(byVersion.map((i) => i.id)).toStrictEqual([created!.id]);
+
+          // categoryId is only honored alongside projectId: Redmine scopes the
+          // category filter to a project and ignores it otherwise.
+          const byCategory = await Array.fromAsync(
+            list(e2eContext, {
+              projectId: project!.id,
+              categoryId: category!.id,
+            }),
+          );
+          expect(byCategory.map((i) => i.id)).toStrictEqual([created!.id]);
+
+          // priority and author are shared with other issues, so rather than an
+          // exact match assert the filter is honored: every result carries the
+          // requested value, and the target issue is among them.
+          const byPriority = await Array.fromAsync(
+            list(e2eContext, { priorityId: issues[0].priority.id }),
+          );
+          expect(
+            byPriority.every((i) => i.priority.id === issues[0].priority.id),
+          )
+            .toBe(true);
+          expect(byPriority.some((i) => i.subject === subject)).toBe(true);
+
+          const byAuthor = await Array.fromAsync(
+            list(e2eContext, { authorId: "me" }),
+          );
+          expect(byAuthor.every((i) => i.author.id === created!.author.id))
+            .toBe(true);
+          expect(byAuthor.some((i) => i.subject === subject)).toBe(true);
+        } finally {
+          const cleanupList = await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }));
+          const leftovers = cleanupList.filter((i) => i.subject === subject);
+          for (const leftover of leftovers) {
+            await deleteIssue(e2eContext, leftover.id);
+          }
+          if (version !== undefined) {
+            await deleteVersion(e2eContext, version.id);
+          }
+          if (category !== undefined) {
+            await deleteIssueCategory(e2eContext, category.id);
           }
         }
       },
