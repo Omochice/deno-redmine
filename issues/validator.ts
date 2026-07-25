@@ -327,7 +327,7 @@ const listInclude = pipe(
   transform((value) => toUniqueArray(value)),
 );
 
-// Redmine accepts 0 (t-|0 means "today"); negatives and fractional counts
+// Redmine accepts 0 (t-0 means "today"); negatives and fractional counts
 // have no wire representation, so both are rejected at parse time.
 const dayOffset = pipe(number(), integer(), minValue(0));
 
@@ -476,9 +476,11 @@ const namedPeriodOperators: Record<string, string> = {
 };
 
 // Redmine's short filter wire form: field=<operator><values joined by |>.
-// Relative operators put a `|` between operator and value (t-|3); absolute
-// bounds do not (>=2026-07-01). There is no strict >/<, so absolute
-// from/to bounds are always inclusive.
+// Nothing separates the operator from its first value: add_short_filter runs
+// `values.split('|')` on whatever follows the operator, so `t-|3` would split
+// to ["", "3"] and Redmine rejects the blank first value with a 422. Only the
+// two-date `><` form carries a pipe, because it really does pass two values.
+// There is no strict >/<, so absolute from/to bounds are always inclusive.
 function toDateFilterQueryValue(
   value: InferOutput<typeof dateFilter>,
 ): string {
@@ -489,10 +491,10 @@ function toDateFilterQueryValue(
     return namedPeriodOperators[value];
   }
   if ("daysAgo" in value) {
-    return `t-|${value.daysAgo}`;
+    return `t-${value.daysAgo}`;
   }
   if ("daysFromNow" in value) {
-    return `t+|${value.daysFromNow}`;
+    return `t+${value.daysFromNow}`;
   }
 
   // Every remaining union member narrows from/to to Date, "today", or a
@@ -505,23 +507,23 @@ function toDateFilterQueryValue(
   };
 
   if (from !== undefined && typeof from === "object" && "daysAgo" in from) {
-    return to === "today" ? `><t-|${from.daysAgo}` : `>t-|${from.daysAgo}`;
+    return to === "today" ? `><t-${from.daysAgo}` : `>t-${from.daysAgo}`;
   }
   if (
     from !== undefined && typeof from === "object" && "daysFromNow" in from
   ) {
-    return `>t+|${from.daysFromNow}`;
+    return `>t+${from.daysFromNow}`;
   }
   if (from === "today") {
     // The dateFilter schema only pairs from: "today" with to: { daysFromNow }.
     const toOffset = to as { daysFromNow: number };
-    return `><t+|${toOffset.daysFromNow}`;
+    return `><t+${toOffset.daysFromNow}`;
   }
   if (to !== undefined && typeof to === "object" && "daysAgo" in to) {
-    return `<t-|${to.daysAgo}`;
+    return `<t-${to.daysAgo}`;
   }
   if (to !== undefined && typeof to === "object" && "daysFromNow" in to) {
-    return `<t+|${to.daysFromNow}`;
+    return `<t+${to.daysFromNow}`;
   }
   if (from !== undefined && to !== undefined) {
     return `><${toRedmineDateString(from as Date)}|${

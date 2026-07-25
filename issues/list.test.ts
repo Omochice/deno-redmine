@@ -391,52 +391,52 @@ Deno.test("list date filters", async (t) => {
       name: "{ daysAgo } sends a relative exact-match filter",
       option: { createdOn: { daysAgo: 3 } },
       param: "created_on",
-      expected: "t-|3",
+      expected: "t-3",
     },
     {
       name:
         "{ from: { daysAgo } } sends a lower-bound filter with no upper bound",
       option: { createdOn: { from: { daysAgo: 3 } } },
       param: "created_on",
-      expected: ">t-|3",
+      expected: ">t-3",
     },
     {
       name: "{ to: { daysAgo } } sends an upper-bound filter",
       option: { createdOn: { to: { daysAgo: 3 } } },
       param: "created_on",
-      expected: "<t-|3",
+      expected: "<t-3",
     },
     {
       name: '{ from: { daysAgo }, to: "today" } sends a bounded range filter',
       option: { createdOn: { from: { daysAgo: 3 }, to: "today" } },
       param: "created_on",
-      expected: "><t-|3",
+      expected: "><t-3",
     },
     {
       name: "{ daysFromNow } sends a relative exact-match filter",
       option: { dueDate: { daysFromNow: 5 } },
       param: "due_date",
-      expected: "t+|5",
+      expected: "t+5",
     },
     {
       name: "{ from: { daysFromNow } } sends a lower-bound filter",
       option: { dueDate: { from: { daysFromNow: 5 } } },
       param: "due_date",
-      expected: ">t+|5",
+      expected: ">t+5",
     },
     {
       name:
         "{ to: { daysFromNow } } sends an upper-bound filter with no lower bound",
       option: { dueDate: { to: { daysFromNow: 5 } } },
       param: "due_date",
-      expected: "<t+|5",
+      expected: "<t+5",
     },
     {
       name:
         '{ from: "today", to: { daysFromNow } } sends a bounded range filter',
       option: { dueDate: { from: "today", to: { daysFromNow: 5 } } },
       param: "due_date",
-      expected: "><t+|5",
+      expected: "><t+5",
     },
     {
       name: '"today" sends a named-period filter',
