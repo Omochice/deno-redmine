@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.1.0](https://github.com/Omochice/deno-redmine/compare/v3.0.0...v3.1.0) (2026-07-25)
+
+
+### Features
+
+* accept a single value or array for issue include ([#453](https://github.com/Omochice/deno-redmine/issues/453)) ([c136a21](https://github.com/Omochice/deno-redmine/commit/c136a21f715e9c761733484a8b8877f402eaa3a0))
+* filter issue list by priority, category, fixed version, and author ([#454](https://github.com/Omochice/deno-redmine/issues/454)) ([1231fe7](https://github.com/Omochice/deno-redmine/commit/1231fe7b01d25b1d738e9ea3367efc294349e091))
+* require projectId when filtering issues by subproject ([#455](https://github.com/Omochice/deno-redmine/issues/455)) ([3deb61b](https://github.com/Omochice/deno-redmine/commit/3deb61bf4499f0953af6acebffbd27a04d81eea3))
+
+
+### Bug Fixes
+
+* return attachments and relations from issue list include ([#450](https://github.com/Omochice/deno-redmine/issues/450)) ([65f50f4](https://github.com/Omochice/deno-redmine/commit/65f50f40bc0a51887ad2e735f3b2dc1b309a8caf))
+
 ## [3.0.0](https://github.com/Omochice/deno-redmine/compare/v2.3.1...v3.0.0) (2026-07-20)
 
 
