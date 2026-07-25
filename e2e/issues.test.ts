@@ -712,6 +712,51 @@ Deno.test({
       },
     );
 
+    await t.step(
+      "GET /issues.json applies from as the lower bound and to as the upper",
+      async () => {
+        const epoch = new Date("2000-01-01T00:00:00Z");
+
+        const upToEpoch = await Array.fromAsync(
+          list(e2eContext, { createdOn: { to: epoch } }),
+        );
+        const sinceEpoch = await Array.fromAsync(
+          list(e2eContext, { createdOn: { from: epoch } }),
+        );
+
+        expect(upToEpoch).toStrictEqual([]);
+        expect(sinceEpoch.length).toBeGreaterThan(0);
+      },
+    );
+
+    await t.step(
+      "GET /issues.json resolves today against the server's calendar day",
+      async () => {
+        const createdToday = await Array.fromAsync(
+          list(e2eContext, { createdOn: "today" }),
+        );
+
+        expect(createdToday.length).toBeGreaterThan(0);
+      },
+    );
+
+    await t.step(
+      "GET /issues.json partitions issues between any and none",
+      async () => {
+        const all = await Array.fromAsync(list(e2eContext, {}));
+        const withDueDate = await Array.fromAsync(
+          list(e2eContext, { dueDate: "any" }),
+        );
+        const withoutDueDate = await Array.fromAsync(
+          list(e2eContext, { dueDate: "none" }),
+        );
+
+        expect(withDueDate.length + withoutDueDate.length).toStrictEqual(
+          all.length,
+        );
+      },
+    );
+
     await t.step("DELETE /issues/:id.json should delete an issue", async () => {
       const issues = await Array.fromAsync(list(e2eContext, {}));
       const issue = issues.find((i) => i.subject === "E2E Updated Issue");
