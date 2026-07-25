@@ -135,7 +135,6 @@ export type ListIssueQuery =
     include?: ListIncludeValue | [ListIncludeValue, ...ListIncludeValue[]];
     issueId?: number[] | number;
     projectId?: number;
-    subprojectId?: string;
     trackerId?: number;
     statusId?: "open" | "closed" | "*" | number;
     priorityId?: number;
@@ -154,4 +153,11 @@ export type ListIssueQuery =
     // silently-ignored filter from type-checking.
     | { categoryId?: never }
     | { categoryId: number; projectId: number }
+  )
+  & (
+    // subproject_id is only an available filter when a project is in scope
+    // (and that project is not a leaf); without projectId Redmine ignores it
+    // and returns every issue, so require projectId alongside it.
+    | { subprojectId?: never }
+    | { subprojectId: string; projectId: number }
   );
