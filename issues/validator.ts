@@ -325,8 +325,6 @@ const listInclude = pipe(
 // have no wire representation, so both are rejected at parse time.
 const dayOffset = pipe(number(), integer(), minValue(0));
 
-// Named periods and presence checks that every :date/:date_past field
-// accepts (see PastDateFilter's jsdoc in issues/type.ts).
 const namedPeriod = picklist([
   "today",
   "yesterday",
@@ -340,9 +338,6 @@ const namedPeriod = picklist([
   "none",
 ]);
 
-// Future-looking named periods, valid only on :date fields (start_date/
-// due_date) - :date_past fields reject them with a 422, same as
-// daysFromNow above.
 const futureNamedPeriod = picklist(["tomorrow", "nextWeek", "nextMonth"]);
 
 // strictObject (not object) is required for the from/to variants: object()
@@ -361,9 +356,6 @@ const pastDateFilter = union([
   strictObject({ to: strictObject({ daysAgo: dayOffset }) }),
 ]);
 
-// Widens pastDateFilter with future-looking operators that Redmine's
-// :date_past fields (created_on/updated_on/closed_on) reject with a 422 -
-// see PastDateFilter's jsdoc in issues/type.ts for why the split exists.
 const dateFilter = union([
   ...pastDateFilter.options,
   futureNamedPeriod,
@@ -449,10 +441,6 @@ const toCustomFieldOption = pipe(
   }),
 );
 
-// Named-period and presence literals map to a fixed operator with no
-// interpolation, unlike the daysAgo/daysFromNow branches below - see
-// PastDateFilter/DateFilter's jsdoc in issues/type.ts for which literals
-// each field accepts.
 const namedPeriodOperators: Record<string, string> = {
   today: "t",
   yesterday: "ld",
@@ -496,9 +484,7 @@ function toBoundValue(bound: DateBound): string {
   return `${"daysAgo" in bound ? bound.daysAgo : bound.daysFromNow}`;
 }
 
-// Which operator a range maps to depends only on the kind of each bound, not
-// on the values, so the nine combinations the schema admits are listed here
-// instead of being rediscovered by nested conditionals.
+// The operator depends only on the kind of each bound, never on its value.
 const rangeOperators: Record<string, string> = {
   "date/absent": ">=",
   "absent/date": "<=",
@@ -511,12 +497,10 @@ const rangeOperators: Record<string, string> = {
   "absent/future": "<t+",
 };
 
-// Redmine's short filter wire form: field=<operator><values joined by |>.
-// Nothing separates the operator from its first value: add_short_filter runs
-// `values.split('|')` on whatever follows the operator, so `t-|3` would split
-// to ["", "3"] and Redmine rejects the blank first value with a 422. Only the
-// two-date `><` form carries a pipe, because it really does pass two values.
-// There is no strict >/<, so absolute from/to bounds are always inclusive.
+// add_short_filter splits everything following the operator on "|", so `t-|3`
+// would yield the value list ["", "3"] and Redmine would reject the blank
+// first entry with a 422. Only the two-date `><` form takes a pipe, because
+// that one really does pass two values.
 function toDateFilterQueryValue(
   value: InferOutput<typeof dateFilter>,
 ): string {
