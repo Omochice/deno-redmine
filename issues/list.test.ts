@@ -598,7 +598,7 @@ Deno.test(
   () => {
     const someDate = new Date("2026-07-01T00:00:00Z");
     const _option: Parameters<typeof list>[1] = {
-      // @ts-expect-error "today" is not an absolute bound in this increment
+      // @ts-expect-error no union member pairs a Date bound with "today"
       createdOn: { from: someDate, to: "today" },
     };
   },
