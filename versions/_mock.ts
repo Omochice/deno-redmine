@@ -56,15 +56,12 @@ export const validHandlers = [
     return HttpResponse.json({ version });
   }),
   http.post(`${context.endpoint}/projects/:id/versions.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
     return new HttpResponse(null, { status: STATUS_CODE.Created });
   }),
   http.put(`${context.endpoint}/versions/:id.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
     return new HttpResponse(null, { status: STATUS_CODE.NoContent });
   }),
   http.delete(`${context.endpoint}/versions/:id.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
     return new HttpResponse(null, { status: STATUS_CODE.NoContent });
   }),
 ];

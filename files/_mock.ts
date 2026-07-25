@@ -44,12 +44,10 @@ export const validHandlers = [
     return HttpResponse.json({
       upload: { token: "7167.ed1ccdb093229ca1bd0b043618d88743" },
     }, {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
       status: STATUS_CODE.Created,
     });
   }),
   http.post(`${context.endpoint}/projects/:id/files.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
     return new HttpResponse(null, { status: STATUS_CODE.Created });
   }),
 ];

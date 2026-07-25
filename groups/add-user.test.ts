@@ -33,7 +33,6 @@ Deno.test("POST /groups/:id/users.json", async (t) => {
         `${context.endpoint}/groups/:id/users.json`,
         async ({ request }) => {
           captured = await request.json() as Record<string, unknown>;
-          // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
           return new HttpResponse(null, { status: 204 });
         },
       ),
