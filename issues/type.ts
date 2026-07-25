@@ -138,6 +138,16 @@ export type ListIncludeValue = "attachments" | "relations";
 export type PastDateFilter =
   | Date
   | { daysAgo: number }
+  | "today"
+  | "yesterday"
+  | "thisWeek"
+  | "lastWeek"
+  | "lastTwoWeeks"
+  | "thisMonth"
+  | "lastMonth"
+  | "thisYear"
+  | "any"
+  | "none"
   | { from: Date; to?: Date }
   | { from?: Date; to: Date }
   | { from: { daysAgo: number }; to?: "today" }
@@ -149,6 +159,9 @@ export type PastDateFilter =
 export type DateFilter =
   | PastDateFilter
   | { daysFromNow: number }
+  | "tomorrow"
+  | "nextWeek"
+  | "nextMonth"
   | { from: { daysFromNow: number } }
   | { to: { daysFromNow: number } }
   | { from: "today"; to: { daysFromNow: number } };

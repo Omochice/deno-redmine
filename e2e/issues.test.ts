@@ -688,6 +688,30 @@ Deno.test({
       },
     );
 
+    await t.step(
+      "GET /issues.json with named period and presence date filters resolves",
+      async () => {
+        // assertResponse throws on Redmine's 422, so a resolved promise is
+        // enough to prove each literal's wire form (t, ld, w, lw, l2w, m,
+        // lm, y, *, !*, and, nw, nm) round-trips.
+        await Array.fromAsync(list(e2eContext, { createdOn: "today" }));
+        await Array.fromAsync(list(e2eContext, { createdOn: "yesterday" }));
+        await Array.fromAsync(list(e2eContext, { createdOn: "thisWeek" }));
+        await Array.fromAsync(list(e2eContext, { createdOn: "lastWeek" }));
+        await Array.fromAsync(
+          list(e2eContext, { createdOn: "lastTwoWeeks" }),
+        );
+        await Array.fromAsync(list(e2eContext, { createdOn: "thisMonth" }));
+        await Array.fromAsync(list(e2eContext, { createdOn: "lastMonth" }));
+        await Array.fromAsync(list(e2eContext, { createdOn: "thisYear" }));
+        await Array.fromAsync(list(e2eContext, { createdOn: "any" }));
+        await Array.fromAsync(list(e2eContext, { createdOn: "none" }));
+        await Array.fromAsync(list(e2eContext, { dueDate: "tomorrow" }));
+        await Array.fromAsync(list(e2eContext, { dueDate: "nextWeek" }));
+        await Array.fromAsync(list(e2eContext, { dueDate: "nextMonth" }));
+      },
+    );
+
     await t.step("DELETE /issues/:id.json should delete an issue", async () => {
       const issues = await Array.fromAsync(list(e2eContext, {}));
       const issue = issues.find((i) => i.subject === "E2E Updated Issue");

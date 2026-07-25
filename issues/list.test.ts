@@ -438,6 +438,84 @@ Deno.test("list date filters", async (t) => {
       param: "due_date",
       expected: "><t+|5",
     },
+    {
+      name: '"today" sends a named-period filter',
+      option: { createdOn: "today" },
+      param: "created_on",
+      expected: "t",
+    },
+    {
+      name: '"yesterday" sends a named-period filter',
+      option: { createdOn: "yesterday" },
+      param: "created_on",
+      expected: "ld",
+    },
+    {
+      name: '"thisWeek" sends a named-period filter',
+      option: { createdOn: "thisWeek" },
+      param: "created_on",
+      expected: "w",
+    },
+    {
+      name: '"lastWeek" sends a named-period filter',
+      option: { createdOn: "lastWeek" },
+      param: "created_on",
+      expected: "lw",
+    },
+    {
+      name: '"lastTwoWeeks" sends a named-period filter',
+      option: { createdOn: "lastTwoWeeks" },
+      param: "created_on",
+      expected: "l2w",
+    },
+    {
+      name: '"thisMonth" sends a named-period filter',
+      option: { createdOn: "thisMonth" },
+      param: "created_on",
+      expected: "m",
+    },
+    {
+      name: '"lastMonth" sends a named-period filter',
+      option: { createdOn: "lastMonth" },
+      param: "created_on",
+      expected: "lm",
+    },
+    {
+      name: '"thisYear" sends a named-period filter',
+      option: { createdOn: "thisYear" },
+      param: "created_on",
+      expected: "y",
+    },
+    {
+      name: '"any" sends a value-presence filter',
+      option: { createdOn: "any" },
+      param: "created_on",
+      expected: "*",
+    },
+    {
+      name: '"none" sends a value-presence filter',
+      option: { createdOn: "none" },
+      param: "created_on",
+      expected: "!*",
+    },
+    {
+      name: '"tomorrow" sends a named-period filter',
+      option: { dueDate: "tomorrow" },
+      param: "due_date",
+      expected: "and",
+    },
+    {
+      name: '"nextWeek" sends a named-period filter',
+      option: { dueDate: "nextWeek" },
+      param: "due_date",
+      expected: "nw",
+    },
+    {
+      name: '"nextMonth" sends a named-period filter',
+      option: { dueDate: "nextMonth" },
+      param: "due_date",
+      expected: "nm",
+    },
   ];
 
   for (const { name, option, param, expected } of cases) {
@@ -533,6 +611,32 @@ Deno.test(
       // @ts-expect-error createdOn is PastDateFilter; :date_past rejects daysFromNow with a 422
       createdOn: { daysFromNow: 3 },
     };
+  },
+);
+
+Deno.test(
+  "a future-looking named period on createdOn is rejected by the type",
+  async (t) => {
+    await t.step('"tomorrow"', () => {
+      const _option: Parameters<typeof list>[1] = {
+        // @ts-expect-error createdOn is PastDateFilter; :date_past rejects "tomorrow" with a 422
+        createdOn: "tomorrow",
+      };
+    });
+
+    await t.step('"nextWeek"', () => {
+      const _option: Parameters<typeof list>[1] = {
+        // @ts-expect-error createdOn is PastDateFilter; :date_past rejects "nextWeek" with a 422
+        createdOn: "nextWeek",
+      };
+    });
+
+    await t.step('"nextMonth"', () => {
+      const _option: Parameters<typeof list>[1] = {
+        // @ts-expect-error createdOn is PastDateFilter; :date_past rejects "nextMonth" with a 422
+        createdOn: "nextMonth",
+      };
+    });
   },
 );
 
