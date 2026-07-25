@@ -52,7 +52,6 @@ Deno.test("POST /uploads.json", async (t) => {
           return HttpResponse.json({
             errors: ["sample error"],
           }, {
-            // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
             status: STATUS_CODE.UnprocessableEntity,
             statusText: "Unprocessable Entity",
           });
@@ -66,7 +65,6 @@ Deno.test("POST /uploads.json", async (t) => {
   await t.step("if get invalid response with unexpected format", async () => {
     server.resetHandlers(
       http.post(`${context.endpoint}/uploads.json`, () => {
-        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         return new HttpResponse(null, { status: STATUS_CODE.NotFound });
       }),
     );

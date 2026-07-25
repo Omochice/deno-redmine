@@ -82,7 +82,6 @@ export const validHandlers = [
       offset: 0,
       limit: 25,
     }, {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
       status: 200,
     });
   }),

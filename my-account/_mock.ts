@@ -27,7 +27,6 @@ export const validHandlers = [
     return HttpResponse.json({ user });
   }),
   http.put(`${context.endpoint}/my/account.json`, () => {
-    // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
     return new HttpResponse(null, { status: STATUS_CODE.NoContent });
   }),
 ];

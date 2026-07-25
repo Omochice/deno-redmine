@@ -96,7 +96,6 @@ export const validResponseHandlers = [
             errors: ["Comment is too long"],
           }
           : {},
-        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         { status: STATUS_CODE.OK },
       );
     },
@@ -118,7 +117,6 @@ export const validResponseHandlers = [
             errors: ["Comment is too long"],
           }
           : {},
-        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         { status: STATUS_CODE.OK },
       );
     },
@@ -126,7 +124,6 @@ export const validResponseHandlers = [
   http.delete(
     `${context.endpoint}/projects/:id/wiki/:page.json`,
     () => {
-      // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
       return new HttpResponse(null, { status: STATUS_CODE.NoContent });
     },
   ),
@@ -163,7 +160,6 @@ export const invalidResponseHandlers = [
     `${context.endpoint}/projects/:id/wiki/forbidden.json`,
     () => {
       return HttpResponse.json({}, {
-        // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
         status: STATUS_CODE.Forbidden,
       });
     },

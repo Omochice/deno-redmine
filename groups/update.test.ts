@@ -42,7 +42,6 @@ Deno.test("PUT /groups/:id.json", async (t) => {
           async ({ request }) => {
             const body = await request.json() as { group: typeof captured };
             captured = body.group;
-            // @ts-expect-error: msw HttpResponseInit conflicts with Deno built-in type
             return new HttpResponse(null, { status: 204 });
           },
         ),
