@@ -502,7 +502,7 @@ Deno.test("list date filters", async (t) => {
       name: '"tomorrow" sends a named-period filter',
       option: { dueDate: "tomorrow" },
       param: "due_date",
-      expected: "and",
+      expected: "nd",
     },
     {
       name: '"nextWeek" sends a named-period filter',

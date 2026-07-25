@@ -693,7 +693,7 @@ Deno.test({
       async () => {
         // assertResponse throws on Redmine's 422, so a resolved promise is
         // enough to prove each literal's wire form (t, ld, w, lw, l2w, m,
-        // lm, y, *, !*, and, nw, nm) round-trips.
+        // lm, y, *, !*, nd, nw, nm) round-trips.
         await Array.fromAsync(list(e2eContext, { createdOn: "today" }));
         await Array.fromAsync(list(e2eContext, { createdOn: "yesterday" }));
         await Array.fromAsync(list(e2eContext, { createdOn: "thisWeek" }));

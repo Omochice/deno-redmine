@@ -1,0 +1,4 @@
+[default.extend-words]
+# Redmine's short filter operator for "tomorrow" (see issues/validator.ts),
+# not a typo of "and".
+nd = "nd"

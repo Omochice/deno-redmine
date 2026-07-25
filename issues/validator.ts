@@ -331,11 +331,32 @@ const listInclude = pipe(
 // have no wire representation, so both are rejected at parse time.
 const dayOffset = pipe(number(), integer(), minValue(0));
 
+// Named periods and presence checks that every :date/:date_past field
+// accepts (see PastDateFilter's jsdoc in issues/type.ts).
+const namedPeriod = picklist([
+  "today",
+  "yesterday",
+  "thisWeek",
+  "lastWeek",
+  "lastTwoWeeks",
+  "thisMonth",
+  "lastMonth",
+  "thisYear",
+  "any",
+  "none",
+]);
+
+// Future-looking named periods, valid only on :date fields (start_date/
+// due_date) - :date_past fields reject them with a 422, same as
+// daysFromNow above.
+const futureNamedPeriod = picklist(["tomorrow", "nextWeek", "nextMonth"]);
+
 // strictObject (not object) is required for the from/to variants: object()
 // silently strips unknown keys, so object({ from: date() }) would also
 // match { from, to } and drop `to`, emitting `>=` where `><` was meant.
 const pastDateFilter = union([
   date(),
+  namedPeriod,
   strictObject({ from: date(), to: optional(date()) }),
   strictObject({ from: optional(date()), to: date() }),
   strictObject({ daysAgo: dayOffset }),
@@ -351,6 +372,7 @@ const pastDateFilter = union([
 // see PastDateFilter's jsdoc in issues/type.ts for why the split exists.
 const dateFilter = union([
   ...pastDateFilter.options,
+  futureNamedPeriod,
   strictObject({ daysFromNow: dayOffset }),
   strictObject({ from: strictObject({ daysFromNow: dayOffset }) }),
   strictObject({ to: strictObject({ daysFromNow: dayOffset }) }),
@@ -433,6 +455,26 @@ const toCustomFieldOption = pipe(
   }),
 );
 
+// Named-period and presence literals map to a fixed operator with no
+// interpolation, unlike the daysAgo/daysFromNow branches below - see
+// PastDateFilter/DateFilter's jsdoc in issues/type.ts for which literals
+// each field accepts.
+const namedPeriodOperators: Record<string, string> = {
+  today: "t",
+  yesterday: "ld",
+  thisWeek: "w",
+  lastWeek: "lw",
+  lastTwoWeeks: "l2w",
+  thisMonth: "m",
+  lastMonth: "lm",
+  thisYear: "y",
+  any: "*",
+  none: "!*",
+  tomorrow: "nd",
+  nextWeek: "nw",
+  nextMonth: "nm",
+};
+
 // Redmine's short filter wire form: field=<operator><values joined by |>.
 // Relative operators put a `|` between operator and value (t-|3); absolute
 // bounds do not (>=2026-07-01). There is no strict >/<, so absolute
@@ -442,6 +484,9 @@ function toDateFilterQueryValue(
 ): string {
   if (value instanceof Date) {
     return `=${toRedmineDateString(value)}`;
+  }
+  if (typeof value === "string") {
+    return namedPeriodOperators[value];
   }
   if ("daysAgo" in value) {
     return `t-|${value.daysAgo}`;
