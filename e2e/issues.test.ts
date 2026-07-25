@@ -618,8 +618,7 @@ Deno.test({
           );
           expect(included.some((i) => i.subject === subject)).toBe(true);
 
-          // subprojectId="!*" excludes subprojects, so every result is in the
-          // parent project itself and the subproject issue is gone.
+          // subprojectId="!*" excludes subprojects.
           const excluded = await Array.fromAsync(
             list(e2eContext, { projectId: parent!.id, subprojectId: "!*" }),
           );

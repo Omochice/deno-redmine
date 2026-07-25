@@ -148,16 +148,12 @@ export type ListIssueQuery =
     }[];
   }
   & (
-    // Redmine scopes the category filter to a project and ignores category_id
-    // otherwise, so requiring projectId whenever categoryId is present keeps a
-    // silently-ignored filter from type-checking.
+    // Redmine ignores category_id without a project scope.
     | { categoryId?: never }
     | { categoryId: number; projectId: number }
   )
   & (
-    // subproject_id is only an available filter when a project is in scope
-    // (and that project is not a leaf); without projectId Redmine ignores it
-    // and returns every issue, so require projectId alongside it.
+    // Likewise, subproject_id is ignored without a project scope.
     | { subprojectId?: never }
     | { subprojectId: string; projectId: number }
   );
