@@ -242,17 +242,11 @@ const listIssueSchema = pipe(
 // show() -> update() round-trip on the same calendar day. The trade-off:
 // a Date built from local calendar fields (e.g. new Date(2026, 6, 1) in
 // UTC+9) serializes to the previous day.
-const toRedmineDate = pipe(
-  date(),
-  transform((input: Date) => input.toISOString().slice(0, 10)),
-);
-
-// Same UTC-day truncation as toRedmineDate above, kept as a plain function
-// (rather than reusing the valibot pipe) because the date filter transform
-// below runs outside of parse() and needs a callable, not a schema.
 function toRedmineDateString(input: Date): string {
   return input.toISOString().slice(0, 10);
 }
+
+const toRedmineDate = pipe(date(), transform(toRedmineDateString));
 
 // The schema keys are camelCase to match the public UpdateIssueQuery input.
 // valibot's object() strips unknown keys, so a snake_case schema would drop
@@ -475,6 +469,48 @@ const namedPeriodOperators: Record<string, string> = {
   nextMonth: "nm",
 };
 
+type DateBound = Date | "today" | { daysAgo: number } | { daysFromNow: number };
+
+function toBoundKind(bound: DateBound | undefined): string {
+  if (bound === undefined) {
+    return "absent";
+  }
+  if (bound === "today") {
+    return "today";
+  }
+  if (bound instanceof Date) {
+    return "date";
+  }
+  return "daysAgo" in bound ? "past" : "future";
+}
+
+// "today" contributes no value of its own: it only tells Redmine which of the
+// bounded operators to use (><t- pins the upper end to today, ><t+ the lower).
+function toBoundValue(bound: DateBound): string {
+  if (bound === "today") {
+    return "";
+  }
+  if (bound instanceof Date) {
+    return toRedmineDateString(bound);
+  }
+  return `${"daysAgo" in bound ? bound.daysAgo : bound.daysFromNow}`;
+}
+
+// Which operator a range maps to depends only on the kind of each bound, not
+// on the values, so the nine combinations the schema admits are listed here
+// instead of being rediscovered by nested conditionals.
+const rangeOperators: Record<string, string> = {
+  "date/absent": ">=",
+  "absent/date": "<=",
+  "date/date": "><",
+  "past/absent": ">t-",
+  "past/today": "><t-",
+  "absent/past": "<t-",
+  "future/absent": ">t+",
+  "today/future": "><t+",
+  "absent/future": "<t+",
+};
+
 // Redmine's short filter wire form: field=<operator><values joined by |>.
 // Nothing separates the operator from its first value: add_short_filter runs
 // `values.split('|')` on whatever follows the operator, so `t-|3` would split
@@ -497,45 +533,14 @@ function toDateFilterQueryValue(
     return `t+${value.daysFromNow}`;
   }
 
-  // Every remaining union member narrows from/to to Date, "today", or a
-  // relative offset; valibot's strictObject variants already guarantee the
-  // combination is one Redmine accepts, so this cast gives TS a single
-  // shape to switch on instead of re-deriving it from the full union.
-  const { from, to } = value as {
-    from?: Date | "today" | { daysAgo: number } | { daysFromNow: number };
-    to?: Date | "today" | { daysAgo: number } | { daysFromNow: number };
-  };
-
-  if (from !== undefined && typeof from === "object" && "daysAgo" in from) {
-    return to === "today" ? `><t-${from.daysAgo}` : `>t-${from.daysAgo}`;
-  }
-  if (
-    from !== undefined && typeof from === "object" && "daysFromNow" in from
-  ) {
-    return `>t+${from.daysFromNow}`;
-  }
-  if (from === "today") {
-    // The dateFilter schema only pairs from: "today" with to: { daysFromNow }.
-    const toOffset = to as { daysFromNow: number };
-    return `><t+${toOffset.daysFromNow}`;
-  }
-  if (to !== undefined && typeof to === "object" && "daysAgo" in to) {
-    return `<t-${to.daysAgo}`;
-  }
-  if (to !== undefined && typeof to === "object" && "daysFromNow" in to) {
-    return `<t+${to.daysFromNow}`;
-  }
-  if (from !== undefined && to !== undefined) {
-    return `><${toRedmineDateString(from as Date)}|${
-      toRedmineDateString(to as Date)
-    }`;
-  }
-  if (from !== undefined) {
-    return `>=${toRedmineDateString(from as Date)}`;
-  }
-  // The dateFilter schema's strictObject variants guarantee at least one of
-  // from/to is set, so reaching here means `to` is the one that is.
-  return `<=${toRedmineDateString(to as Date)}`;
+  const from = "from" in value ? value.from : undefined;
+  const to = "to" in value ? value.to : undefined;
+  const operator = rangeOperators[`${toBoundKind(from)}/${toBoundKind(to)}`];
+  const values = [from, to]
+    .filter((bound) => bound !== undefined)
+    .map(toBoundValue)
+    .filter((serialized) => serialized !== "");
+  return `${operator}${values.join("|")}`;
 }
 
 // Field names are listed explicitly (as toCustomFieldOption does) rather
