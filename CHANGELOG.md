@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/Omochice/deno-redmine/compare/v3.1.0...v3.2.0) (2026-07-25)
+
+
+### Features
+
+* filter issue list by date ([#457](https://github.com/Omochice/deno-redmine/issues/457)) ([5a2af24](https://github.com/Omochice/deno-redmine/commit/5a2af24857734ab8ef34f097e499e70d150801c9))
+
 ## [3.1.0](https://github.com/Omochice/deno-redmine/compare/v3.0.0...v3.1.0) (2026-07-25)
 
 
