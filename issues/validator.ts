@@ -327,13 +327,37 @@ const listInclude = pipe(
   transform((value) => toUniqueArray(value)),
 );
 
+// Redmine accepts 0 (t-|0 means "today"); negatives and fractional counts
+// have no wire representation, so both are rejected at parse time.
+const dayOffset = pipe(number(), integer(), minValue(0));
+
 // strictObject (not object) is required for the from/to variants: object()
 // silently strips unknown keys, so object({ from: date() }) would also
 // match { from, to } and drop `to`, emitting `>=` where `><` was meant.
-const dateFilter = union([
+const pastDateFilter = union([
   date(),
   strictObject({ from: date(), to: optional(date()) }),
   strictObject({ from: optional(date()), to: date() }),
+  strictObject({ daysAgo: dayOffset }),
+  strictObject({
+    from: strictObject({ daysAgo: dayOffset }),
+    to: optional(literal("today")),
+  }),
+  strictObject({ to: strictObject({ daysAgo: dayOffset }) }),
+]);
+
+// Widens pastDateFilter with future-looking operators that Redmine's
+// :date_past fields (created_on/updated_on/closed_on) reject with a 422 -
+// see PastDateFilter's jsdoc in issues/type.ts for why the split exists.
+const dateFilter = union([
+  ...pastDateFilter.options,
+  strictObject({ daysFromNow: dayOffset }),
+  strictObject({ from: strictObject({ daysFromNow: dayOffset }) }),
+  strictObject({ to: strictObject({ daysFromNow: dayOffset }) }),
+  strictObject({
+    from: literal("today"),
+    to: strictObject({ daysFromNow: dayOffset }),
+  }),
 ]);
 
 const listIssueQuery = partial(
@@ -353,9 +377,9 @@ const listIssueQuery = partial(
     parentId: string(),
     startDate: dateFilter,
     dueDate: dateFilter,
-    createdOn: dateFilter,
-    updatedOn: dateFilter,
-    closedOn: dateFilter,
+    createdOn: pastDateFilter,
+    updatedOn: pastDateFilter,
+    closedOn: pastDateFilter,
     customField: array(object({
       id: number(),
       value: string(),
@@ -410,22 +434,61 @@ const toCustomFieldOption = pipe(
 );
 
 // Redmine's short filter wire form: field=<operator><values joined by |>.
-// There is no strict >/<, so from/to are always inclusive.
-function toDateFilterQueryValue(value: InferOutput<typeof dateFilter>): string {
+// Relative operators put a `|` between operator and value (t-|3); absolute
+// bounds do not (>=2026-07-01). There is no strict >/<, so absolute
+// from/to bounds are always inclusive.
+function toDateFilterQueryValue(
+  value: InferOutput<typeof dateFilter>,
+): string {
   if (value instanceof Date) {
     return `=${toRedmineDateString(value)}`;
   }
-  if (value.from !== undefined && value.to !== undefined) {
-    return `><${toRedmineDateString(value.from)}|${
-      toRedmineDateString(value.to)
+  if ("daysAgo" in value) {
+    return `t-|${value.daysAgo}`;
+  }
+  if ("daysFromNow" in value) {
+    return `t+|${value.daysFromNow}`;
+  }
+
+  // Every remaining union member narrows from/to to Date, "today", or a
+  // relative offset; valibot's strictObject variants already guarantee the
+  // combination is one Redmine accepts, so this cast gives TS a single
+  // shape to switch on instead of re-deriving it from the full union.
+  const { from, to } = value as {
+    from?: Date | "today" | { daysAgo: number } | { daysFromNow: number };
+    to?: Date | "today" | { daysAgo: number } | { daysFromNow: number };
+  };
+
+  if (from !== undefined && typeof from === "object" && "daysAgo" in from) {
+    return to === "today" ? `><t-|${from.daysAgo}` : `>t-|${from.daysAgo}`;
+  }
+  if (
+    from !== undefined && typeof from === "object" && "daysFromNow" in from
+  ) {
+    return `>t+|${from.daysFromNow}`;
+  }
+  if (from === "today") {
+    // The dateFilter schema only pairs from: "today" with to: { daysFromNow }.
+    const toOffset = to as { daysFromNow: number };
+    return `><t+|${toOffset.daysFromNow}`;
+  }
+  if (to !== undefined && typeof to === "object" && "daysAgo" in to) {
+    return `<t-|${to.daysAgo}`;
+  }
+  if (to !== undefined && typeof to === "object" && "daysFromNow" in to) {
+    return `<t+|${to.daysFromNow}`;
+  }
+  if (from !== undefined && to !== undefined) {
+    return `><${toRedmineDateString(from as Date)}|${
+      toRedmineDateString(to as Date)
     }`;
   }
-  if (value.from !== undefined) {
-    return `>=${toRedmineDateString(value.from)}`;
+  if (from !== undefined) {
+    return `>=${toRedmineDateString(from as Date)}`;
   }
   // The dateFilter schema's strictObject variants guarantee at least one of
   // from/to is set, so reaching here means `to` is the one that is.
-  return `<=${toRedmineDateString(value.to!)}`;
+  return `<=${toRedmineDateString(to as Date)}`;
 }
 
 // Field names are listed explicitly (as toCustomFieldOption does) rather

@@ -131,18 +131,27 @@ export type ListIncludeValue = "attachments" | "relations";
 
 // `from`/`to` are both inclusive: Redmine's absolute date operators are
 // limited to `=`, `>=`, `<=`, `><` (no strict `>`/`<`), so every bound this
-// library exposes is inclusive too.
+// library exposes is inclusive too. This type omits future-looking
+// operators (e.g. `daysFromNow`) because Redmine's `:date_past` fields
+// (created_on/updated_on/closed_on) reject them with a 422; DateFilter below
+// is the wider type for fields that accept them.
 export type PastDateFilter =
   | Date
+  | { daysAgo: number }
   | { from: Date; to?: Date }
-  | { from?: Date; to: Date };
+  | { from?: Date; to: Date }
+  | { from: { daysAgo: number }; to?: "today" }
+  | { to: { daysAgo: number } };
 
-// Equal to PastDateFilter for now. Later increments widen this with
-// future-looking operators (e.g. `daysFromNow`), which Redmine's
-// `:date_past` fields (created_on/updated_on/closed_on) reject with a 422 -
-// that rejection is why PastDateFilter stays a separate, narrower type
-// rather than an alias collapsing into this one.
-export type DateFilter = PastDateFilter;
+// Widens PastDateFilter with future-looking operators, for the `:date`
+// fields (start_date/due_date) that accept them - unlike `:date_past` fields,
+// which reject them with a 422 (see PastDateFilter above).
+export type DateFilter =
+  | PastDateFilter
+  | { daysFromNow: number }
+  | { from: { daysFromNow: number } }
+  | { to: { daysFromNow: number } }
+  | { from: "today"; to: { daysFromNow: number } };
 
 export type ListIssueQuery =
   & {
