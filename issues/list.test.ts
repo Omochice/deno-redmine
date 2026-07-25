@@ -247,6 +247,15 @@ Deno.test("categoryId requires projectId at the type level", () => {
   };
 });
 
+Deno.test("subprojectId requires projectId at the type level", () => {
+  // @ts-expect-error subprojectId without projectId is not honored by Redmine
+  const _missingProject: Parameters<typeof list>[1] = { subprojectId: "1" };
+  const _withProject: Parameters<typeof list>[1] = {
+    subprojectId: "1",
+    projectId: 2,
+  };
+});
+
 function queryHandler(recorded: URLSearchParams[]) {
   return http.get(`${context.endpoint}/issues.json`, ({ request }) => {
     recorded.push(new URL(request.url).searchParams);

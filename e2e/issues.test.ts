@@ -7,6 +7,8 @@ import { update } from "../issues/update.ts";
 import { deleteIssue } from "../issues/delete.ts";
 import { create as createRelation } from "../issue-relations/create.ts";
 import { list as listProjects } from "../projects/list.ts";
+import { create as createProject } from "../projects/create.ts";
+import { deleteProject } from "../projects/delete.ts";
 import { create as createVersion } from "../versions/create.ts";
 import { list as listVersions } from "../versions/list.ts";
 import { deleteVersion } from "../versions/delete.ts";
@@ -568,6 +570,69 @@ Deno.test({
           }
           if (category !== undefined) {
             await deleteIssueCategory(e2eContext, category.id);
+          }
+        }
+      },
+    );
+
+    await t.step(
+      "GET /issues.json with subprojectId excludes subproject issues",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const parent = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(parent).toBeDefined();
+
+        const parentIssues = await Array.fromAsync(list(e2eContext, {
+          projectId: parent!.id,
+        }));
+        expect(parentIssues.length).toBeGreaterThan(0);
+
+        const childIdentifier = "e2e-subproject-filter";
+        await createProject(e2eContext, {
+          name: "E2E Subproject Filter",
+          identifier: childIdentifier,
+          isPublic: true,
+          parentId: parent!.id,
+          enableModuleNames: ["issue_tracking"],
+        });
+        const child = (await Array.fromAsync(listProjects(e2eContext))).find((
+          p,
+        ) => p.identifier === childIdentifier);
+        expect(child).toBeDefined();
+
+        const subject = "E2E Subproject Issue";
+        await createIssue(e2eContext, {
+          projectId: child!.id,
+          trackerId: parentIssues[0].tracker.id,
+          statusId: parentIssues[0].status.id,
+          priorityId: parentIssues[0].priority.id,
+          subject,
+        });
+
+        try {
+          // Listing the parent includes subproject issues by default.
+          const included = await Array.fromAsync(
+            list(e2eContext, { projectId: parent!.id }),
+          );
+          expect(included.some((i) => i.subject === subject)).toBe(true);
+
+          // subprojectId="!*" excludes subprojects.
+          const excluded = await Array.fromAsync(
+            list(e2eContext, { projectId: parent!.id, subprojectId: "!*" }),
+          );
+          expect(excluded.every((i) => i.project.id === parent!.id)).toBe(true);
+          expect(excluded.some((i) => i.subject === subject)).toBe(false);
+        } finally {
+          const leftovers = (await Array.fromAsync(list(e2eContext, {
+            projectId: child!.id,
+          }))).filter((i) => i.subject === subject);
+          for (const leftover of leftovers) {
+            await deleteIssue(e2eContext, leftover.id);
+          }
+          if (child !== undefined) {
+            await deleteProject(e2eContext, child.id);
           }
         }
       },
