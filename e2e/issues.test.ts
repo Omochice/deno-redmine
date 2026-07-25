@@ -645,11 +645,18 @@ Deno.test({
         const to = new Date("2026-07-31T00:00:00Z");
 
         // assertResponse throws on Redmine's 422, so a resolved promise is
-        // enough to prove each wire form (=, >=, <=, ><) round-trips.
-        await Array.fromAsync(list(e2eContext, { createdOn: from }));
-        await Array.fromAsync(list(e2eContext, { updatedOn: { from } }));
-        await Array.fromAsync(list(e2eContext, { closedOn: { to } }));
-        await Array.fromAsync(list(e2eContext, { startDate: { from, to } }));
+        // enough to prove each wire form (=, >=, <=, ><) round-trips. limit
+        // caps each probe at one request, since the matched issues are not
+        // being inspected and walking every page would slow down as fixture
+        // data accumulates.
+        await Array.fromAsync(list(e2eContext, { limit: 1, createdOn: from }));
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, updatedOn: { from } }),
+        );
+        await Array.fromAsync(list(e2eContext, { limit: 1, closedOn: { to } }));
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, startDate: { from, to } }),
+        );
       },
     );
 
@@ -658,30 +665,35 @@ Deno.test({
       async () => {
         // assertResponse throws on Redmine's 422, so a resolved promise is
         // enough to prove each relative wire form (t-, >t-, <t-, ><t-, t+,
-        // >t+, <t+, ><t+) round-trips.
-        await Array.fromAsync(list(e2eContext, { createdOn: { daysAgo: 3 } }));
+        // >t+, <t+, ><t+) round-trips. limit caps each probe at one request,
+        // as above.
         await Array.fromAsync(
-          list(e2eContext, { createdOn: { from: { daysAgo: 3 } } }),
+          list(e2eContext, { limit: 1, createdOn: { daysAgo: 3 } }),
         );
         await Array.fromAsync(
-          list(e2eContext, { createdOn: { to: { daysAgo: 3 } } }),
+          list(e2eContext, { limit: 1, createdOn: { from: { daysAgo: 3 } } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: { to: { daysAgo: 3 } } }),
         );
         await Array.fromAsync(
           list(e2eContext, {
+            limit: 1,
             createdOn: { from: { daysAgo: 3 }, to: "today" },
           }),
         );
         await Array.fromAsync(
-          list(e2eContext, { dueDate: { daysFromNow: 5 } }),
+          list(e2eContext, { limit: 1, dueDate: { daysFromNow: 5 } }),
         );
         await Array.fromAsync(
-          list(e2eContext, { dueDate: { from: { daysFromNow: 5 } } }),
+          list(e2eContext, { limit: 1, dueDate: { from: { daysFromNow: 5 } } }),
         );
         await Array.fromAsync(
-          list(e2eContext, { dueDate: { to: { daysFromNow: 5 } } }),
+          list(e2eContext, { limit: 1, dueDate: { to: { daysFromNow: 5 } } }),
         );
         await Array.fromAsync(
           list(e2eContext, {
+            limit: 1,
             dueDate: { from: "today", to: { daysFromNow: 5 } },
           }),
         );
@@ -693,22 +705,45 @@ Deno.test({
       async () => {
         // assertResponse throws on Redmine's 422, so a resolved promise is
         // enough to prove each literal's wire form (t, ld, w, lw, l2w, m,
-        // lm, y, *, !*, nd, nw, nm) round-trips.
-        await Array.fromAsync(list(e2eContext, { createdOn: "today" }));
-        await Array.fromAsync(list(e2eContext, { createdOn: "yesterday" }));
-        await Array.fromAsync(list(e2eContext, { createdOn: "thisWeek" }));
-        await Array.fromAsync(list(e2eContext, { createdOn: "lastWeek" }));
+        // lm, y, *, !*, nd, nw, nm) round-trips. limit caps each probe at one
+        // request, as above; "any" would otherwise walk the whole table.
         await Array.fromAsync(
-          list(e2eContext, { createdOn: "lastTwoWeeks" }),
+          list(e2eContext, { limit: 1, createdOn: "today" }),
         );
-        await Array.fromAsync(list(e2eContext, { createdOn: "thisMonth" }));
-        await Array.fromAsync(list(e2eContext, { createdOn: "lastMonth" }));
-        await Array.fromAsync(list(e2eContext, { createdOn: "thisYear" }));
-        await Array.fromAsync(list(e2eContext, { createdOn: "any" }));
-        await Array.fromAsync(list(e2eContext, { createdOn: "none" }));
-        await Array.fromAsync(list(e2eContext, { dueDate: "tomorrow" }));
-        await Array.fromAsync(list(e2eContext, { dueDate: "nextWeek" }));
-        await Array.fromAsync(list(e2eContext, { dueDate: "nextMonth" }));
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "yesterday" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "thisWeek" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "lastWeek" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "lastTwoWeeks" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "thisMonth" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "lastMonth" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "thisYear" }),
+        );
+        await Array.fromAsync(list(e2eContext, { limit: 1, createdOn: "any" }));
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "none" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, dueDate: "tomorrow" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, dueDate: "nextWeek" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, dueDate: "nextMonth" }),
+        );
       },
     );
 
