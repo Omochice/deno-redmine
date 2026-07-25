@@ -129,6 +129,21 @@ export type CreateIssueQuery = {
 
 export type ListIncludeValue = "attachments" | "relations";
 
+// `from`/`to` are both inclusive: Redmine's absolute date operators are
+// limited to `=`, `>=`, `<=`, `><` (no strict `>`/`<`), so every bound this
+// library exposes is inclusive too.
+export type PastDateFilter =
+  | Date
+  | { from: Date; to?: Date }
+  | { from?: Date; to: Date };
+
+// Equal to PastDateFilter for now. Later increments widen this with
+// future-looking operators (e.g. `daysFromNow`), which Redmine's
+// `:date_past` fields (created_on/updated_on/closed_on) reject with a 422 -
+// that rejection is why PastDateFilter stays a separate, narrower type
+// rather than an alias collapsing into this one.
+export type DateFilter = PastDateFilter;
+
 export type ListIssueQuery =
   & {
     limit?: number;
@@ -142,6 +157,11 @@ export type ListIssueQuery =
     assignedToId?: number | "me";
     authorId?: number | "me";
     parentId?: string;
+    startDate?: DateFilter;
+    dueDate?: DateFilter;
+    createdOn?: PastDateFilter;
+    updatedOn?: PastDateFilter;
+    closedOn?: PastDateFilter;
     customField?: {
       id: number;
       value: string;

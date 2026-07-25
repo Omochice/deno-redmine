@@ -2,6 +2,7 @@ import {
   array,
   boolean,
   date,
+  type InferOutput,
   integer,
   literal,
   minValue,
@@ -14,6 +15,7 @@ import {
   partial,
   picklist,
   pipe,
+  strictObject,
   string,
   transform,
   union,
@@ -245,6 +247,13 @@ const toRedmineDate = pipe(
   transform((input: Date) => input.toISOString().slice(0, 10)),
 );
 
+// Same UTC-day truncation as toRedmineDate above, kept as a plain function
+// (rather than reusing the valibot pipe) because the date filter transform
+// below runs outside of parse() and needs a callable, not a schema.
+function toRedmineDateString(input: Date): string {
+  return input.toISOString().slice(0, 10);
+}
+
 // The schema keys are camelCase to match the public UpdateIssueQuery input.
 // valibot's object() strips unknown keys, so a snake_case schema would drop
 // every camelCase-only field before objectToSnake could convert it.
@@ -318,6 +327,15 @@ const listInclude = pipe(
   transform((value) => toUniqueArray(value)),
 );
 
+// strictObject (not object) is required for the from/to variants: object()
+// silently strips unknown keys, so object({ from: date() }) would also
+// match { from, to } and drop `to`, emitting `>=` where `><` was meant.
+const dateFilter = union([
+  date(),
+  strictObject({ from: date(), to: optional(date()) }),
+  strictObject({ from: optional(date()), to: date() }),
+]);
+
 const listIssueQuery = partial(
   object({
     limit: pipe(number(), integer(), minValue(1)),
@@ -333,6 +351,11 @@ const listIssueQuery = partial(
     assignedToId: union([number(), literal("me")]),
     authorId: union([number(), literal("me")]),
     parentId: string(),
+    startDate: dateFilter,
+    dueDate: dateFilter,
+    createdOn: dateFilter,
+    updatedOn: dateFilter,
+    closedOn: dateFilter,
     customField: array(object({
       id: number(),
       value: string(),
@@ -346,12 +369,21 @@ export const toListOption = pipe(
     return {
       ...parse(toQueryObject, input),
       ...parse(toCustomFieldOption, input.customField),
+      ...toDateFilterOption(input),
     };
   }),
 );
 
 const toQueryObject = pipe(
-  omit(listIssueQuery, ["customField", "limit"]),
+  omit(listIssueQuery, [
+    "customField",
+    "limit",
+    "startDate",
+    "dueDate",
+    "createdOn",
+    "updatedOn",
+    "closedOn",
+  ]),
   transform((input) => {
     return objectToSnake(input);
   }),
@@ -376,3 +408,50 @@ const toCustomFieldOption = pipe(
     );
   }),
 );
+
+// Redmine's short filter wire form: field=<operator><values joined by |>.
+// There is no strict >/<, so from/to are always inclusive.
+function toDateFilterQueryValue(value: InferOutput<typeof dateFilter>): string {
+  if (value instanceof Date) {
+    return `=${toRedmineDateString(value)}`;
+  }
+  if (value.from !== undefined && value.to !== undefined) {
+    return `><${toRedmineDateString(value.from)}|${
+      toRedmineDateString(value.to)
+    }`;
+  }
+  if (value.from !== undefined) {
+    return `>=${toRedmineDateString(value.from)}`;
+  }
+  // The dateFilter schema's strictObject variants guarantee at least one of
+  // from/to is set, so reaching here means `to` is the one that is.
+  return `<=${toRedmineDateString(value.to!)}`;
+}
+
+// Field names are listed explicitly (as toCustomFieldOption does) rather
+// than run through objectToSnake, because objectToSnake deep-converts
+// nested object keys and would reach into the from/to Date instances.
+const dateFilterFields = [
+  ["startDate", "start_date"],
+  ["dueDate", "due_date"],
+  ["createdOn", "created_on"],
+  ["updatedOn", "updated_on"],
+  ["closedOn", "closed_on"],
+] as const;
+
+function toDateFilterOption(
+  input: Partial<
+    Record<
+      typeof dateFilterFields[number][0],
+      InferOutput<typeof dateFilter>
+    >
+  >,
+): Record<string, string> {
+  return Object.fromEntries(
+    dateFilterFields
+      .filter(([key]) => input[key] !== undefined)
+      .map((
+        [key, param],
+      ) => [param, toDateFilterQueryValue(input[key]!)]),
+  );
+}

@@ -468,8 +468,8 @@ Deno.test(
   "mixing an absolute bound with a relative bound is rejected by the type",
   () => {
     const someDate = new Date("2026-07-01T00:00:00Z");
-    // @ts-expect-error "today" is not an absolute bound in this increment
     const _option: Parameters<typeof list>[1] = {
+      // @ts-expect-error "today" is not an absolute bound in this increment
       createdOn: { from: someDate, to: "today" },
     };
   },
