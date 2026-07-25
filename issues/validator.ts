@@ -441,6 +441,9 @@ const toCustomFieldOption = pipe(
   }),
 );
 
+// `satisfies` over the two picklists (rather than a bare Record<string,
+// string>) makes a period added to either schema without an operator here a
+// compile error instead of an `undefined` on the wire.
 const namedPeriodOperators: Record<string, string> = {
   today: "t",
   yesterday: "ld",
@@ -455,11 +458,16 @@ const namedPeriodOperators: Record<string, string> = {
   tomorrow: "nd",
   nextWeek: "nw",
   nextMonth: "nm",
-};
+} satisfies Record<
+  InferOutput<typeof namedPeriod> | InferOutput<typeof futureNamedPeriod>,
+  string
+>;
 
 type DateBound = Date | "today" | { daysAgo: number } | { daysFromNow: number };
 
-function toBoundKind(bound: DateBound | undefined): string {
+type BoundKind = "absent" | "today" | "date" | "past" | "future";
+
+function toBoundKind(bound: DateBound | undefined): BoundKind {
   if (bound === undefined) {
     return "absent";
   }
@@ -485,6 +493,14 @@ function toBoundValue(bound: DateBound): string {
 }
 
 // The operator depends only on the kind of each bound, never on its value.
+//
+// The annotation stays Record<string, string> so a RangeKey still indexes it;
+// `satisfies` only rejects a key that names no real pair of bound kinds. A
+// missing (rather than misspelled) entry stays uncaught: keying this totally
+// would mean writing all 25 combinations, 16 of which the filter unions
+// already forbid.
+type RangeKey = `${BoundKind}/${BoundKind}`;
+
 const rangeOperators: Record<string, string> = {
   "date/absent": ">=",
   "absent/date": "<=",
@@ -495,7 +511,7 @@ const rangeOperators: Record<string, string> = {
   "future/absent": ">t+",
   "today/future": "><t+",
   "absent/future": "<t+",
-};
+} satisfies Partial<Record<RangeKey, string>>;
 
 // add_short_filter splits everything following the operator on "|", so `t-|3`
 // would yield the value list ["", "3"] and Redmine would reject the blank
