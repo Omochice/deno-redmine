@@ -653,6 +653,41 @@ Deno.test({
       },
     );
 
+    await t.step(
+      "GET /issues.json with relative date filters resolves",
+      async () => {
+        // assertResponse throws on Redmine's 422, so a resolved promise is
+        // enough to prove each relative wire form (t-, >t-, <t-, ><t-, t+,
+        // >t+, <t+, ><t+) round-trips.
+        await Array.fromAsync(list(e2eContext, { createdOn: { daysAgo: 3 } }));
+        await Array.fromAsync(
+          list(e2eContext, { createdOn: { from: { daysAgo: 3 } } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { createdOn: { to: { daysAgo: 3 } } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, {
+            createdOn: { from: { daysAgo: 3 }, to: "today" },
+          }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { dueDate: { daysFromNow: 5 } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { dueDate: { from: { daysFromNow: 5 } } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { dueDate: { to: { daysFromNow: 5 } } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, {
+            dueDate: { from: "today", to: { daysFromNow: 5 } },
+          }),
+        );
+      },
+    );
+
     await t.step("DELETE /issues/:id.json should delete an issue", async () => {
       const issues = await Array.fromAsync(list(e2eContext, {}));
       const issue = issues.find((i) => i.subject === "E2E Updated Issue");

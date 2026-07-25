@@ -387,6 +387,57 @@ Deno.test("list date filters", async (t) => {
       param: "closed_on",
       expected: "=2026-07-01",
     },
+    {
+      name: "{ daysAgo } sends a relative exact-match filter",
+      option: { createdOn: { daysAgo: 3 } },
+      param: "created_on",
+      expected: "t-|3",
+    },
+    {
+      name:
+        "{ from: { daysAgo } } sends a lower-bound filter with no upper bound",
+      option: { createdOn: { from: { daysAgo: 3 } } },
+      param: "created_on",
+      expected: ">t-|3",
+    },
+    {
+      name: "{ to: { daysAgo } } sends an upper-bound filter",
+      option: { createdOn: { to: { daysAgo: 3 } } },
+      param: "created_on",
+      expected: "<t-|3",
+    },
+    {
+      name: '{ from: { daysAgo }, to: "today" } sends a bounded range filter',
+      option: { createdOn: { from: { daysAgo: 3 }, to: "today" } },
+      param: "created_on",
+      expected: "><t-|3",
+    },
+    {
+      name: "{ daysFromNow } sends a relative exact-match filter",
+      option: { dueDate: { daysFromNow: 5 } },
+      param: "due_date",
+      expected: "t+|5",
+    },
+    {
+      name: "{ from: { daysFromNow } } sends a lower-bound filter",
+      option: { dueDate: { from: { daysFromNow: 5 } } },
+      param: "due_date",
+      expected: ">t+|5",
+    },
+    {
+      name:
+        "{ to: { daysFromNow } } sends an upper-bound filter with no lower bound",
+      option: { dueDate: { to: { daysFromNow: 5 } } },
+      param: "due_date",
+      expected: "<t+|5",
+    },
+    {
+      name:
+        '{ from: "today", to: { daysFromNow } } sends a bounded range filter',
+      option: { dueDate: { from: "today", to: { daysFromNow: 5 } } },
+      param: "due_date",
+      expected: "><t+|5",
+    },
   ];
 
   for (const { name, option, param, expected } of cases) {
@@ -472,5 +523,40 @@ Deno.test(
       // @ts-expect-error "today" is not an absolute bound in this increment
       createdOn: { from: someDate, to: "today" },
     };
+  },
+);
+
+Deno.test(
+  "a future-looking filter on createdOn is rejected by the type",
+  () => {
+    const _option: Parameters<typeof list>[1] = {
+      // @ts-expect-error createdOn is PastDateFilter; :date_past rejects daysFromNow with a 422
+      createdOn: { daysFromNow: 3 },
+    };
+  },
+);
+
+Deno.test(
+  "a negative day count is rejected at parse time",
+  async () => {
+    const recorded: URLSearchParams[] = [];
+    server.resetHandlers(queryHandler(recorded));
+
+    await expect(Array.fromAsync(list(context, { createdOn: { daysAgo: -1 } })))
+      .rejects.toThrow();
+    expect(recorded.length).toStrictEqual(0);
+  },
+);
+
+Deno.test(
+  "a fractional day count is rejected at parse time",
+  async () => {
+    const recorded: URLSearchParams[] = [];
+    server.resetHandlers(queryHandler(recorded));
+
+    await expect(
+      Array.fromAsync(list(context, { createdOn: { daysAgo: 1.5 } })),
+    ).rejects.toThrow();
+    expect(recorded.length).toStrictEqual(0);
   },
 );
