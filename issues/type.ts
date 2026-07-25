@@ -129,6 +129,47 @@ export type CreateIssueQuery = {
 
 export type ListIncludeValue = "attachments" | "relations";
 
+/**
+ * A date filter for the issue fields Redmine types as `:date_past`.
+ *
+ * Both `from` and `to` are inclusive, because Redmine's absolute date
+ * operators are limited to `=`, `>=`, `<=` and `><` with no strict `>` or `<`.
+ *
+ * Future-looking operators are absent: Redmine rejects them on these fields
+ * with a 422. {@link DateFilter} is the wider type that includes them.
+ */
+export type PastDateFilter =
+  | Date
+  | { daysAgo: number }
+  | "today"
+  | "yesterday"
+  | "thisWeek"
+  | "lastWeek"
+  | "lastTwoWeeks"
+  | "thisMonth"
+  | "lastMonth"
+  | "thisYear"
+  | "any"
+  | "none"
+  | { from: Date; to?: Date }
+  | { from?: Date; to: Date }
+  | { from: { daysAgo: number }; to?: "today" }
+  | { to: { daysAgo: number } };
+
+/**
+ * A date filter for the issue fields Redmine types as `:date`, which accept
+ * the future-looking operators {@link PastDateFilter} omits.
+ */
+export type DateFilter =
+  | PastDateFilter
+  | { daysFromNow: number }
+  | "tomorrow"
+  | "nextWeek"
+  | "nextMonth"
+  | { from: { daysFromNow: number } }
+  | { to: { daysFromNow: number } }
+  | { from: "today"; to: { daysFromNow: number } };
+
 export type ListIssueQuery =
   & {
     limit?: number;
@@ -142,6 +183,11 @@ export type ListIssueQuery =
     assignedToId?: number | "me";
     authorId?: number | "me";
     parentId?: string;
+    startDate?: DateFilter;
+    dueDate?: DateFilter;
+    createdOn?: PastDateFilter;
+    updatedOn?: PastDateFilter;
+    closedOn?: PastDateFilter;
     customField?: {
       id: number;
       value: string;

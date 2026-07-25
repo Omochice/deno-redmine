@@ -319,3 +319,348 @@ Deno.test("list id-based filters", async (t) => {
     });
   }
 });
+
+Deno.test("list date filters", async (t) => {
+  const cases: {
+    name: string;
+    option: Parameters<typeof list>[1];
+    param: string;
+    expected: string;
+  }[] = [
+    {
+      name: "a bare Date sends an exact-match filter",
+      option: { createdOn: new Date("2026-07-01T00:00:00Z") },
+      param: "created_on",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "{ from } alone sends a lower-bound filter",
+      option: { createdOn: { from: new Date("2026-07-01T00:00:00Z") } },
+      param: "created_on",
+      expected: ">=2026-07-01",
+    },
+    {
+      name: "{ to } alone sends an upper-bound filter",
+      option: { createdOn: { to: new Date("2026-07-31T00:00:00Z") } },
+      param: "created_on",
+      expected: "<=2026-07-31",
+    },
+    {
+      name: "{ from, to } sends a range filter",
+      option: {
+        createdOn: {
+          from: new Date("2026-07-01T00:00:00Z"),
+          to: new Date("2026-07-31T00:00:00Z"),
+        },
+      },
+      param: "created_on",
+      expected: "><2026-07-01|2026-07-31",
+    },
+    {
+      name:
+        "the time part of a Date is dropped and the UTC calendar day is sent",
+      option: { createdOn: new Date("2026-07-01T23:59:59Z") },
+      param: "created_on",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "startDate is sent as start_date",
+      option: { startDate: new Date("2026-07-01T00:00:00Z") },
+      param: "start_date",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "dueDate is sent as due_date",
+      option: { dueDate: new Date("2026-07-01T00:00:00Z") },
+      param: "due_date",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "updatedOn is sent as updated_on",
+      option: { updatedOn: new Date("2026-07-01T00:00:00Z") },
+      param: "updated_on",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "closedOn is sent as closed_on",
+      option: { closedOn: new Date("2026-07-01T00:00:00Z") },
+      param: "closed_on",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "{ daysAgo } sends a relative exact-match filter",
+      option: { createdOn: { daysAgo: 3 } },
+      param: "created_on",
+      expected: "t-3",
+    },
+    {
+      name:
+        "{ from: { daysAgo } } sends a lower-bound filter with no upper bound",
+      option: { createdOn: { from: { daysAgo: 3 } } },
+      param: "created_on",
+      expected: ">t-3",
+    },
+    {
+      name: "{ to: { daysAgo } } sends an upper-bound filter",
+      option: { createdOn: { to: { daysAgo: 3 } } },
+      param: "created_on",
+      expected: "<t-3",
+    },
+    {
+      name: '{ from: { daysAgo }, to: "today" } sends a bounded range filter',
+      option: { createdOn: { from: { daysAgo: 3 }, to: "today" } },
+      param: "created_on",
+      expected: "><t-3",
+    },
+    {
+      name: "{ daysFromNow } sends a relative exact-match filter",
+      option: { dueDate: { daysFromNow: 5 } },
+      param: "due_date",
+      expected: "t+5",
+    },
+    {
+      name: "{ from: { daysFromNow } } sends a lower-bound filter",
+      option: { dueDate: { from: { daysFromNow: 5 } } },
+      param: "due_date",
+      expected: ">t+5",
+    },
+    {
+      name:
+        "{ to: { daysFromNow } } sends an upper-bound filter with no lower bound",
+      option: { dueDate: { to: { daysFromNow: 5 } } },
+      param: "due_date",
+      expected: "<t+5",
+    },
+    {
+      name:
+        '{ from: "today", to: { daysFromNow } } sends a bounded range filter',
+      option: { dueDate: { from: "today", to: { daysFromNow: 5 } } },
+      param: "due_date",
+      expected: "><t+5",
+    },
+    {
+      name: '"today" sends a named-period filter',
+      option: { createdOn: "today" },
+      param: "created_on",
+      expected: "t",
+    },
+    {
+      name: '"yesterday" sends a named-period filter',
+      option: { createdOn: "yesterday" },
+      param: "created_on",
+      expected: "ld",
+    },
+    {
+      name: '"thisWeek" sends a named-period filter',
+      option: { createdOn: "thisWeek" },
+      param: "created_on",
+      expected: "w",
+    },
+    {
+      name: '"lastWeek" sends a named-period filter',
+      option: { createdOn: "lastWeek" },
+      param: "created_on",
+      expected: "lw",
+    },
+    {
+      name: '"lastTwoWeeks" sends a named-period filter',
+      option: { createdOn: "lastTwoWeeks" },
+      param: "created_on",
+      expected: "l2w",
+    },
+    {
+      name: '"thisMonth" sends a named-period filter',
+      option: { createdOn: "thisMonth" },
+      param: "created_on",
+      expected: "m",
+    },
+    {
+      name: '"lastMonth" sends a named-period filter',
+      option: { createdOn: "lastMonth" },
+      param: "created_on",
+      expected: "lm",
+    },
+    {
+      name: '"thisYear" sends a named-period filter',
+      option: { createdOn: "thisYear" },
+      param: "created_on",
+      expected: "y",
+    },
+    {
+      name: '"any" sends a value-presence filter',
+      option: { createdOn: "any" },
+      param: "created_on",
+      expected: "*",
+    },
+    {
+      name: '"none" sends a value-presence filter',
+      option: { createdOn: "none" },
+      param: "created_on",
+      expected: "!*",
+    },
+    {
+      name: '"tomorrow" sends a named-period filter',
+      option: { dueDate: "tomorrow" },
+      param: "due_date",
+      expected: "nd",
+    },
+    {
+      name: '"nextWeek" sends a named-period filter',
+      option: { dueDate: "nextWeek" },
+      param: "due_date",
+      expected: "nw",
+    },
+    {
+      name: '"nextMonth" sends a named-period filter',
+      option: { dueDate: "nextMonth" },
+      param: "due_date",
+      expected: "nm",
+    },
+  ];
+
+  for (const { name, option, param, expected } of cases) {
+    await t.step(name, async () => {
+      const recorded: URLSearchParams[] = [];
+      server.resetHandlers(queryHandler(recorded));
+
+      await Array.fromAsync(list(context, option));
+
+      expect(recorded.length).toStrictEqual(1);
+      expect(recorded[0].get(param)).toStrictEqual(expected);
+    });
+  }
+
+  await t.step(
+    "omitting every date filter sends no date parameter",
+    async () => {
+      const recorded: URLSearchParams[] = [];
+      server.resetHandlers(queryHandler(recorded));
+
+      await Array.fromAsync(list(context, {}));
+
+      expect(recorded.length).toStrictEqual(1);
+      for (
+        const param of [
+          "start_date",
+          "due_date",
+          "created_on",
+          "updated_on",
+          "closed_on",
+        ]
+      ) {
+        expect(recorded[0].get(param)).toBeNull();
+      }
+    },
+  );
+
+  await t.step(
+    "createdOn and dueDate given together are both sent",
+    async () => {
+      const recorded: URLSearchParams[] = [];
+      server.resetHandlers(queryHandler(recorded));
+
+      await Array.fromAsync(list(context, {
+        createdOn: new Date("2026-07-01T00:00:00Z"),
+        dueDate: { from: new Date("2026-07-10T00:00:00Z") },
+      }));
+
+      expect(recorded.length).toStrictEqual(1);
+      expect(recorded[0].get("created_on")).toStrictEqual("=2026-07-01");
+      expect(recorded[0].get("due_date")).toStrictEqual(">=2026-07-10");
+    },
+  );
+
+  await t.step(
+    "a date filter given alongside customField does not drop either parameter",
+    async () => {
+      const recorded: URLSearchParams[] = [];
+      server.resetHandlers(queryHandler(recorded));
+
+      await Array.fromAsync(list(context, {
+        createdOn: new Date("2026-07-01T00:00:00Z"),
+        customField: [{ id: 1, value: "hi" }],
+      }));
+
+      expect(recorded.length).toStrictEqual(1);
+      expect(recorded[0].get("created_on")).toStrictEqual("=2026-07-01");
+      expect(recorded[0].get("cf_1")).toStrictEqual("hi");
+    },
+  );
+});
+
+Deno.test("an empty date filter object is rejected by the type", () => {
+  // @ts-expect-error a date filter must set at least one of from/to
+  const _option: Parameters<typeof list>[1] = { createdOn: {} };
+});
+
+Deno.test(
+  "mixing an absolute bound with a relative bound is rejected by the type",
+  () => {
+    const someDate = new Date("2026-07-01T00:00:00Z");
+    const _option: Parameters<typeof list>[1] = {
+      // @ts-expect-error no union member pairs a Date bound with "today"
+      createdOn: { from: someDate, to: "today" },
+    };
+  },
+);
+
+Deno.test(
+  "a future-looking filter on createdOn is rejected by the type",
+  () => {
+    const _option: Parameters<typeof list>[1] = {
+      // @ts-expect-error createdOn is PastDateFilter; :date_past rejects daysFromNow with a 422
+      createdOn: { daysFromNow: 3 },
+    };
+  },
+);
+
+Deno.test(
+  "a future-looking named period on createdOn is rejected by the type",
+  async (t) => {
+    await t.step('"tomorrow"', () => {
+      const _option: Parameters<typeof list>[1] = {
+        // @ts-expect-error createdOn is PastDateFilter; :date_past rejects "tomorrow" with a 422
+        createdOn: "tomorrow",
+      };
+    });
+
+    await t.step('"nextWeek"', () => {
+      const _option: Parameters<typeof list>[1] = {
+        // @ts-expect-error createdOn is PastDateFilter; :date_past rejects "nextWeek" with a 422
+        createdOn: "nextWeek",
+      };
+    });
+
+    await t.step('"nextMonth"', () => {
+      const _option: Parameters<typeof list>[1] = {
+        // @ts-expect-error createdOn is PastDateFilter; :date_past rejects "nextMonth" with a 422
+        createdOn: "nextMonth",
+      };
+    });
+  },
+);
+
+Deno.test(
+  "a negative day count is rejected at parse time",
+  async () => {
+    const recorded: URLSearchParams[] = [];
+    server.resetHandlers(queryHandler(recorded));
+
+    await expect(Array.fromAsync(list(context, { createdOn: { daysAgo: -1 } })))
+      .rejects.toThrow();
+    expect(recorded.length).toStrictEqual(0);
+  },
+);
+
+Deno.test(
+  "a fractional day count is rejected at parse time",
+  async () => {
+    const recorded: URLSearchParams[] = [];
+    server.resetHandlers(queryHandler(recorded));
+
+    await expect(
+      Array.fromAsync(list(context, { createdOn: { daysAgo: 1.5 } })),
+    ).rejects.toThrow();
+    expect(recorded.length).toStrictEqual(0);
+  },
+);

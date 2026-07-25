@@ -638,6 +638,160 @@ Deno.test({
       },
     );
 
+    await t.step(
+      "GET /issues.json with absolute date filters resolves",
+      async () => {
+        const from = new Date("2026-07-01T00:00:00Z");
+        const to = new Date("2026-07-31T00:00:00Z");
+
+        // assertResponse throws on Redmine's 422, so a resolved promise is
+        // enough to prove each wire form (=, >=, <=, ><) round-trips. limit
+        // caps each probe at one request, since the matched issues are not
+        // being inspected and walking every page would slow down as fixture
+        // data accumulates.
+        await Array.fromAsync(list(e2eContext, { limit: 1, createdOn: from }));
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, updatedOn: { from } }),
+        );
+        await Array.fromAsync(list(e2eContext, { limit: 1, closedOn: { to } }));
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, startDate: { from, to } }),
+        );
+      },
+    );
+
+    await t.step(
+      "GET /issues.json with relative date filters resolves",
+      async () => {
+        // assertResponse throws on Redmine's 422, so a resolved promise is
+        // enough to prove each relative wire form (t-, >t-, <t-, ><t-, t+,
+        // >t+, <t+, ><t+) round-trips. limit caps each probe at one request,
+        // as above.
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: { daysAgo: 3 } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: { from: { daysAgo: 3 } } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: { to: { daysAgo: 3 } } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, {
+            limit: 1,
+            createdOn: { from: { daysAgo: 3 }, to: "today" },
+          }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, dueDate: { daysFromNow: 5 } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, dueDate: { from: { daysFromNow: 5 } } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, dueDate: { to: { daysFromNow: 5 } } }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, {
+            limit: 1,
+            dueDate: { from: "today", to: { daysFromNow: 5 } },
+          }),
+        );
+      },
+    );
+
+    await t.step(
+      "GET /issues.json with named period and presence date filters resolves",
+      async () => {
+        // assertResponse throws on Redmine's 422, so a resolved promise is
+        // enough to prove each literal's wire form (t, ld, w, lw, l2w, m,
+        // lm, y, *, !*, nd, nw, nm) round-trips. limit caps each probe at one
+        // request, as above; "any" would otherwise walk the whole table.
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "today" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "yesterday" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "thisWeek" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "lastWeek" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "lastTwoWeeks" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "thisMonth" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "lastMonth" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "thisYear" }),
+        );
+        await Array.fromAsync(list(e2eContext, { limit: 1, createdOn: "any" }));
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, createdOn: "none" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, dueDate: "tomorrow" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, dueDate: "nextWeek" }),
+        );
+        await Array.fromAsync(
+          list(e2eContext, { limit: 1, dueDate: "nextMonth" }),
+        );
+      },
+    );
+
+    await t.step(
+      "GET /issues.json applies from as the lower bound and to as the upper",
+      async () => {
+        const epoch = new Date("2000-01-01T00:00:00Z");
+
+        const upToEpoch = await Array.fromAsync(
+          list(e2eContext, { createdOn: { to: epoch } }),
+        );
+        const sinceEpoch = await Array.fromAsync(
+          list(e2eContext, { createdOn: { from: epoch } }),
+        );
+
+        expect(upToEpoch).toStrictEqual([]);
+        expect(sinceEpoch.length).toBeGreaterThan(0);
+      },
+    );
+
+    await t.step(
+      "GET /issues.json resolves today against the server's calendar day",
+      async () => {
+        const createdToday = await Array.fromAsync(
+          list(e2eContext, { createdOn: "today" }),
+        );
+
+        expect(createdToday.length).toBeGreaterThan(0);
+      },
+    );
+
+    await t.step(
+      "GET /issues.json partitions issues between any and none",
+      async () => {
+        const all = await Array.fromAsync(list(e2eContext, {}));
+        const withDueDate = await Array.fromAsync(
+          list(e2eContext, { dueDate: "any" }),
+        );
+        const withoutDueDate = await Array.fromAsync(
+          list(e2eContext, { dueDate: "none" }),
+        );
+
+        expect(withDueDate.length + withoutDueDate.length).toStrictEqual(
+          all.length,
+        );
+      },
+    );
+
     await t.step("DELETE /issues/:id.json should delete an issue", async () => {
       const issues = await Array.fromAsync(list(e2eContext, {}));
       const issue = issues.find((i) => i.subject === "E2E Updated Issue");

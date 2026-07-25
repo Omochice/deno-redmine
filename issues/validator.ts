@@ -2,6 +2,7 @@ import {
   array,
   boolean,
   date,
+  type InferOutput,
   integer,
   literal,
   minValue,
@@ -14,6 +15,7 @@ import {
   partial,
   picklist,
   pipe,
+  strictObject,
   string,
   transform,
   union,
@@ -240,10 +242,11 @@ const listIssueSchema = pipe(
 // show() -> update() round-trip on the same calendar day. The trade-off:
 // a Date built from local calendar fields (e.g. new Date(2026, 6, 1) in
 // UTC+9) serializes to the previous day.
-const toRedmineDate = pipe(
-  date(),
-  transform((input: Date) => input.toISOString().slice(0, 10)),
-);
+function toRedmineDateString(input: Date): string {
+  return input.toISOString().slice(0, 10);
+}
+
+const toRedmineDate = pipe(date(), transform(toRedmineDateString));
 
 // The schema keys are camelCase to match the public UpdateIssueQuery input.
 // valibot's object() strips unknown keys, so a snake_case schema would drop
@@ -318,6 +321,53 @@ const listInclude = pipe(
   transform((value) => toUniqueArray(value)),
 );
 
+// Redmine accepts 0 (t-0 means "today"); negatives and fractional counts
+// have no wire representation, so both are rejected at parse time.
+const dayOffset = pipe(number(), integer(), minValue(0));
+
+const namedPeriod = picklist([
+  "today",
+  "yesterday",
+  "thisWeek",
+  "lastWeek",
+  "lastTwoWeeks",
+  "thisMonth",
+  "lastMonth",
+  "thisYear",
+  "any",
+  "none",
+]);
+
+const futureNamedPeriod = picklist(["tomorrow", "nextWeek", "nextMonth"]);
+
+// strictObject (not object) is required for the from/to variants: object()
+// silently strips unknown keys, so object({ from: date() }) would also
+// match { from, to } and drop `to`, emitting `>=` where `><` was meant.
+const pastDateFilter = union([
+  date(),
+  namedPeriod,
+  strictObject({ from: date(), to: optional(date()) }),
+  strictObject({ from: optional(date()), to: date() }),
+  strictObject({ daysAgo: dayOffset }),
+  strictObject({
+    from: strictObject({ daysAgo: dayOffset }),
+    to: optional(literal("today")),
+  }),
+  strictObject({ to: strictObject({ daysAgo: dayOffset }) }),
+]);
+
+const dateFilter = union([
+  ...pastDateFilter.options,
+  futureNamedPeriod,
+  strictObject({ daysFromNow: dayOffset }),
+  strictObject({ from: strictObject({ daysFromNow: dayOffset }) }),
+  strictObject({ to: strictObject({ daysFromNow: dayOffset }) }),
+  strictObject({
+    from: literal("today"),
+    to: strictObject({ daysFromNow: dayOffset }),
+  }),
+]);
+
 const listIssueQuery = partial(
   object({
     limit: pipe(number(), integer(), minValue(1)),
@@ -333,6 +383,11 @@ const listIssueQuery = partial(
     assignedToId: union([number(), literal("me")]),
     authorId: union([number(), literal("me")]),
     parentId: string(),
+    startDate: dateFilter,
+    dueDate: dateFilter,
+    createdOn: pastDateFilter,
+    updatedOn: pastDateFilter,
+    closedOn: pastDateFilter,
     customField: array(object({
       id: number(),
       value: string(),
@@ -346,12 +401,21 @@ export const toListOption = pipe(
     return {
       ...parse(toQueryObject, input),
       ...parse(toCustomFieldOption, input.customField),
+      ...toDateFilterOption(input),
     };
   }),
 );
 
 const toQueryObject = pipe(
-  omit(listIssueQuery, ["customField", "limit"]),
+  omit(listIssueQuery, [
+    "customField",
+    "limit",
+    "startDate",
+    "dueDate",
+    "createdOn",
+    "updatedOn",
+    "closedOn",
+  ]),
   transform((input) => {
     return objectToSnake(input);
   }),
@@ -376,3 +440,133 @@ const toCustomFieldOption = pipe(
     );
   }),
 );
+
+// `satisfies` over the two picklists (rather than a bare Record<string,
+// string>) makes a period added to either schema without an operator here a
+// compile error instead of an `undefined` on the wire.
+const namedPeriodOperators: Record<string, string> = {
+  today: "t",
+  yesterday: "ld",
+  thisWeek: "w",
+  lastWeek: "lw",
+  lastTwoWeeks: "l2w",
+  thisMonth: "m",
+  lastMonth: "lm",
+  thisYear: "y",
+  any: "*",
+  none: "!*",
+  tomorrow: "nd",
+  nextWeek: "nw",
+  nextMonth: "nm",
+} satisfies Record<
+  InferOutput<typeof namedPeriod> | InferOutput<typeof futureNamedPeriod>,
+  string
+>;
+
+type DateBound = Date | "today" | { daysAgo: number } | { daysFromNow: number };
+
+type BoundKind = "absent" | "today" | "date" | "past" | "future";
+
+function toBoundKind(bound: DateBound | undefined): BoundKind {
+  if (bound === undefined) {
+    return "absent";
+  }
+  if (bound === "today") {
+    return "today";
+  }
+  if (bound instanceof Date) {
+    return "date";
+  }
+  return "daysAgo" in bound ? "past" : "future";
+}
+
+// "today" contributes no value of its own: it only tells Redmine which of the
+// bounded operators to use (><t- pins the upper end to today, ><t+ the lower).
+function toBoundValue(bound: DateBound): string {
+  if (bound === "today") {
+    return "";
+  }
+  if (bound instanceof Date) {
+    return toRedmineDateString(bound);
+  }
+  return `${"daysAgo" in bound ? bound.daysAgo : bound.daysFromNow}`;
+}
+
+// The operator depends only on the kind of each bound, never on its value.
+//
+// The annotation stays Record<string, string> so a RangeKey still indexes it;
+// `satisfies` only rejects a key that names no real pair of bound kinds. A
+// missing (rather than misspelled) entry stays uncaught: keying this totally
+// would mean writing all 25 combinations, 16 of which the filter unions
+// already forbid.
+type RangeKey = `${BoundKind}/${BoundKind}`;
+
+const rangeOperators: Record<string, string> = {
+  "date/absent": ">=",
+  "absent/date": "<=",
+  "date/date": "><",
+  "past/absent": ">t-",
+  "past/today": "><t-",
+  "absent/past": "<t-",
+  "future/absent": ">t+",
+  "today/future": "><t+",
+  "absent/future": "<t+",
+} satisfies Partial<Record<RangeKey, string>>;
+
+// add_short_filter splits everything following the operator on "|", so `t-|3`
+// would yield the value list ["", "3"] and Redmine would reject the blank
+// first entry with a 422. Only the two-date `><` form takes a pipe, because
+// that one really does pass two values.
+function toDateFilterQueryValue(
+  value: InferOutput<typeof dateFilter>,
+): string {
+  if (value instanceof Date) {
+    return `=${toRedmineDateString(value)}`;
+  }
+  if (typeof value === "string") {
+    return namedPeriodOperators[value];
+  }
+  if ("daysAgo" in value) {
+    return `t-${value.daysAgo}`;
+  }
+  if ("daysFromNow" in value) {
+    return `t+${value.daysFromNow}`;
+  }
+
+  const from = "from" in value ? value.from : undefined;
+  const to = "to" in value ? value.to : undefined;
+  const operator = rangeOperators[`${toBoundKind(from)}/${toBoundKind(to)}`];
+  const values = [from, to]
+    .filter((bound) => bound !== undefined)
+    .map(toBoundValue)
+    .filter((serialized) => serialized !== "");
+  return `${operator}${values.join("|")}`;
+}
+
+// Field names are listed explicitly (as toCustomFieldOption does) rather
+// than run through objectToSnake, because objectToSnake deep-converts
+// nested object keys and would reach into the from/to Date instances.
+const dateFilterFields = [
+  ["startDate", "start_date"],
+  ["dueDate", "due_date"],
+  ["createdOn", "created_on"],
+  ["updatedOn", "updated_on"],
+  ["closedOn", "closed_on"],
+] as const;
+
+function toDateFilterOption(
+  input: Partial<
+    Record<
+      typeof dateFilterFields[number][0],
+      InferOutput<typeof dateFilter>
+    >
+  >,
+): Record<string, string> {
+  return Object.fromEntries(
+    dateFilterFields
+      .filter(([key]) => input[key] !== undefined)
+      .map((
+        [key, param],
+      ) => [param, toDateFilterQueryValue(input[key]!)]),
+  );
+}
