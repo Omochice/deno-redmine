@@ -319,3 +319,158 @@ Deno.test("list id-based filters", async (t) => {
     });
   }
 });
+
+Deno.test("list date filters", async (t) => {
+  const cases: {
+    name: string;
+    option: Parameters<typeof list>[1];
+    param: string;
+    expected: string;
+  }[] = [
+    {
+      name: "a bare Date sends an exact-match filter",
+      option: { createdOn: new Date("2026-07-01T00:00:00Z") },
+      param: "created_on",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "{ from } alone sends a lower-bound filter",
+      option: { createdOn: { from: new Date("2026-07-01T00:00:00Z") } },
+      param: "created_on",
+      expected: ">=2026-07-01",
+    },
+    {
+      name: "{ to } alone sends an upper-bound filter",
+      option: { createdOn: { to: new Date("2026-07-31T00:00:00Z") } },
+      param: "created_on",
+      expected: "<=2026-07-31",
+    },
+    {
+      name: "{ from, to } sends a range filter",
+      option: {
+        createdOn: {
+          from: new Date("2026-07-01T00:00:00Z"),
+          to: new Date("2026-07-31T00:00:00Z"),
+        },
+      },
+      param: "created_on",
+      expected: "><2026-07-01|2026-07-31",
+    },
+    {
+      name:
+        "the time part of a Date is dropped and the UTC calendar day is sent",
+      option: { createdOn: new Date("2026-07-01T23:59:59Z") },
+      param: "created_on",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "startDate is sent as start_date",
+      option: { startDate: new Date("2026-07-01T00:00:00Z") },
+      param: "start_date",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "dueDate is sent as due_date",
+      option: { dueDate: new Date("2026-07-01T00:00:00Z") },
+      param: "due_date",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "updatedOn is sent as updated_on",
+      option: { updatedOn: new Date("2026-07-01T00:00:00Z") },
+      param: "updated_on",
+      expected: "=2026-07-01",
+    },
+    {
+      name: "closedOn is sent as closed_on",
+      option: { closedOn: new Date("2026-07-01T00:00:00Z") },
+      param: "closed_on",
+      expected: "=2026-07-01",
+    },
+  ];
+
+  for (const { name, option, param, expected } of cases) {
+    await t.step(name, async () => {
+      const recorded: URLSearchParams[] = [];
+      server.resetHandlers(queryHandler(recorded));
+
+      await Array.fromAsync(list(context, option));
+
+      expect(recorded.length).toStrictEqual(1);
+      expect(recorded[0].get(param)).toStrictEqual(expected);
+    });
+  }
+
+  await t.step(
+    "omitting every date filter sends no date parameter",
+    async () => {
+      const recorded: URLSearchParams[] = [];
+      server.resetHandlers(queryHandler(recorded));
+
+      await Array.fromAsync(list(context, {}));
+
+      expect(recorded.length).toStrictEqual(1);
+      for (
+        const param of [
+          "start_date",
+          "due_date",
+          "created_on",
+          "updated_on",
+          "closed_on",
+        ]
+      ) {
+        expect(recorded[0].get(param)).toBeNull();
+      }
+    },
+  );
+
+  await t.step(
+    "createdOn and dueDate given together are both sent",
+    async () => {
+      const recorded: URLSearchParams[] = [];
+      server.resetHandlers(queryHandler(recorded));
+
+      await Array.fromAsync(list(context, {
+        createdOn: new Date("2026-07-01T00:00:00Z"),
+        dueDate: { from: new Date("2026-07-10T00:00:00Z") },
+      }));
+
+      expect(recorded.length).toStrictEqual(1);
+      expect(recorded[0].get("created_on")).toStrictEqual("=2026-07-01");
+      expect(recorded[0].get("due_date")).toStrictEqual(">=2026-07-10");
+    },
+  );
+
+  await t.step(
+    "a date filter given alongside customField does not drop either parameter",
+    async () => {
+      const recorded: URLSearchParams[] = [];
+      server.resetHandlers(queryHandler(recorded));
+
+      await Array.fromAsync(list(context, {
+        createdOn: new Date("2026-07-01T00:00:00Z"),
+        customField: [{ id: 1, value: "hi" }],
+      }));
+
+      expect(recorded.length).toStrictEqual(1);
+      expect(recorded[0].get("created_on")).toStrictEqual("=2026-07-01");
+      expect(recorded[0].get("cf_1")).toStrictEqual("hi");
+    },
+  );
+});
+
+Deno.test("an empty date filter object is rejected by the type", () => {
+  // @ts-expect-error a date filter must set at least one of from/to
+  const _option: Parameters<typeof list>[1] = { createdOn: {} };
+});
+
+Deno.test(
+  "mixing an absolute bound with a relative bound is rejected by the type",
+  () => {
+    const someDate = new Date("2026-07-01T00:00:00Z");
+    // @ts-expect-error "today" is not an absolute bound in this increment
+    const _option: Parameters<typeof list>[1] = {
+      createdOn: { from: someDate, to: "today" },
+    };
+  },
+);

@@ -638,6 +638,21 @@ Deno.test({
       },
     );
 
+    await t.step(
+      "GET /issues.json with absolute date filters resolves",
+      async () => {
+        const from = new Date("2026-07-01T00:00:00Z");
+        const to = new Date("2026-07-31T00:00:00Z");
+
+        // assertResponse throws on Redmine's 422, so a resolved promise is
+        // enough to prove each wire form (=, >=, <=, ><) round-trips.
+        await Array.fromAsync(list(e2eContext, { createdOn: from }));
+        await Array.fromAsync(list(e2eContext, { updatedOn: { from } }));
+        await Array.fromAsync(list(e2eContext, { closedOn: { to } }));
+        await Array.fromAsync(list(e2eContext, { startDate: { from, to } }));
+      },
+    );
+
     await t.step("DELETE /issues/:id.json should delete an issue", async () => {
       const issues = await Array.fromAsync(list(e2eContext, {}));
       const issue = issues.find((i) => i.subject === "E2E Updated Issue");
