@@ -1,5 +1,5 @@
 import { HttpResponse } from "npm:msw@2.15.0";
-import { STATUS_CODE } from "jsr:@std/http@1.1.2/status";
+import { STATUS_CODE } from "jsr:@std/http@1.1.3/status";
 
 export function unprocessableEntity() {
   return HttpResponse.json({ errors: ["sample error"] }, {
