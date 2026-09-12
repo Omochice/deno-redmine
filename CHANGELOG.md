@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/Omochice/deno-redmine/compare/v3.2.0...v3.3.0) (2026-09-12)
+
+
+### Features
+
+* accept the project identifier wherever a project id is taken ([#492](https://github.com/Omochice/deno-redmine/issues/492)) ([32c7ada](https://github.com/Omochice/deno-redmine/commit/32c7ada5739bae920cefb40b2b6cc13753ab50f2))
+
 ## [3.2.0](https://github.com/Omochice/deno-redmine/compare/v3.1.0...v3.2.0) (2026-07-25)
 
 
