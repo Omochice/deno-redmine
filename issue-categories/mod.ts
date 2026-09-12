@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import type { Context } from "../context.ts";
 import { list } from "./list.ts";
 import { show } from "./show.ts";
@@ -19,9 +20,9 @@ export class Client {
   /**
    * Returns all issue categories of the project.
    *
-   * @param projectId Project identifier
+   * @param projectId Project id or identifier
    */
-  list(projectId: number): ReturnType<typeof list> {
+  list(projectId: ProjectRef): ReturnType<typeof list> {
     return list(this.#context, projectId);
   }
 
@@ -37,11 +38,11 @@ export class Client {
   /**
    * Creates an issue category for the project.
    *
-   * @param projectId Project identifier
+   * @param projectId Project id or identifier
    * @param issueCategory The issue category attributes
    */
   create(
-    projectId: number,
+    projectId: ProjectRef,
     issueCategory: CreateIssueCategoryQuery,
   ): ReturnType<typeof create> {
     return create(this.#context, projectId, issueCategory);

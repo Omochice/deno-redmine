@@ -18,6 +18,17 @@ Deno.test("GET /projects/:id/wiki/:page.json", async (t) => {
     const wiki = await show(context, { projectId: 1, title: "sample-title" });
     expect(wiki.title).toBe("sample-title");
   });
+  await t.step(
+    "if given a project identifier instead of an id, should resolve",
+    async () => {
+      server.resetHandlers(...validResponseHandlers);
+      const wiki = await show(context, {
+        projectId: "demo",
+        title: "sample-title",
+      });
+      expect(wiki.title).toBe("sample-title");
+    },
+  );
   await t.step("if got 200 with null comments, should resolve", async () => {
     server.resetHandlers(
       http.get(

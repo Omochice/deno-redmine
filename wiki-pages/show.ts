@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import { Context } from "../context.ts";
 import { buildUrl } from "../internal/url.ts";
 import { assertResponse } from "../error.ts";
@@ -11,8 +12,8 @@ export type Include = "attachments";
  * Parameters to identify the wiki page to show
  */
 export type ShowWikiPageParams = {
-  /** Project identifier */
-  projectId: number;
+  /** Project id or identifier */
+  projectId: ProjectRef;
   /** Title for wiki page */
   title: string;
   /** Version of the wiki page */

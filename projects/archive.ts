@@ -1,10 +1,11 @@
+import type { ProjectRef } from "./type.ts";
 import { buildUrl } from "../internal/url.ts";
 import type { Context } from "../context.ts";
 import { assertResponse } from "../error.ts";
 
 async function internal(
   context: Context,
-  id: number,
+  id: ProjectRef,
   method: "archive" | "unarchive",
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "projects", `${id}`, `${method}.json`);
@@ -18,10 +19,13 @@ async function internal(
   await assertResponse(response);
 }
 
-export async function archive(context: Context, id: number): Promise<void> {
+export async function archive(context: Context, id: ProjectRef): Promise<void> {
   return await internal(context, id, "archive");
 }
 
-export async function unarchive(context: Context, id: number): Promise<void> {
+export async function unarchive(
+  context: Context,
+  id: ProjectRef,
+): Promise<void> {
   return await internal(context, id, "unarchive");
 }

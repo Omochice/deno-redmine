@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
 import { walkPages } from "../internal/paging.ts";
@@ -19,12 +20,12 @@ const pageSize = 100;
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
+ * @param projectId Project id or identifier
  * @returns Memberships, yielded one at a time across every page
  */
 export async function* list(
   context: Context,
-  projectId: number,
+  projectId: ProjectRef,
 ): AsyncGenerator<Membership> {
   // The memberships listing is paginated (default limit 25), so walk every
   // page until each membership has been collected.

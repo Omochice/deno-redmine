@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import type { Context } from "../context.ts";
 import { list } from "./list.ts";
 import { listByProject } from "./list-by-project.ts";
@@ -24,9 +25,9 @@ export class Client {
   /**
    * Return the list of news of the given project
    *
-   * @param projectId Project identifier
+   * @param projectId Project id or identifier
    */
-  listByProject(projectId: number): ReturnType<typeof listByProject> {
+  listByProject(projectId: ProjectRef): ReturnType<typeof listByProject> {
     return listByProject(this.#context, projectId);
   }
 
@@ -43,11 +44,11 @@ export class Client {
   /**
    * Create a news for the given project
    *
-   * @param projectId Project identifier
+   * @param projectId Project id or identifier
    * @param news The news attributes
    */
   create(
-    projectId: number,
+    projectId: ProjectRef,
     news: CreateNewsQuery,
   ): ReturnType<typeof create> {
     return create(this.#context, projectId, news);

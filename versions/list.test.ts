@@ -14,6 +14,15 @@ Deno.test("GET /projects/:project_id/versions.json", async (t) => {
   });
 
   await t.step(
+    "if given a project identifier instead of an id, should resolve",
+    async () => {
+      server.use(...validHandlers);
+      const versions = await Array.fromAsync(list(context, "demo"));
+      expect(versions).toBeDefined();
+    },
+  );
+
+  await t.step(
     "if get invalid response with error object, should throw",
     async () => {
       server.use(...invalidHandlers);

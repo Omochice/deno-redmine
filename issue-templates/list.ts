@@ -2,6 +2,7 @@ import type { Context } from "../context.ts";
 import { parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
 import type { Response_ } from "./type.ts";
+import type { ProjectRef } from "../projects/type.ts";
 import { issueTemplateResponse } from "./validator.ts";
 import { assertResponse } from "../error.ts";
 
@@ -12,7 +13,7 @@ import { assertResponse } from "../error.ts";
  */
 export async function list(
   context: Context,
-  projectId: number | string,
+  projectId: ProjectRef,
 ): Promise<Response_> {
   const endpoint = buildUrl(
     context.endpoint,

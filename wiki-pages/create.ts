@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import { Context } from "../context.ts";
 import { buildUrl } from "../internal/url.ts";
 import { assertResponse } from "../error.ts";
@@ -9,12 +10,12 @@ import { sanitizeTitle, type WikiContent } from "./type.ts";
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
+ * @param projectId Project id or identifier
  * @param wiki Wiki page object
  */
 export async function create(
   context: Context,
-  projectId: number,
+  projectId: ProjectRef,
   wiki: WikiContent,
 ): Promise<void> {
   const body = makeWikiPutRequest(wiki);

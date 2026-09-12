@@ -1,5 +1,8 @@
 import type { IdName } from "../internal/type.ts";
 
+/** Project id, or the identifier from project URLs; Redmine routes accept either. */
+export type ProjectRef = number | string;
+
 export type Project = {
   id: number;
   name: string;

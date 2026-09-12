@@ -119,6 +119,17 @@ Deno.test({
     );
 
     await t.step(
+      "GET /projects/:id/wiki/:page.json should accept a project identifier",
+      async () => {
+        const page = await show(e2eContext, {
+          projectId: "e2e-test-project",
+          title: "E2ECreatedPage",
+        });
+        expect(page.title).toStrictEqual("E2ECreatedPage");
+      },
+    );
+
+    await t.step(
       "DELETE /projects/:id/wiki/:page.json should delete a wiki page",
       async () => {
         await deleteWiki(

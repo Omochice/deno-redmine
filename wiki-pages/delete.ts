@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import { Context } from "../context.ts";
 import { buildUrl } from "../internal/url.ts";
 import { assertResponse } from "../error.ts";
@@ -8,12 +9,12 @@ import { sanitizeTitle } from "./type.ts";
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
+ * @param projectId Project id or identifier
  * @param title Title for wiki page
  */
 export async function deleteWiki(
   context: Context,
-  projectId: number,
+  projectId: ProjectRef,
   title: string,
 ): Promise<void> {
   const opts = {

@@ -1,6 +1,6 @@
 import { buildUrl } from "../internal/url.ts";
 import type { Context } from "../context.ts";
-import type { Project } from "./type.ts";
+import type { Project, ProjectRef } from "./type.ts";
 import { projectSchema } from "./validator.ts";
 import { assertResponse } from "../error.ts";
 import { object, parse } from "jsr:@valibot/valibot@1.4.2";
@@ -11,7 +11,7 @@ const schema = object({
 
 export async function show(
   context: Context,
-  id: number,
+  id: ProjectRef,
 ): Promise<Project> {
   const url = buildUrl(context.endpoint, "projects", `${id}.json`);
   const response = await fetch(url, {

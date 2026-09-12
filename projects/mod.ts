@@ -2,7 +2,7 @@ import type { Context } from "../context.ts";
 import { list } from "./list.ts";
 import { show } from "./show.ts";
 import { create } from "./create.ts";
-import type { ProjectQuery } from "./type.ts";
+import type { ProjectQuery, ProjectRef } from "./type.ts";
 import { type ProjectUpdateInformation, update } from "./update.ts";
 import { deleteProject } from "./delete.ts";
 import { archive, unarchive } from "./archive.ts";
@@ -26,9 +26,9 @@ export class Client {
   /**
    * Returns the project of given id or identifier.
    *
-   * @param id Project identifier
+   * @param id Project id or identifier
    */
-  show(id: number): ReturnType<typeof show> {
+  show(id: ProjectRef): ReturnType<typeof show> {
     return show(this.#context, id);
   }
 
@@ -44,11 +44,11 @@ export class Client {
   /**
    * Updates the project of given id or identifier.
    *
-   * @param id Project identifier
+   * @param id Project id or identifier
    * @param project The project attributes to update it
    */
   update(
-    id: number,
+    id: ProjectRef,
     project: ProjectUpdateInformation,
   ): ReturnType<typeof update> {
     return update(this.#context, id, project);
@@ -57,49 +57,49 @@ export class Client {
   /**
    * Deletes the project of given id or identifier.
    *
-   * @param id Project identifier
+   * @param id Project id or identifier
    */
-  delete(id: number): ReturnType<typeof deleteProject> {
+  delete(id: ProjectRef): ReturnType<typeof deleteProject> {
     return deleteProject(this.#context, id);
   }
 
   /**
    * Archives the project of given id or identifier
    *
-   * @param id Project identifier
+   * @param id Project id or identifier
    *
    * @note This feature is available since Redmine 5.0.
    */
-  archive(id: number): ReturnType<typeof archive> {
+  archive(id: ProjectRef): ReturnType<typeof archive> {
     return archive(this.#context, id);
   }
 
   /**
    * Unrchives the project of given id or identifier
    *
-   * @param id Project identifier
+   * @param id Project id or identifier
    *
    * @note This feature is available since Redmine 5.0.
    */
-  unarchive(id: number): ReturnType<typeof unarchive> {
+  unarchive(id: ProjectRef): ReturnType<typeof unarchive> {
     return unarchive(this.#context, id);
   }
 
   /**
    * Closes the project of given id or identifier.
    *
-   * @param id Project identifier
+   * @param id Project id or identifier
    */
-  close(id: number): ReturnType<typeof close> {
+  close(id: ProjectRef): ReturnType<typeof close> {
     return close(this.#context, id);
   }
 
   /**
    * Reopens the project of given id or identifier.
    *
-   * @param id Project identifier
+   * @param id Project id or identifier
    */
-  reopen(id: number): ReturnType<typeof reopen> {
+  reopen(id: ProjectRef): ReturnType<typeof reopen> {
     return reopen(this.#context, id);
   }
 }

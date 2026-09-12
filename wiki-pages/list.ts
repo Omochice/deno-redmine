@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import { Context } from "../context.ts";
 import { buildUrl } from "../internal/url.ts";
 import { assertResponse } from "../error.ts";
@@ -10,12 +11,12 @@ import { wikis } from "./validator.ts";
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
+ * @param projectId Project id or identifier
  * @returns Yields each Wiki page
  */
 export async function* list(
   context: Context,
-  projectId: number,
+  projectId: ProjectRef,
 ): AsyncGenerator<Wiki> {
   const opts = {
     method: "GET",
