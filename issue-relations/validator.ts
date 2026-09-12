@@ -6,7 +6,7 @@ import {
   picklist,
   pipe,
   transform,
-} from "jsr:@valibot/valibot@1.4.2";
+} from "jsr:@valibot/valibot@1.5.0";
 import { toUndefined } from "../internal/validator.ts";
 import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
 import type { Relation } from "./type.ts";

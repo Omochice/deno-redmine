@@ -3,7 +3,7 @@ import type { Context } from "../context.ts";
 import type { TimeEntry } from "./type.ts";
 import { timeEntrySchema } from "./validator.ts";
 import { assertResponse } from "../error.ts";
-import { object, parse } from "jsr:@valibot/valibot@1.4.2";
+import { object, parse } from "jsr:@valibot/valibot@1.5.0";
 
 const schema = object({
   time_entry: timeEntrySchema,

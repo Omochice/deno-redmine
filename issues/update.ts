@@ -2,7 +2,7 @@ import { Context } from "../context.ts";
 import { UpdateIssueQuery } from "./type.ts";
 import { buildUrl } from "../internal/url.ts";
 import { assertResponse } from "../error.ts";
-import { parse } from "jsr:@valibot/valibot@1.4.2";
+import { parse } from "jsr:@valibot/valibot@1.5.0";
 import { toUpdateRequest } from "./validator.ts";
 
 export async function update(

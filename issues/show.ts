@@ -1,4 +1,4 @@
-import { parse } from "jsr:@valibot/valibot@1.4.2";
+import { parse } from "jsr:@valibot/valibot@1.5.0";
 import { buildUrl } from "../internal/url.ts";
 import { toUniqueArray } from "../internal/array.ts";
 import type { ShowIssue } from "./type.ts";
