@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { parse } from "jsr:@valibot/valibot@1.4.2";
+import { parse } from "jsr:@valibot/valibot@1.5.0";
 import { buildUrl } from "../internal/url.ts";
 import type { Response_ } from "./type.ts";
 import type { ProjectRef } from "../projects/type.ts";

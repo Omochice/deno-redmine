@@ -7,7 +7,7 @@ import {
   pipe,
   string,
   transform,
-} from "jsr:@valibot/valibot@1.4.2";
+} from "jsr:@valibot/valibot@1.5.0";
 import { dateLikeString, idName, toUndefined } from "../internal/validator.ts";
 import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
 import type { Attachment } from "./type.ts";

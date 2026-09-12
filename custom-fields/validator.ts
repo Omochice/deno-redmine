@@ -8,7 +8,7 @@ import {
   string,
   transform,
   union,
-} from "jsr:@valibot/valibot@1.4.2";
+} from "jsr:@valibot/valibot@1.5.0";
 import { idName, toUndefined } from "../internal/validator.ts";
 import { objectToCamel } from "npm:ts-case-convert@2.3.1";
 import type { CustomField } from "./type.ts";
