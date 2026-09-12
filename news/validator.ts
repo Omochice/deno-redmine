@@ -7,7 +7,7 @@ import {
   pipe,
   string,
   transform,
-} from "jsr:@valibot/valibot@1.4.2";
+} from "jsr:@valibot/valibot@1.5.0";
 import type { News, ShowNews } from "./type.ts";
 import { dateLikeString, idName } from "../internal/validator.ts";
 import { attachmentSchema } from "../attachments/validator.ts";

@@ -3,7 +3,7 @@ import type { Context } from "../context.ts";
 import type { Membership } from "./type.ts";
 import { membershipSchema } from "./validator.ts";
 import { assertResponse } from "../error.ts";
-import { object, parse } from "jsr:@valibot/valibot@1.4.2";
+import { object, parse } from "jsr:@valibot/valibot@1.5.0";
 
 const schema = object({
   membership: membershipSchema,

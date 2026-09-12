@@ -2,7 +2,7 @@ import type { ProjectRef } from "../projects/type.ts";
 import { Context } from "../context.ts";
 import { buildUrl } from "../internal/url.ts";
 import { assertResponse } from "../error.ts";
-import { parse } from "jsr:@valibot/valibot@1.4.2";
+import { parse } from "jsr:@valibot/valibot@1.5.0";
 import { sanitizeTitle, type WikiDetail } from "./type.ts";
 import { wikiDetail } from "./validator.ts";
 

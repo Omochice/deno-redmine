@@ -1,5 +1,5 @@
 import type { Context } from "../context.ts";
-import { parse } from "jsr:@valibot/valibot@1.4.2";
+import { parse } from "jsr:@valibot/valibot@1.5.0";
 import { buildUrl } from "../internal/url.ts";
 import { walkPages } from "../internal/paging.ts";
 import type { ListIssue, ListIssueQuery } from "./type.ts";

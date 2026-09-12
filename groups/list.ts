@@ -1,4 +1,4 @@
-import { array, object, parse } from "jsr:@valibot/valibot@1.4.2";
+import { array, object, parse } from "jsr:@valibot/valibot@1.5.0";
 import { buildUrl } from "../internal/url.ts";
 import type { Context } from "../context.ts";
 import type { IdName } from "../internal/type.ts";

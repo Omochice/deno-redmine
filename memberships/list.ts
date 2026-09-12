@@ -1,5 +1,5 @@
 import type { ProjectRef } from "../projects/type.ts";
-import { array, number, object, parse } from "jsr:@valibot/valibot@1.4.2";
+import { array, number, object, parse } from "jsr:@valibot/valibot@1.5.0";
 import { buildUrl } from "../internal/url.ts";
 import { walkPages } from "../internal/paging.ts";
 import type { Context } from "../context.ts";
