@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import { array, object, parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
 import type { Context } from "../context.ts";
@@ -14,12 +15,12 @@ const responseSchema = object({
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
+ * @param projectId Project id or identifier
  * @returns Yields each Version
  */
 export async function* list(
   context: Context,
-  projectId: number,
+  projectId: ProjectRef,
 ): AsyncGenerator<Version> {
   const url = buildUrl(
     context.endpoint,

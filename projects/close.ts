@@ -1,10 +1,11 @@
+import type { ProjectRef } from "./type.ts";
 import { buildUrl } from "../internal/url.ts";
 import type { Context } from "../context.ts";
 import { assertResponse } from "../error.ts";
 
 async function internal(
   context: Context,
-  id: number,
+  id: ProjectRef,
   method: "close" | "reopen",
 ): Promise<void> {
   const url = buildUrl(context.endpoint, "projects", `${id}`, `${method}.json`);
@@ -18,10 +19,10 @@ async function internal(
   await assertResponse(response);
 }
 
-export async function close(context: Context, id: number): Promise<void> {
+export async function close(context: Context, id: ProjectRef): Promise<void> {
   return await internal(context, id, "close");
 }
 
-export async function reopen(context: Context, id: number): Promise<void> {
+export async function reopen(context: Context, id: ProjectRef): Promise<void> {
   return await internal(context, id, "reopen");
 }

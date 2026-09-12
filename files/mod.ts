@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import type { Context } from "../context.ts";
 import { list } from "./list.ts";
 import { create } from "./create.ts";
@@ -14,20 +15,20 @@ export class Client {
   /**
    * Returns all files attached to the project.
    *
-   * @param projectId Project identifier
+   * @param projectId Project id or identifier
    */
-  list(projectId: number): ReturnType<typeof list> {
+  list(projectId: ProjectRef): ReturnType<typeof list> {
     return list(this.#context, projectId);
   }
 
   /**
    * Creates a file for the project from a previously uploaded token.
    *
-   * @param projectId Project identifier
+   * @param projectId Project id or identifier
    * @param file The file attributes, including the upload token
    */
   create(
-    projectId: number,
+    projectId: ProjectRef,
     file: CreateFileQuery,
   ): ReturnType<typeof create> {
     return create(this.#context, projectId, file);

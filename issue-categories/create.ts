@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import { parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
 import type { Context } from "../context.ts";
@@ -10,12 +11,12 @@ import { assertResponse } from "../error.ts";
  * This may throw `Error`
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
+ * @param projectId Project id or identifier
  * @param issueCategory Issue category attributes to create it
  */
 export async function create(
   context: Context,
-  projectId: number,
+  projectId: ProjectRef,
   issueCategory: CreateIssueCategoryQuery,
 ): Promise<void> {
   const url = buildUrl(

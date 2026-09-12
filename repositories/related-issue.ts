@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import { buildUrl } from "../internal/url.ts";
 import type { Context } from "../context.ts";
 import { assertResponse } from "../error.ts";
@@ -5,7 +6,7 @@ import { assertResponse } from "../error.ts";
 // Redmine falls back to the project's default repository when repository_id
 // is absent, so it is an optional path segment.
 function revisionSegments(
-  projectId: number,
+  projectId: ProjectRef,
   rev: string,
   repositoryId?: string,
 ): string[] {
@@ -17,8 +18,8 @@ function revisionSegments(
 }
 
 export type RelatedIssueParams = {
-  /** Project identifier */
-  projectId: number;
+  /** Project id or identifier */
+  projectId: ProjectRef;
   /** Revision identifier */
   rev: string;
   /** Issue identifier to relate/remove */

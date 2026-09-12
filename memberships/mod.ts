@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import type { Context } from "../context.ts";
 import { list } from "./list.ts";
 import { show } from "./show.ts";
@@ -16,9 +17,9 @@ export class Client {
   /**
    * Returns all memberships of the project.
    *
-   * @param projectId Project identifier
+   * @param projectId Project id or identifier
    */
-  list(projectId: number): ReturnType<typeof list> {
+  list(projectId: ProjectRef): ReturnType<typeof list> {
     return list(this.#context, projectId);
   }
 
@@ -34,11 +35,11 @@ export class Client {
   /**
    * Creates a membership for the project.
    *
-   * @param projectId Project identifier
+   * @param projectId Project id or identifier
    * @param membership The membership attributes
    */
   create(
-    projectId: number,
+    projectId: ProjectRef,
     membership: CreateMembershipQuery,
   ): ReturnType<typeof create> {
     return create(this.#context, projectId, membership);

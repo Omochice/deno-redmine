@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import { parse } from "jsr:@valibot/valibot@1.4.2";
 import { buildUrl } from "../internal/url.ts";
 import type { News } from "./type.ts";
@@ -9,12 +10,12 @@ import { listNewsResponse } from "./validator.ts";
  * Fetch news of the given project
  *
  * @param context REST endpoint context
- * @param projectId Project identifier
+ * @param projectId Project id or identifier
  * @return Yields each News
  */
 export async function* listByProject(
   context: Context,
-  projectId: number,
+  projectId: ProjectRef,
 ): AsyncGenerator<News> {
   const endpoint = buildUrl(
     context.endpoint,

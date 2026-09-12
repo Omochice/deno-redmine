@@ -1,3 +1,4 @@
+import type { ProjectRef } from "../projects/type.ts";
 import type { Context } from "../context.ts";
 import type { WikiContent } from "./type.ts";
 import { list } from "./list.ts";
@@ -15,10 +16,10 @@ export class Client {
   /**
    * Fetch all wiki pages included in the project
    *
-   * @param projectId The project ID
+   * @param projectId Project id or identifier
    * @returns Wiki pages
    */
-  list(projectId: number): ReturnType<typeof list> {
+  list(projectId: ProjectRef): ReturnType<typeof list> {
     return list(this.#context, projectId);
   }
 
@@ -35,30 +36,30 @@ export class Client {
   /**
    * Update a wiki page in the project
    *
-   * @param projectId The project ID
+   * @param projectId Project id or identifier
    * @param wiki wiki content object
    */
-  update(projectId: number, wiki: WikiContent): ReturnType<typeof update> {
+  update(projectId: ProjectRef, wiki: WikiContent): ReturnType<typeof update> {
     return update(this.#context, projectId, wiki);
   }
 
   /**
    * Create a wiki page in the project
    *
-   * @param projectId The project ID
+   * @param projectId Project id or identifier
    * @param wiki wiki content object
    */
-  create(projectId: number, wiki: WikiContent): ReturnType<typeof update> {
+  create(projectId: ProjectRef, wiki: WikiContent): ReturnType<typeof update> {
     return create(this.#context, projectId, wiki);
   }
 
   /**
    * Delete a wiki page in the project
    *
-   * @param projectId The project ID
+   * @param projectId Project id or identifier
    * @param title Title for wiki page
    */
-  delete(projectId: number, title: string): ReturnType<typeof deleteWiki> {
+  delete(projectId: ProjectRef, title: string): ReturnType<typeof deleteWiki> {
     return deleteWiki(this.#context, projectId, title);
   }
 }
