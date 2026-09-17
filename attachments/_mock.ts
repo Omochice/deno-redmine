@@ -7,22 +7,36 @@ export const context = {
   endpoint: "http://redmine.example.com",
 };
 
-export const validHandlers = [
-  http.get(`${context.endpoint}/attachments/:id.json`, ({ params }) => {
+export const contentPath = "/attachments/download/6243/example.txt";
+
+export const attachmentContent = "example content";
+
+export function showHandler(overrides: { content_url?: string } = {}) {
+  return http.get(`${context.endpoint}/attachments/:id.json`, ({ params }) => {
     const attachment = {
       id: Number(params.id),
       filename: "example.txt",
       filesize: 124,
       content_type: "text/plain",
       description: "An optional description",
-      content_url:
-        "http://redmine.example.com/attachments/download/6243/example.txt",
+      content_url: `${context.endpoint}${contentPath}`,
       thumbnail_url: "http://redmine.example.com/attachments/thumbnail/6243",
       author: { id: 1, name: "Redmine Admin" },
       created_on: "2026-07-13T00:00:00.000Z",
-    } as const;
+      ...overrides,
+    };
     return HttpResponse.json({ attachment });
+  });
+}
+
+export const contentHandlers = [
+  http.get(`${context.endpoint}${contentPath}`, () => {
+    return HttpResponse.text(attachmentContent);
   }),
+];
+
+export const validHandlers = [
+  showHandler(),
   http.patch(`${context.endpoint}/attachments/:id.json`, () => {
     return new HttpResponse(null, { status: STATUS_CODE.NoContent });
   }),

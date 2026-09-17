@@ -1,5 +1,6 @@
 import type { Context } from "../context.ts";
 import { show } from "./show.ts";
+import { download } from "./download.ts";
 import type { UpdateAttachmentQuery } from "./type.ts";
 import { update } from "./update.ts";
 import { deleteAttachment } from "./delete.ts";
@@ -18,6 +19,15 @@ export class Client {
    */
   show(id: number): ReturnType<typeof show> {
     return show(this.#context, id);
+  }
+
+  /**
+   * Downloads the content of the attachment of given id.
+   *
+   * @param id Attachment identifier
+   */
+  download(id: number): ReturnType<typeof download> {
+    return download(this.#context, id);
   }
 
   /**

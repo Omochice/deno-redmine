@@ -3,6 +3,7 @@ import { e2eContext } from "./context.ts";
 import { show } from "../attachments/show.ts";
 import { update } from "../attachments/update.ts";
 import { deleteAttachment } from "../attachments/delete.ts";
+import { download } from "../attachments/download.ts";
 
 const headers = {
   "Content-Type": "application/json",
@@ -135,6 +136,16 @@ Deno.test({
         expect(shown.description).toStrictEqual(
           "Updated by E2E test",
         );
+      },
+    );
+
+    await t.step(
+      "GET the attachment content should return the whole file",
+      async () => {
+        const downloaded = await download(e2eContext, attachmentId);
+        expect(downloaded.filename).toStrictEqual("e2e-attachment.txt");
+        const bytes = await new Response(downloaded.body).bytes();
+        expect(bytes.length).toStrictEqual(downloaded.filesize);
       },
     );
 

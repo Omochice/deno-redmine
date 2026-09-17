@@ -142,6 +142,7 @@
     "./attachments": "./attachments/mod.ts",
     "./attachments/type": "./attachments/type.ts",
     "./attachments/show": "./attachments/show.ts",
+    "./attachments/download": "./attachments/download.ts",
     "./attachments/update": "./attachments/update.ts",
     "./attachments/delete": "./attachments/delete.ts",
     "./attachments/validator": "./attachments/validator.ts",
