@@ -144,7 +144,7 @@ Deno.test("GET the attachment content", async (t) => {
     },
   );
 
-  await t.step("if redirected more than 5 times, should throw", async () => {
+  await t.step("if redirected more than 20 times, should throw", async () => {
     server.use(
       ...validHandlers,
       http.get(`${context.endpoint}${contentPath}`, () => {
@@ -158,13 +158,13 @@ Deno.test("GET the attachment content", async (t) => {
     await expect(download(context, 6243)).rejects.toThrow();
   });
 
-  await t.step("if redirected exactly 5 times, should resolve", async () => {
+  await t.step("if redirected exactly 20 times, should resolve", async () => {
     let hops = 0;
     server.use(
       ...validHandlers,
       http.get(`${context.endpoint}${contentPath}`, () => {
         hops += 1;
-        if (hops <= 5) {
+        if (hops <= 20) {
           return HttpResponse.redirect(
             `${context.endpoint}${contentPath}`,
             STATUS_CODE.Found,

@@ -4,7 +4,10 @@ import { show } from "./show.ts";
 import { assertResponse } from "../error.ts";
 import { isRedirectStatus } from "jsr:@std/http@1.1.3/status";
 
-const maxRedirects = 5;
+// The Fetch standard's own limit. Redirects are followed by hand only to keep
+// the API key from crossing origins, so everything else stays as `fetch` would
+// have it.
+const maxRedirects = 20;
 
 async function fetchContent(context: Context, url: URL): Promise<Response> {
   const endpointOrigin = new URL(context.endpoint).origin;
