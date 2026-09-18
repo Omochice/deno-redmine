@@ -12,10 +12,9 @@ async function fetchContent(context: Context, url: URL): Promise<Response> {
   for (let followed = 0; followed <= maxRedirects; followed++) {
     const response = await fetch(current, {
       method: "GET",
-      // The API key is sent to the endpoint's own origin only. A plugin that
-      // offloads storage redirects to a presigned URL carrying its own
-      // signature, and `fetch` would otherwise carry a custom header across
-      // origins, unlike `Authorization`.
+      // Left to `fetch`, a custom header would follow a redirect across
+      // origins, unlike `Authorization`. A plugin that offloads storage
+      // redirects to a presigned URL, which carries its own signature.
       headers: current.origin === endpointOrigin
         ? { "X-Redmine-API-Key": context.apiKey }
         : {},
@@ -57,8 +56,7 @@ export async function download(
 
   // A Redmine behind a misconfigured reverse proxy reports `content_url` with
   // the scheme and host it knows itself by, which can be plain http even when
-  // it was reached over https, so only the path is taken from it and the
-  // endpoint decides where the request actually goes.
+  // it was reached over https.
   const contentUrl = new URL(attachment.contentUrl);
   const url = new URL(context.endpoint);
   url.pathname = contentUrl.pathname;
