@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/Omochice/deno-redmine/compare/v3.3.0...v3.4.0) (2026-09-20)
+
+
+### Features
+
+* download the content of an attachment ([#495](https://github.com/Omochice/deno-redmine/issues/495)) ([ed56a99](https://github.com/Omochice/deno-redmine/commit/ed56a99b6bd9b064bd53b9557f104feb14ae82c9))
+
 ## [3.3.0](https://github.com/Omochice/deno-redmine/compare/v3.2.0...v3.3.0) (2026-09-12)
 
 
