@@ -262,6 +262,7 @@ export const toUpdateRequest = pipe(
     estimatedHours: number(),
     startDate: toRedmineDate,
     dueDate: toRedmineDate,
+    fixedVersionId: number(),
     customFields: array(object({
       id: number(),
       value: optional(union([string(), array(string())])),
