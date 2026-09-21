@@ -25,6 +25,7 @@ export type Issue = {
   assignedTo?: IdName;
   category?: IdName;
   fixedVersion?: IdName;
+  parent?: { id: number };
   subject: string;
   description?: string;
   startDate?: Date;

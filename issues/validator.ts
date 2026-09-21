@@ -87,6 +87,7 @@ export const issueSchema = pipe(
       optional(union([idName, null_()])),
       transform(toUndefined),
     ),
+    parent: optional(object({ id: number() })),
     subject: string(),
     description: pipe(
       union([string(), null_()]),
