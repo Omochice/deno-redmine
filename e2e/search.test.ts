@@ -33,9 +33,10 @@ Deno.test({
     await t.step(
       "GET /search.json should return an empty array when the query is too short to search",
       async () => {
-        // Redmine skips the search for a one-character query and answers
-        // `total_count: null`, unlike the `0` it answers for a query that
-        // merely matches nothing.
+        // Redmine drops every token shorter than two characters unless it is
+        // a Han character, and skips the search when none is left. It then
+        // answers `total_count: null`, unlike the `0` it answers for a query
+        // that merely matches nothing.
         const results = await Array.fromAsync(search(e2eContext, { q: "a" }));
         expect(results).toStrictEqual([]);
       },
