@@ -30,7 +30,7 @@ Deno.test("GET /search.json", async (t) => {
   );
 
   await t.step(
-    "if nothing matches and total_count is null, should resolve to an empty array",
+    "if total_count is null, should resolve to an empty array",
     async () => {
       server.resetHandlers(
         http.get(`${context.endpoint}/search.json`, () =>
@@ -41,7 +41,7 @@ Deno.test("GET /search.json", async (t) => {
             limit: 25,
           })),
       );
-      const items = await Array.fromAsync(search(context, { q: "no-hit" }));
+      const items = await Array.fromAsync(search(context, { q: "a" }));
       expect(items).toStrictEqual([]);
     },
   );
