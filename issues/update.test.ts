@@ -111,6 +111,23 @@ Deno.test("PUT /issues/:id.json", async (t) => {
   );
 
   await t.step(
+    "should send assignedToId, categoryId, and parentIssueId as snake_case ids",
+    async () => {
+      const issue = await sentIssue({
+        assignedToId: 5,
+        categoryId: 6,
+        parentIssueId: 7,
+      });
+
+      expect(issue).toStrictEqual({
+        assigned_to_id: 5,
+        category_id: 6,
+        parent_issue_id: 7,
+      });
+    },
+  );
+
+  await t.step(
     "should keep custom field values in the request body",
     async () => {
       const issue = await sentIssue({
