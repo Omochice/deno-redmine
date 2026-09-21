@@ -99,6 +99,7 @@ export type ListIssue = Issue & Pick<Include, "attachments" | "relations">;
 export type UpdateOption = {
   notes?: string;
   privateNotes?: boolean;
+  /** `null` detaches the issue from its version. */
   fixedVersionId?: number | null;
 };
 
