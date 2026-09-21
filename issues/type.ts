@@ -103,8 +103,11 @@ export type UpdateOption = {
   statusId?: number;
   priorityId?: number;
   trackerId?: number;
+  /** `null` unassigns the issue. */
   assignedToId?: number | null;
+  /** `null` removes the issue from its category. */
   categoryId?: number | null;
+  /** `null` detaches the issue from its parent. */
   parentIssueId?: number | null;
   /** `null` detaches the issue from its version. */
   fixedVersionId?: number | null;
