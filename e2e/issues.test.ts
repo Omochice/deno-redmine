@@ -595,9 +595,8 @@ Deno.test({
         const listMoveVersions = async () =>
           (await Array.fromAsync(listVersions(e2eContext, project!.id)))
             .filter((v) => versionNames.includes(v.name));
-        // Registered before anything is created and resolved by name at
-        // dispose time: version names are unique per project, so a version
-        // left behind by an aborted run would otherwise fail every later run.
+        // Version names are unique per project, so one left behind by an
+        // aborted run would fail every later run.
         cleanup.defer(async () => {
           for (const version of await listMoveVersions()) {
             await deleteVersion(e2eContext, version.id);
@@ -618,8 +617,7 @@ Deno.test({
           (await Array.fromAsync(list(e2eContext, {
             projectId: project!.id,
           }))).filter((i) => i.subject === subject);
-        // Deferred after the versions so it runs first: Redmine refuses to
-        // delete a version that still has issues attached.
+        // Redmine refuses to delete a version that still has issues attached.
         cleanup.defer(async () => {
           for (const issue of await listMoveIssues()) {
             await deleteIssue(e2eContext, issue.id);
