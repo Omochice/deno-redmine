@@ -76,6 +76,25 @@ Deno.test("GET /issues/:id.json fixed version", async (t) => {
       expect(issue.fixedVersion).toStrictEqual({ id: 2, name: "v1.0" });
     },
   );
+
+  await t.step(
+    "should return a null fixed_version as undefined",
+    async () => {
+      server.resetHandlers(
+        http.get(
+          `${context.endpoint}/issues/:id.json`,
+          () =>
+            HttpResponse.json({
+              issue: { ...sampleIssue, fixed_version: null },
+            }),
+        ),
+      );
+
+      const issue = await show(context, 1);
+
+      expect(issue.fixedVersion).toBeUndefined();
+    },
+  );
 });
 
 Deno.test("GET /issues/:id.json include option", async (t) => {
