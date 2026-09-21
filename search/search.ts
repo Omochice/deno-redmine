@@ -1,4 +1,10 @@
-import { array, number, object, parse } from "jsr:@valibot/valibot@1.5.0";
+import {
+  array,
+  nullable,
+  number,
+  object,
+  parse,
+} from "jsr:@valibot/valibot@1.5.0";
 import { buildUrl } from "../internal/url.ts";
 import { walkPages } from "../internal/paging.ts";
 import type { Context } from "../context.ts";
@@ -8,7 +14,7 @@ import { assertResponse } from "../error.ts";
 
 const responseSchema = object({
   results: array(searchResultSchema),
-  total_count: number(),
+  total_count: nullable(number()),
   offset: number(),
   limit: number(),
 });
@@ -41,6 +47,6 @@ export async function* search(
     });
     await assertResponse(response);
     const parsed = parse(responseSchema, await response.json());
-    return { items: parsed.results, totalCount: parsed.total_count };
+    return { items: parsed.results, totalCount: parsed.total_count ?? 0 };
   }, { pageSize: 25 });
 }
