@@ -83,6 +83,7 @@ export const issueSchema = pipe(
       optional(union([idName, null_()])),
       transform(toUndefined),
     ),
+    fixed_version: optional(idName),
     subject: string(),
     description: pipe(
       union([string(), null_()]),

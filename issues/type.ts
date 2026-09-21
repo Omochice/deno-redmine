@@ -24,6 +24,7 @@ export type Issue = {
   author: IdName;
   assignedTo?: IdName;
   category?: IdName;
+  fixedVersion?: IdName;
   subject: string;
   description?: string;
   startDate?: Date;
