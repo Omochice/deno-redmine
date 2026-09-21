@@ -128,19 +128,26 @@ Deno.test("PUT /issues/:id.json", async (t) => {
   );
 
   await t.step(
-    "should send a null assignedToId, categoryId, and parentIssueId as null to clear them",
+    "should send a null categoryId and parentIssueId as null to clear them",
     async () => {
       const issue = await sentIssue({
-        assignedToId: null,
         categoryId: null,
         parentIssueId: null,
       });
 
       expect(issue).toStrictEqual({
-        assigned_to_id: null,
         category_id: null,
         parent_issue_id: null,
       });
+    },
+  );
+
+  await t.step(
+    "should send a null assignedToId as an empty string, because Redmine ignores a null assignee",
+    async () => {
+      const issue = await sentIssue({ assignedToId: null });
+
+      expect(issue).toStrictEqual({ assigned_to_id: "" });
     },
   );
 
