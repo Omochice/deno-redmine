@@ -576,6 +576,75 @@ Deno.test({
     );
 
     await t.step(
+      "PUT /issues/:id.json should assign, move, and clear the fixed version",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        await using cleanup = new AsyncDisposableStack();
+
+        const versionNames = ["E2E Move Version A", "E2E Move Version B"];
+        for (const name of versionNames) {
+          await createVersion(e2eContext, project!.id, { name });
+        }
+        const versions =
+          (await Array.fromAsync(listVersions(e2eContext, project!.id)))
+            .filter((v) => versionNames.includes(v.name));
+        for (const version of versions) {
+          cleanup.defer(() => deleteVersion(e2eContext, version.id));
+        }
+        const [versionA, versionB] = versionNames.map((name) =>
+          versions.find((v) => v.name === name)
+        );
+        expect(versionA).toBeDefined();
+        expect(versionB).toBeDefined();
+
+        const subject = "E2E Move Version Issue";
+        await createIssue(e2eContext, {
+          projectId: project!.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
+          subject,
+        });
+        const created = (await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }))).filter((i) => i.subject === subject);
+        // Deferred after the versions so it runs first: Redmine refuses to
+        // delete a version that still has issues attached.
+        for (const issue of created) {
+          cleanup.defer(() => deleteIssue(e2eContext, issue.id));
+        }
+        expect(created.length).toBe(1);
+        const issueId = created[0].id;
+        expect(created[0].fixedVersion).toBeUndefined();
+
+        await update(e2eContext, issueId, { fixedVersionId: versionA!.id });
+        expect((await show(e2eContext, issueId)).fixedVersion).toStrictEqual({
+          id: versionA!.id,
+          name: versionA!.name,
+        });
+
+        await update(e2eContext, issueId, { fixedVersionId: versionB!.id });
+        expect((await show(e2eContext, issueId)).fixedVersion).toStrictEqual({
+          id: versionB!.id,
+          name: versionB!.name,
+        });
+
+        await update(e2eContext, issueId, { fixedVersionId: null });
+        expect((await show(e2eContext, issueId)).fixedVersion).toBeUndefined();
+      },
+    );
+
+    await t.step(
       "GET /issues.json with subprojectId excludes subproject issues",
       async () => {
         const projects = await Array.fromAsync(listProjects(e2eContext));
