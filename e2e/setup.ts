@@ -70,6 +70,13 @@ async function setupRedmine(): Promise<string> {
     'IssuePriority.create!(name: "Normal") if IssuePriority.count == 0',
     'Role.create!(name: "E2E Role") if Role.givable.count == 0',
     'TimeEntryActivity.create!(name: "Development") if TimeEntryActivity.count == 0',
+    // Redmine drops a status_id the workflow does not allow without an error,
+    // and only counts the transitions of roles that can edit issues.
+    'next_status = IssueStatus.find_or_create_by!(name: "E2E In Progress")',
+    'IssuePriority.find_or_create_by!(name: "E2E High")',
+    'Tracker.find_or_create_by!(name: "E2E Feature") { |t| t.default_status = IssueStatus.first }',
+    'workflow_role = Role.find_or_create_by!(name: "E2E Workflow Role") { |r| r.permissions = [:edit_issues] }',
+    "Tracker.all.each { |t| WorkflowTransition.find_or_create_by!(tracker_id: t.id, role_id: workflow_role.id, old_status_id: IssueStatus.first.id, new_status_id: next_status.id) }",
     'cf = IssueCustomField.find_by(name: "E2E CF")',
     '(cf.destroy; cf = nil) if cf && (cf.field_format != "string" || !cf.is_for_all)',
     'cf ||= IssueCustomField.create!(name: "E2E CF", field_format: "string", is_for_all: true)',

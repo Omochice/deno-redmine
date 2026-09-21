@@ -25,6 +25,7 @@ export type Issue = {
   assignedTo?: IdName;
   category?: IdName;
   fixedVersion?: IdName;
+  parent?: { id: number };
   subject: string;
   description?: string;
   startDate?: Date;
@@ -99,6 +100,17 @@ export type ListIssue = Issue & Pick<Include, "attachments" | "relations">;
 export type UpdateOption = {
   notes?: string;
   privateNotes?: boolean;
+  /** Redmine ignores, without an error, a status the workflow does not allow. */
+  statusId?: number;
+  priorityId?: number;
+  /** Changing the tracker can reset the status. */
+  trackerId?: number;
+  /** `null` unassigns the issue. */
+  assignedToId?: number | null;
+  /** `null` removes the issue from its category. */
+  categoryId?: number | null;
+  /** `null` detaches the issue from its parent. */
+  parentIssueId?: number | null;
   /** `null` detaches the issue from its version. */
   fixedVersionId?: number | null;
 };

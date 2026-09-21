@@ -200,6 +200,24 @@ Deno.test("list fixed version", async (t) => {
   );
 });
 
+Deno.test("list parent", async (t) => {
+  await t.step("should return the parent issue id", async () => {
+    server.resetHandlers(
+      http.get(`${context.endpoint}/issues.json`, () =>
+        HttpResponse.json({
+          issues: [{ ...sampleIssue(1), parent: { id: 7 } }],
+          total_count: 1,
+          offset: 0,
+          limit: 25,
+        })),
+    );
+
+    const issues = await Array.fromAsync(list(context));
+
+    expect(issues.map((issue) => issue.parent)).toStrictEqual([{ id: 7 }]);
+  });
+});
+
 Deno.test("list include option", async (t) => {
   await t.step(
     "sends a single include value as-is",

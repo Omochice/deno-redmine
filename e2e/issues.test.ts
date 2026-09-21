@@ -15,6 +15,8 @@ import { deleteVersion } from "../versions/delete.ts";
 import { create as createCategory } from "../issue-categories/create.ts";
 import { list as listCategories } from "../issue-categories/list.ts";
 import { deleteIssueCategory } from "../issue-categories/delete.ts";
+import { list as listTrackers } from "../trackers/list.ts";
+import { listIssuePriorities } from "../enumerations/list.ts";
 
 Deno.test({
   name: "E2E: Issues API",
@@ -649,6 +651,206 @@ Deno.test({
 
         await update(e2eContext, issueId, { fixedVersionId: null });
         expect((await show(e2eContext, issueId)).fixedVersion).toBeUndefined();
+      },
+    );
+
+    await t.step(
+      "PUT /issues/:id.json should change the status, priority, and tracker",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        await using cleanup = new AsyncDisposableStack();
+
+        const subject = "E2E Retriage Issue";
+        // statusId "*" because the default listing hides closed issues, and
+        // the status this test moves to is whatever the workflow allows.
+        const listRetriageIssues = async () =>
+          (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+            statusId: "*",
+          }))).filter((i) => i.subject === subject);
+        cleanup.defer(async () => {
+          for (const issue of await listRetriageIssues()) {
+            await deleteIssue(e2eContext, issue.id);
+          }
+        });
+        await createIssue(e2eContext, {
+          projectId: project!.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
+          subject,
+        });
+        const created = await listRetriageIssues();
+        expect(created.length).toBe(1);
+        const issueId = created[0].id;
+
+        // Redmine silently ignores a status the workflow does not allow, so
+        // the target has to come from the issue's own allowed statuses.
+        const { allowedStatuses } = await show(e2eContext, issueId, [
+          "allowed_statuses",
+        ]);
+        const nextStatus = allowedStatuses?.find((s) =>
+          s.id !== created[0].status.id
+        );
+        expect(nextStatus).toBeDefined();
+        await update(e2eContext, issueId, { statusId: nextStatus!.id });
+        expect((await show(e2eContext, issueId)).status.id).toBe(
+          nextStatus!.id,
+        );
+
+        const nextPriority =
+          (await Array.fromAsync(listIssuePriorities(e2eContext)))
+            .find((p) => p.id !== created[0].priority.id);
+        expect(nextPriority).toBeDefined();
+        await update(e2eContext, issueId, { priorityId: nextPriority!.id });
+        expect((await show(e2eContext, issueId)).priority.id).toBe(
+          nextPriority!.id,
+        );
+
+        // Changed last and asserted alone: switching the tracker can reset
+        // the status to the new tracker's default.
+        const nextTracker = (await Array.fromAsync(listTrackers(e2eContext)))
+          .find((tr) => tr.id !== created[0].tracker.id);
+        expect(nextTracker).toBeDefined();
+        await update(e2eContext, issueId, { trackerId: nextTracker!.id });
+        expect((await show(e2eContext, issueId)).tracker.id).toBe(
+          nextTracker!.id,
+        );
+      },
+    );
+
+    await t.step(
+      "PUT /issues/:id.json should set and clear the assignee and category",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        await using cleanup = new AsyncDisposableStack();
+
+        const categoryName = "E2E Update Category";
+        const listUpdateCategories = async () =>
+          (await Array.fromAsync(listCategories(e2eContext, project!.id)))
+            .filter((c) => c.name === categoryName);
+        cleanup.defer(async () => {
+          for (const category of await listUpdateCategories()) {
+            await deleteIssueCategory(e2eContext, category.id);
+          }
+        });
+        await createCategory(e2eContext, project!.id, { name: categoryName });
+        const [category] = await listUpdateCategories();
+        expect(category).toBeDefined();
+
+        const subject = "E2E Reassign Issue";
+        const listReassignIssues = async () =>
+          (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).filter((i) => i.subject === subject);
+        cleanup.defer(async () => {
+          for (const issue of await listReassignIssues()) {
+            await deleteIssue(e2eContext, issue.id);
+          }
+        });
+        await createIssue(e2eContext, {
+          projectId: project!.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
+          subject,
+        });
+        const created = await listReassignIssues();
+        expect(created.length).toBe(1);
+        const issueId = created[0].id;
+        // The author is assignable without any project membership.
+        const authorId = created[0].author.id;
+
+        await update(e2eContext, issueId, {
+          assignedToId: authorId,
+          categoryId: category.id,
+        });
+        const assigned = await show(e2eContext, issueId);
+        expect(assigned.assignedTo?.id).toBe(authorId);
+        expect(assigned.category?.id).toBe(category.id);
+
+        await update(e2eContext, issueId, {
+          assignedToId: null,
+          categoryId: null,
+        });
+        const cleared = await show(e2eContext, issueId);
+        expect(cleared.assignedTo).toBeUndefined();
+        expect(cleared.category).toBeUndefined();
+      },
+    );
+
+    await t.step(
+      "PUT /issues/:id.json should set and clear the parent",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        await using cleanup = new AsyncDisposableStack();
+
+        const subjects = ["E2E Reparent Parent", "E2E Reparent Child"];
+        const listReparentIssues = async () =>
+          (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).filter((i) => subjects.includes(i.subject));
+        // Deleting a parent cascades to its children, so a child that is
+        // already gone must not fail the cleanup.
+        cleanup.defer(async () => {
+          for (const issue of await listReparentIssues()) {
+            await deleteIssue(e2eContext, issue.id).catch(() => {});
+          }
+        });
+        for (const subject of subjects) {
+          await createIssue(e2eContext, {
+            projectId: project!.id,
+            trackerId: issues[0].tracker.id,
+            statusId: issues[0].status.id,
+            priorityId: issues[0].priority.id,
+            subject,
+          });
+        }
+        const created = await listReparentIssues();
+        const [parent, child] = subjects.map((subject) =>
+          created.find((i) => i.subject === subject)
+        );
+        expect(parent).toBeDefined();
+        expect(child).toBeDefined();
+        expect(child!.parent).toBeUndefined();
+
+        await update(e2eContext, child!.id, { parentIssueId: parent!.id });
+        expect((await show(e2eContext, child!.id)).parent).toStrictEqual({
+          id: parent!.id,
+        });
+
+        await update(e2eContext, child!.id, { parentIssueId: null });
+        expect((await show(e2eContext, child!.id)).parent).toBeUndefined();
       },
     );
 

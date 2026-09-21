@@ -87,6 +87,7 @@ export const issueSchema = pipe(
       optional(union([idName, null_()])),
       transform(toUndefined),
     ),
+    parent: optional(object({ id: number() })),
     subject: string(),
     description: pipe(
       union([string(), null_()]),
@@ -267,6 +268,17 @@ export const toUpdateRequest = pipe(
     estimatedHours: number(),
     startDate: toRedmineDate,
     dueDate: toRedmineDate,
+    statusId: number(),
+    priorityId: number(),
+    trackerId: number(),
+    // Redmine ignores assigned_to_id: null and only unassigns on a blank
+    // string, unlike the other nullable ids here, which clear on null.
+    assignedToId: pipe(
+      nullable(number()),
+      transform((id) => id ?? ""),
+    ),
+    categoryId: nullable(number()),
+    parentIssueId: nullable(number()),
     fixedVersionId: nullable(number()),
     customFields: array(object({
       id: number(),

@@ -3,9 +3,32 @@ import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "npm:msw@2.15.0/node";
 import { http, HttpResponse } from "npm:msw@2.15.0";
+import type { UpdateIssueQuery } from "./type.ts";
 
 const server = setupServer();
 server.listen();
+
+async function sentIssue(
+  query: UpdateIssueQuery,
+): Promise<Record<string, unknown>> {
+  let capturedBody: { issue: Record<string, unknown> } | undefined;
+  server.resetHandlers(
+    http.put(
+      `${context.endpoint}/issues/:id.json`,
+      async ({ request }) => {
+        capturedBody = await request.json() as {
+          issue: Record<string, unknown>;
+        };
+        return HttpResponse.json({});
+      },
+    ),
+  );
+
+  await update(context, 1, query);
+
+  expect(capturedBody).toBeDefined();
+  return capturedBody!.issue;
+}
 
 Deno.test("PUT /issues/:id.json", async (t) => {
   await t.step("if got 200, should resolve", async () => {
@@ -30,20 +53,7 @@ Deno.test("PUT /issues/:id.json", async (t) => {
   await t.step(
     "should send camelCase fields as snake_case in the request body",
     async () => {
-      let capturedBody: { issue: Record<string, unknown> } | undefined;
-      server.resetHandlers(
-        http.put(
-          `${context.endpoint}/issues/:id.json`,
-          async ({ request }) => {
-            capturedBody = await request.json() as {
-              issue: Record<string, unknown>;
-            };
-            return HttpResponse.json({});
-          },
-        ),
-      );
-
-      await update(context, 1, {
+      const issue = await sentIssue({
         subject: "updated subject",
         notes: "a note",
         privateNotes: true,
@@ -54,8 +64,6 @@ Deno.test("PUT /issues/:id.json", async (t) => {
         dueDate: new Date("2026-07-31"),
       });
 
-      expect(capturedBody).toBeDefined();
-      const { issue } = capturedBody!;
       expect(issue.subject).toStrictEqual("updated subject");
       expect(issue.notes).toStrictEqual("a note");
       expect(issue.private_notes).toStrictEqual(true);
@@ -70,77 +78,102 @@ Deno.test("PUT /issues/:id.json", async (t) => {
   await t.step(
     "should send fixedVersionId as fixed_version_id in the request body",
     async () => {
-      let capturedBody: { issue: Record<string, unknown> } | undefined;
-      server.resetHandlers(
-        http.put(
-          `${context.endpoint}/issues/:id.json`,
-          async ({ request }) => {
-            capturedBody = await request.json() as {
-              issue: Record<string, unknown>;
-            };
-            return HttpResponse.json({});
-          },
-        ),
-      );
+      const issue = await sentIssue({ fixedVersionId: 2 });
 
-      await update(context, 1, { fixedVersionId: 2 });
-
-      expect(capturedBody).toBeDefined();
-      expect(capturedBody!.issue.fixed_version_id).toStrictEqual(2);
+      expect(issue.fixed_version_id).toStrictEqual(2);
     },
   );
 
   await t.step(
     "should send a null fixedVersionId as fixed_version_id: null to detach the version",
     async () => {
-      let capturedBody: { issue: Record<string, unknown> } | undefined;
-      server.resetHandlers(
-        http.put(
-          `${context.endpoint}/issues/:id.json`,
-          async ({ request }) => {
-            capturedBody = await request.json() as {
-              issue: Record<string, unknown>;
-            };
-            return HttpResponse.json({});
-          },
-        ),
-      );
+      const issue = await sentIssue({ fixedVersionId: null });
 
-      await update(context, 1, { fixedVersionId: null });
+      expect(issue).toStrictEqual({ fixed_version_id: null });
+    },
+  );
 
-      expect(capturedBody).toBeDefined();
-      expect(capturedBody!.issue).toStrictEqual({ fixed_version_id: null });
+  await t.step(
+    "should send statusId, priorityId, and trackerId as snake_case ids",
+    async () => {
+      const issue = await sentIssue({
+        statusId: 2,
+        priorityId: 3,
+        trackerId: 4,
+      });
+
+      expect(issue).toStrictEqual({
+        status_id: 2,
+        priority_id: 3,
+        tracker_id: 4,
+      });
+    },
+  );
+
+  await t.step(
+    "should send assignedToId, categoryId, and parentIssueId as snake_case ids",
+    async () => {
+      const issue = await sentIssue({
+        assignedToId: 5,
+        categoryId: 6,
+        parentIssueId: 7,
+      });
+
+      expect(issue).toStrictEqual({
+        assigned_to_id: 5,
+        category_id: 6,
+        parent_issue_id: 7,
+      });
+    },
+  );
+
+  await t.step(
+    "should send a null categoryId and parentIssueId as null to clear them",
+    async () => {
+      const issue = await sentIssue({
+        categoryId: null,
+        parentIssueId: null,
+      });
+
+      expect(issue).toStrictEqual({
+        category_id: null,
+        parent_issue_id: null,
+      });
+    },
+  );
+
+  await t.step(
+    "should send a null assignedToId as an empty string, because Redmine ignores a null assignee",
+    async () => {
+      const issue = await sentIssue({ assignedToId: null });
+
+      expect(issue).toStrictEqual({ assigned_to_id: "" });
     },
   );
 
   await t.step(
     "should keep custom field values in the request body",
     async () => {
-      let capturedBody: { issue: Record<string, unknown> } | undefined;
-      server.resetHandlers(
-        http.put(
-          `${context.endpoint}/issues/:id.json`,
-          async ({ request }) => {
-            capturedBody = await request.json() as {
-              issue: Record<string, unknown>;
-            };
-            return HttpResponse.json({});
-          },
-        ),
-      );
-
-      await update(context, 1, {
+      const issue = await sentIssue({
         customFields: [
           { id: 1, name: "text field", value: "hello" },
           { id: 2, name: "list field", multiple: true, value: ["a", "b"] },
         ],
       });
 
-      expect(capturedBody).toBeDefined();
-      expect(capturedBody!.issue.custom_fields).toStrictEqual([
+      expect(issue.custom_fields).toStrictEqual([
         { id: 1, value: "hello" },
         { id: 2, value: ["a", "b"] },
       ]);
     },
   );
+});
+
+Deno.test("statusId, priorityId, and trackerId reject null at the type level", () => {
+  // @ts-expect-error Redmine requires a status, so it cannot be cleared
+  const _status: Parameters<typeof update>[2] = { statusId: null };
+  // @ts-expect-error Redmine requires a priority, so it cannot be cleared
+  const _priority: Parameters<typeof update>[2] = { priorityId: null };
+  // @ts-expect-error Redmine requires a tracker, so it cannot be cleared
+  const _tracker: Parameters<typeof update>[2] = { trackerId: null };
 });
