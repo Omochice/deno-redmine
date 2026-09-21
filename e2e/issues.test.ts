@@ -592,15 +592,21 @@ Deno.test({
         await using cleanup = new AsyncDisposableStack();
 
         const versionNames = ["E2E Move Version A", "E2E Move Version B"];
+        const listMoveVersions = async () =>
+          (await Array.fromAsync(listVersions(e2eContext, project!.id)))
+            .filter((v) => versionNames.includes(v.name));
+        // Registered before anything is created and resolved by name at
+        // dispose time: version names are unique per project, so a version
+        // left behind by an aborted run would otherwise fail every later run.
+        cleanup.defer(async () => {
+          for (const version of await listMoveVersions()) {
+            await deleteVersion(e2eContext, version.id);
+          }
+        });
         for (const name of versionNames) {
           await createVersion(e2eContext, project!.id, { name });
         }
-        const versions =
-          (await Array.fromAsync(listVersions(e2eContext, project!.id)))
-            .filter((v) => versionNames.includes(v.name));
-        for (const version of versions) {
-          cleanup.defer(() => deleteVersion(e2eContext, version.id));
-        }
+        const versions = await listMoveVersions();
         const [versionA, versionB] = versionNames.map((name) =>
           versions.find((v) => v.name === name)
         );
@@ -608,6 +614,17 @@ Deno.test({
         expect(versionB).toBeDefined();
 
         const subject = "E2E Move Version Issue";
+        const listMoveIssues = async () =>
+          (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).filter((i) => i.subject === subject);
+        // Deferred after the versions so it runs first: Redmine refuses to
+        // delete a version that still has issues attached.
+        cleanup.defer(async () => {
+          for (const issue of await listMoveIssues()) {
+            await deleteIssue(e2eContext, issue.id);
+          }
+        });
         await createIssue(e2eContext, {
           projectId: project!.id,
           trackerId: issues[0].tracker.id,
@@ -615,14 +632,7 @@ Deno.test({
           priorityId: issues[0].priority.id,
           subject,
         });
-        const created = (await Array.fromAsync(list(e2eContext, {
-          projectId: project!.id,
-        }))).filter((i) => i.subject === subject);
-        // Deferred after the versions so it runs first: Redmine refuses to
-        // delete a version that still has issues attached.
-        for (const issue of created) {
-          cleanup.defer(() => deleteIssue(e2eContext, issue.id));
-        }
+        const created = await listMoveIssues();
         expect(created.length).toBe(1);
         const issueId = created[0].id;
         expect(created[0].fixedVersion).toBeUndefined();
