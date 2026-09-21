@@ -175,6 +175,31 @@ function includeHandler(includeParams: (string | null)[]) {
   });
 }
 
+Deno.test("list fixed version", async (t) => {
+  await t.step(
+    "should return fixed_version as fixedVersion",
+    async () => {
+      server.resetHandlers(
+        http.get(`${context.endpoint}/issues.json`, () =>
+          HttpResponse.json({
+            issues: [
+              { ...sampleIssue(1), fixed_version: { id: 2, name: "v1.0" } },
+            ],
+            total_count: 1,
+            offset: 0,
+            limit: 25,
+          })),
+      );
+
+      const issues = await Array.fromAsync(list(context));
+
+      expect(issues.map((issue) => issue.fixedVersion)).toStrictEqual([
+        { id: 2, name: "v1.0" },
+      ]);
+    },
+  );
+});
+
 Deno.test("list include option", async (t) => {
   await t.step(
     "sends a single include value as-is",

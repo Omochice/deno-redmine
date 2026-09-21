@@ -7,6 +7,7 @@ import {
   literal,
   minValue,
   null_,
+  nullable,
   number,
   object,
   omit,
@@ -79,6 +80,10 @@ export const issueSchema = pipe(
       transform(toUndefined),
     ),
     category: pipe(
+      optional(union([idName, null_()])),
+      transform(toUndefined),
+    ),
+    fixed_version: pipe(
       optional(union([idName, null_()])),
       transform(toUndefined),
     ),
@@ -262,6 +267,7 @@ export const toUpdateRequest = pipe(
     estimatedHours: number(),
     startDate: toRedmineDate,
     dueDate: toRedmineDate,
+    fixedVersionId: nullable(number()),
     customFields: array(object({
       id: number(),
       value: optional(union([string(), array(string())])),

@@ -24,6 +24,7 @@ export type Issue = {
   author: IdName;
   assignedTo?: IdName;
   category?: IdName;
+  fixedVersion?: IdName;
   subject: string;
   description?: string;
   startDate?: Date;
@@ -98,6 +99,8 @@ export type ListIssue = Issue & Pick<Include, "attachments" | "relations">;
 export type UpdateOption = {
   notes?: string;
   privateNotes?: boolean;
+  /** `null` detaches the issue from its version. */
+  fixedVersionId?: number | null;
 };
 
 export type UpdateIssueQuery = Partial<Issue & UpdateOption>;

@@ -24,38 +24,78 @@ Deno.test("GET /issues/:id.json", async (t) => {
   );
 });
 
+const sampleIssue = {
+  id: 1,
+  project: { id: 1, name: "sample project" },
+  tracker: { id: 1, name: "issue" },
+  status: { id: 1, name: "open", is_closed: false },
+  priority: { id: 1, name: "normal" },
+  author: { id: 1, name: "sample user" },
+  assigned_to: { id: 1, name: "Redmine Admin" },
+  category: undefined,
+  subject: "sample1",
+  description: "",
+  start_date: "2023-10-09T00:00:00Z",
+  due_date: null,
+  done_ratio: 0,
+  is_private: false,
+  estimated_hours: null,
+  total_estimated_hours: 0,
+  spent_hours: 0,
+  total_spent_hours: 0,
+  created_on: "2023-10-09T12:17:17Z",
+  updated_on: "2023-10-09T12:17:17Z",
+  closed_on: null,
+  custom_fields: undefined,
+};
+
 function includeHandler(includeParams: (string | null)[]) {
   return http.get(`${context.endpoint}/issues/:id.json`, ({ request }) => {
     const url = new URL(request.url);
     includeParams.push(url.searchParams.get("include"));
-    return HttpResponse.json({
-      issue: {
-        id: 1,
-        project: { id: 1, name: "sample project" },
-        tracker: { id: 1, name: "issue" },
-        status: { id: 1, name: "open", is_closed: false },
-        priority: { id: 1, name: "normal" },
-        author: { id: 1, name: "sample user" },
-        assigned_to: { id: 1, name: "Redmine Admin" },
-        category: undefined,
-        subject: "sample1",
-        description: "",
-        start_date: "2023-10-09T00:00:00Z",
-        due_date: null,
-        done_ratio: 0,
-        is_private: false,
-        estimated_hours: null,
-        total_estimated_hours: 0,
-        spent_hours: 0,
-        total_spent_hours: 0,
-        created_on: "2023-10-09T12:17:17Z",
-        updated_on: "2023-10-09T12:17:17Z",
-        closed_on: null,
-        custom_fields: undefined,
-      },
-    });
+    return HttpResponse.json({ issue: sampleIssue });
   });
 }
+
+Deno.test("GET /issues/:id.json fixed version", async (t) => {
+  await t.step(
+    "should return fixed_version as fixedVersion",
+    async () => {
+      server.resetHandlers(
+        http.get(
+          `${context.endpoint}/issues/:id.json`,
+          () =>
+            HttpResponse.json({
+              issue: { ...sampleIssue, fixed_version: { id: 2, name: "v1.0" } },
+            }),
+        ),
+      );
+
+      const issue = await show(context, 1);
+
+      expect(issue.fixedVersion).toStrictEqual({ id: 2, name: "v1.0" });
+    },
+  );
+
+  await t.step(
+    "should return a null fixed_version as undefined",
+    async () => {
+      server.resetHandlers(
+        http.get(
+          `${context.endpoint}/issues/:id.json`,
+          () =>
+            HttpResponse.json({
+              issue: { ...sampleIssue, fixed_version: null },
+            }),
+        ),
+      );
+
+      const issue = await show(context, 1);
+
+      expect(issue.fixedVersion).toBeUndefined();
+    },
+  );
+});
 
 Deno.test("GET /issues/:id.json include option", async (t) => {
   await t.step(
