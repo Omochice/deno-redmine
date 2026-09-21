@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.1](https://github.com/Omochice/deno-redmine/compare/v3.5.0...v3.5.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* return no results for a query too short to search ([#507](https://github.com/Omochice/deno-redmine/issues/507)) ([4306659](https://github.com/Omochice/deno-redmine/commit/4306659b0cd866b783878fcd9dd56f19998059c7))
+
 ## [3.5.0](https://github.com/Omochice/deno-redmine/compare/v3.4.0...v3.5.0) (2026-09-21)
 
 
