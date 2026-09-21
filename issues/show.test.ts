@@ -97,6 +97,22 @@ Deno.test("GET /issues/:id.json fixed version", async (t) => {
   );
 });
 
+Deno.test("GET /issues/:id.json parent", async (t) => {
+  await t.step("should return the parent issue id", async () => {
+    server.resetHandlers(
+      http.get(
+        `${context.endpoint}/issues/:id.json`,
+        () =>
+          HttpResponse.json({ issue: { ...sampleIssue, parent: { id: 7 } } }),
+      ),
+    );
+
+    const issue = await show(context, 1);
+
+    expect(issue.parent).toStrictEqual({ id: 7 });
+  });
+});
+
 Deno.test("GET /issues/:id.json include option", async (t) => {
   await t.step(
     "sends a single include value as-is",
