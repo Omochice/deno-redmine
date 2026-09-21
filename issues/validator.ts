@@ -270,7 +270,12 @@ export const toUpdateRequest = pipe(
     statusId: number(),
     priorityId: number(),
     trackerId: number(),
-    assignedToId: nullable(number()),
+    // Redmine ignores assigned_to_id: null and only unassigns on a blank
+    // string, unlike the other nullable ids here, which clear on null.
+    assignedToId: pipe(
+      nullable(number()),
+      transform((id) => id ?? ""),
+    ),
     categoryId: nullable(number()),
     parentIssueId: nullable(number()),
     fixedVersionId: nullable(number()),
