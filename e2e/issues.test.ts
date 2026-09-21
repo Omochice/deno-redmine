@@ -730,6 +730,76 @@ Deno.test({
     );
 
     await t.step(
+      "PUT /issues/:id.json should set and clear the assignee and category",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        await using cleanup = new AsyncDisposableStack();
+
+        const categoryName = "E2E Update Category";
+        const listUpdateCategories = async () =>
+          (await Array.fromAsync(listCategories(e2eContext, project!.id)))
+            .filter((c) => c.name === categoryName);
+        cleanup.defer(async () => {
+          for (const category of await listUpdateCategories()) {
+            await deleteIssueCategory(e2eContext, category.id);
+          }
+        });
+        await createCategory(e2eContext, project!.id, { name: categoryName });
+        const [category] = await listUpdateCategories();
+        expect(category).toBeDefined();
+
+        const subject = "E2E Reassign Issue";
+        const listReassignIssues = async () =>
+          (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).filter((i) => i.subject === subject);
+        cleanup.defer(async () => {
+          for (const issue of await listReassignIssues()) {
+            await deleteIssue(e2eContext, issue.id);
+          }
+        });
+        await createIssue(e2eContext, {
+          projectId: project!.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
+          subject,
+        });
+        const created = await listReassignIssues();
+        expect(created.length).toBe(1);
+        const issueId = created[0].id;
+        // The author is assignable without any project membership.
+        const authorId = created[0].author.id;
+
+        await update(e2eContext, issueId, {
+          assignedToId: authorId,
+          categoryId: category.id,
+        });
+        const assigned = await show(e2eContext, issueId);
+        expect(assigned.assignedTo?.id).toBe(authorId);
+        expect(assigned.category?.id).toBe(category.id);
+
+        await update(e2eContext, issueId, {
+          assignedToId: null,
+          categoryId: null,
+        });
+        const cleared = await show(e2eContext, issueId);
+        expect(cleared.assignedTo).toBeUndefined();
+        expect(cleared.category).toBeUndefined();
+      },
+    );
+
+    await t.step(
       "GET /issues.json with subprojectId excludes subproject issues",
       async () => {
         const projects = await Array.fromAsync(listProjects(e2eContext));
