@@ -57,6 +57,27 @@ function includeHandler(includeParams: (string | null)[]) {
   });
 }
 
+Deno.test("GET /issues/:id.json fixed version", async (t) => {
+  await t.step(
+    "should return fixed_version as fixedVersion",
+    async () => {
+      server.resetHandlers(
+        http.get(
+          `${context.endpoint}/issues/:id.json`,
+          () =>
+            HttpResponse.json({
+              issue: { ...sampleIssue, fixed_version: { id: 2, name: "v1.0" } },
+            }),
+        ),
+      );
+
+      const issue = await show(context, 1);
+
+      expect(issue.fixedVersion).toStrictEqual({ id: 2, name: "v1.0" });
+    },
+  );
+});
+
 Deno.test("GET /issues/:id.json include option", async (t) => {
   await t.step(
     "sends a single include value as-is",
