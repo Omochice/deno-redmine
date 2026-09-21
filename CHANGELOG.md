@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.5.0](https://github.com/Omochice/deno-redmine/compare/v3.4.0...v3.5.0) (2026-09-21)
+
+
+### Features
+
+* move issues between versions and read the version back ([#504](https://github.com/Omochice/deno-redmine/issues/504)) ([801f90c](https://github.com/Omochice/deno-redmine/commit/801f90ca929f348c53d5515a22d3b04d96820c4e))
+* update the status, assignee, and other ids of an issue ([#506](https://github.com/Omochice/deno-redmine/issues/506)) ([041dc46](https://github.com/Omochice/deno-redmine/commit/041dc466e7203f129749aecfe0be9ad57001bfd8))
+
 ## [3.4.0](https://github.com/Omochice/deno-redmine/compare/v3.3.0...v3.4.0) (2026-09-20)
 
 
