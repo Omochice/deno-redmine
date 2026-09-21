@@ -91,6 +91,29 @@ Deno.test("PUT /issues/:id.json", async (t) => {
   );
 
   await t.step(
+    "should send a null fixedVersionId as fixed_version_id: null to detach the version",
+    async () => {
+      let capturedBody: { issue: Record<string, unknown> } | undefined;
+      server.resetHandlers(
+        http.put(
+          `${context.endpoint}/issues/:id.json`,
+          async ({ request }) => {
+            capturedBody = await request.json() as {
+              issue: Record<string, unknown>;
+            };
+            return HttpResponse.json({});
+          },
+        ),
+      );
+
+      await update(context, 1, { fixedVersionId: null });
+
+      expect(capturedBody).toBeDefined();
+      expect(capturedBody!.issue).toStrictEqual({ fixed_version_id: null });
+    },
+  );
+
+  await t.step(
     "should keep custom field values in the request body",
     async () => {
       let capturedBody: { issue: Record<string, unknown> } | undefined;
