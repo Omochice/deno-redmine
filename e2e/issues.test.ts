@@ -800,6 +800,61 @@ Deno.test({
     );
 
     await t.step(
+      "PUT /issues/:id.json should set and clear the parent",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        await using cleanup = new AsyncDisposableStack();
+
+        const subjects = ["E2E Reparent Parent", "E2E Reparent Child"];
+        const listReparentIssues = async () =>
+          (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).filter((i) => subjects.includes(i.subject));
+        // Deleting a parent cascades to its children, so a child that is
+        // already gone must not fail the cleanup.
+        cleanup.defer(async () => {
+          for (const issue of await listReparentIssues()) {
+            await deleteIssue(e2eContext, issue.id).catch(() => {});
+          }
+        });
+        for (const subject of subjects) {
+          await createIssue(e2eContext, {
+            projectId: project!.id,
+            trackerId: issues[0].tracker.id,
+            statusId: issues[0].status.id,
+            priorityId: issues[0].priority.id,
+            subject,
+          });
+        }
+        const created = await listReparentIssues();
+        const [parent, child] = subjects.map((subject) =>
+          created.find((i) => i.subject === subject)
+        );
+        expect(parent).toBeDefined();
+        expect(child).toBeDefined();
+        expect(child!.parent).toBeUndefined();
+
+        await update(e2eContext, child!.id, { parentIssueId: parent!.id });
+        expect((await show(e2eContext, child!.id)).parent).toStrictEqual({
+          id: parent!.id,
+        });
+
+        await update(e2eContext, child!.id, { parentIssueId: null });
+        expect((await show(e2eContext, child!.id)).parent).toBeUndefined();
+      },
+    );
+
+    await t.step(
       "GET /issues.json with subprojectId excludes subproject issues",
       async () => {
         const projects = await Array.fromAsync(listProjects(e2eContext));
