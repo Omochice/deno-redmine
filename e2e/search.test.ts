@@ -19,5 +19,26 @@ Deno.test({
         }
       },
     );
+
+    await t.step(
+      "GET /search.json should return an empty array when nothing matches",
+      async () => {
+        const results = await Array.fromAsync(
+          search(e2eContext, { q: "b6f1c2d49e7a4c0f8a35d17e90c4f2ab" }),
+        );
+        expect(results).toStrictEqual([]);
+      },
+    );
+
+    await t.step(
+      "GET /search.json should return an empty array when the query is too short to search",
+      async () => {
+        // Redmine skips the search for a one-character query and answers
+        // `total_count: null`, unlike the `0` it answers for a query that
+        // merely matches nothing.
+        const results = await Array.fromAsync(search(e2eContext, { q: "a" }));
+        expect(results).toStrictEqual([]);
+      },
+    );
   },
 });
