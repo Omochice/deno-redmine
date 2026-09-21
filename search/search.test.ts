@@ -30,6 +30,23 @@ Deno.test("GET /search.json", async (t) => {
   );
 
   await t.step(
+    "if total_count is null, should resolve to an empty array",
+    async () => {
+      server.resetHandlers(
+        http.get(`${context.endpoint}/search.json`, () =>
+          HttpResponse.json({
+            results: [],
+            total_count: null,
+            offset: 0,
+            limit: 25,
+          })),
+      );
+      const items = await Array.fromAsync(search(context, { q: "a" }));
+      expect(items).toStrictEqual([]);
+    },
+  );
+
+  await t.step(
     "should serialize camelCase query flags to snake_case params",
     async () => {
       let capturedUrl: URL | undefined;
