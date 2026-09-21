@@ -102,6 +102,9 @@ export type UpdateOption = {
   statusId?: number;
   priorityId?: number;
   trackerId?: number;
+  assignedToId?: number;
+  categoryId?: number;
+  parentIssueId?: number;
   /** `null` detaches the issue from its version. */
   fixedVersionId?: number | null;
 };

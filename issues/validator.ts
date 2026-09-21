@@ -270,6 +270,9 @@ export const toUpdateRequest = pipe(
     statusId: number(),
     priorityId: number(),
     trackerId: number(),
+    assignedToId: number(),
+    categoryId: number(),
+    parentIssueId: number(),
     fixedVersionId: nullable(number()),
     customFields: array(object({
       id: number(),
