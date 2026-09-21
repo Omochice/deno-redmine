@@ -70,12 +70,8 @@ async function setupRedmine(): Promise<string> {
     'IssuePriority.create!(name: "Normal") if IssuePriority.count == 0',
     'Role.create!(name: "E2E Role") if Role.givable.count == 0',
     'TimeEntryActivity.create!(name: "Development") if TimeEntryActivity.count == 0',
-    // A second status, priority, and tracker give the issue update e2e test
-    // something to move to. The transition rows are required as well:
-    // Redmine silently ignores a status_id the workflow does not allow. An
-    // admin is granted the union of every role's transitions, but only of
-    // roles that can edit issues, hence the dedicated role rather than the
-    // permissionless "E2E Role".
+    // Redmine drops a status_id the workflow does not allow without an error,
+    // and only counts the transitions of roles that can edit issues.
     'next_status = IssueStatus.find_or_create_by!(name: "E2E In Progress")',
     'IssuePriority.find_or_create_by!(name: "E2E High")',
     'Tracker.find_or_create_by!(name: "E2E Feature") { |t| t.default_status = IssueStatus.first }',
