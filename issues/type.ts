@@ -100,8 +100,10 @@ export type ListIssue = Issue & Pick<Include, "attachments" | "relations">;
 export type UpdateOption = {
   notes?: string;
   privateNotes?: boolean;
+  /** Redmine ignores, without an error, a status the workflow does not allow. */
   statusId?: number;
   priorityId?: number;
+  /** Changing the tracker can reset the status. */
   trackerId?: number;
   /** `null` unassigns the issue. */
   assignedToId?: number | null;
