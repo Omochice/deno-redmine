@@ -98,7 +98,7 @@ export type ListIssue = Issue & Pick<Include, "attachments" | "relations">;
 export type UpdateOption = {
   notes?: string;
   privateNotes?: boolean;
-  fixedVersionId?: number;
+  fixedVersionId?: number | null;
 };
 
 export type UpdateIssueQuery = Partial<Issue & UpdateOption>;
