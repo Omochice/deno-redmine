@@ -381,7 +381,7 @@ const listIssueQuery = partial(
     statusId: union([picklist(["open", "closed", "*"]), number()]),
     priorityId: number(),
     categoryId: number(),
-    fixedVersionId: nullable(number()),
+    fixedVersionId: number(),
     assignedToId: union([number(), literal("me")]),
     authorId: union([number(), literal("me")]),
     parentId: string(),
