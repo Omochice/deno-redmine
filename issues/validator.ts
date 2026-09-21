@@ -267,6 +267,9 @@ export const toUpdateRequest = pipe(
     estimatedHours: number(),
     startDate: toRedmineDate,
     dueDate: toRedmineDate,
+    statusId: number(),
+    priorityId: number(),
+    trackerId: number(),
     fixedVersionId: nullable(number()),
     customFields: array(object({
       id: number(),

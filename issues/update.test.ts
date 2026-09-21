@@ -127,3 +127,12 @@ Deno.test("PUT /issues/:id.json", async (t) => {
     },
   );
 });
+
+Deno.test("statusId, priorityId, and trackerId reject null at the type level", () => {
+  // @ts-expect-error Redmine requires a status, so it cannot be cleared
+  const _status: Parameters<typeof update>[2] = { statusId: null };
+  // @ts-expect-error Redmine requires a priority, so it cannot be cleared
+  const _priority: Parameters<typeof update>[2] = { priorityId: null };
+  // @ts-expect-error Redmine requires a tracker, so it cannot be cleared
+  const _tracker: Parameters<typeof update>[2] = { trackerId: null };
+});

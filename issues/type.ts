@@ -99,6 +99,9 @@ export type ListIssue = Issue & Pick<Include, "attachments" | "relations">;
 export type UpdateOption = {
   notes?: string;
   privateNotes?: boolean;
+  statusId?: number;
+  priorityId?: number;
+  trackerId?: number;
   /** `null` detaches the issue from its version. */
   fixedVersionId?: number | null;
 };
