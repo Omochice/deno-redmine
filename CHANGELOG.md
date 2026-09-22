@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.0](https://github.com/Omochice/deno-redmine/compare/v3.5.1...v3.6.0) (2026-09-22)
+
+
+### Features
+
+* set the dates of an issue on create and clear them on update ([#509](https://github.com/Omochice/deno-redmine/issues/509)) ([2c52824](https://github.com/Omochice/deno-redmine/commit/2c52824313881001e4a0ef40401d6021fe31ae7b))
+
 ## [3.5.1](https://github.com/Omochice/deno-redmine/compare/v3.5.0...v3.5.1) (2026-09-21)
 
 
