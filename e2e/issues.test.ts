@@ -655,6 +655,61 @@ Deno.test({
     );
 
     await t.step(
+      "POST /issues.json should set the dates and PUT /issues/:id.json should clear them",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        await using cleanup = new AsyncDisposableStack();
+
+        const subject = "E2E Dated Issue";
+        const listDatedIssues = async () =>
+          (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).filter((i) => i.subject === subject);
+        cleanup.defer(async () => {
+          for (const issue of await listDatedIssues()) {
+            await deleteIssue(e2eContext, issue.id);
+          }
+        });
+
+        await createIssue(e2eContext, {
+          projectId: project!.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
+          subject,
+          startDate: new Date("2026-07-01"),
+          dueDate: new Date("2026-07-31"),
+        });
+        const created = await listDatedIssues();
+        expect(created.length).toBe(1);
+        const issueId = created[0].id;
+
+        const withDates = await show(e2eContext, issueId);
+        expect(withDates.startDate?.toISOString().slice(0, 10)).toStrictEqual(
+          "2026-07-01",
+        );
+        expect(withDates.dueDate?.toISOString().slice(0, 10)).toStrictEqual(
+          "2026-07-31",
+        );
+
+        await update(e2eContext, issueId, { startDate: null, dueDate: null });
+        const cleared = await show(e2eContext, issueId);
+        expect(cleared.startDate).toBeUndefined();
+        expect(cleared.dueDate).toBeUndefined();
+      },
+    );
+
+    await t.step(
       "PUT /issues/:id.json should change the status, priority, and tracker",
       async () => {
         const projects = await Array.fromAsync(listProjects(e2eContext));

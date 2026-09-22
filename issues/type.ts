@@ -113,9 +113,15 @@ export type UpdateOption = {
   parentIssueId?: number | null;
   /** `null` detaches the issue from its version. */
   fixedVersionId?: number | null;
+  /** `null` clears the start date. */
+  startDate?: Date | null;
+  /** `null` clears the due date. */
+  dueDate?: Date | null;
 };
 
-export type UpdateIssueQuery = Partial<Issue & UpdateOption>;
+export type UpdateIssueQuery = Partial<
+  Omit<Issue, "startDate" | "dueDate"> & UpdateOption
+>;
 
 // Redmine accepts a single string for single-value custom fields and a
 // string array for multi-value ones; both are set through the same "value"
@@ -139,6 +145,8 @@ export type CreateIssueQuery = {
   watcherUserIds?: number[];
   isPrivate?: boolean;
   estimatedHours?: number;
+  startDate?: Date;
+  dueDate?: Date;
   customFields?: CustomFieldInput[];
 };
 
