@@ -26,7 +26,6 @@ import { toUniqueArray } from "../internal/array.ts";
 import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
 import type {
   Attachment,
-  CreateIssueQuery,
   Include,
   Issue,
   IssueStatus,
@@ -266,8 +265,8 @@ export const toUpdateRequest = pipe(
     doneRatio: number(),
     isPrivate: boolean(),
     estimatedHours: number(),
-    startDate: toRedmineDate,
-    dueDate: toRedmineDate,
+    startDate: nullable(toRedmineDate),
+    dueDate: nullable(toRedmineDate),
     statusId: number(),
     priorityId: number(),
     trackerId: number(),
@@ -313,9 +312,11 @@ export const toCreateRequest = pipe(
     watcherUserIds: optional(array(number())),
     isPrivate: optional(boolean()),
     estimatedHours: optional(number()),
+    startDate: optional(toRedmineDate),
+    dueDate: optional(toRedmineDate),
     customFields: optional(array(createCustomField)),
   }),
-  transform((input: CreateIssueQuery) => {
+  transform((input) => {
     return { issue: objectToSnake(input) };
   }),
 );

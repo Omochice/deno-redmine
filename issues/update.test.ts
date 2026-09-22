@@ -94,6 +94,15 @@ Deno.test("PUT /issues/:id.json", async (t) => {
   );
 
   await t.step(
+    "should send a null startDate and dueDate as null to clear them",
+    async () => {
+      const issue = await sentIssue({ startDate: null, dueDate: null });
+
+      expect(issue).toStrictEqual({ start_date: null, due_date: null });
+    },
+  );
+
+  await t.step(
     "should send statusId, priorityId, and trackerId as snake_case ids",
     async () => {
       const issue = await sentIssue({

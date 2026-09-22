@@ -65,4 +65,33 @@ Deno.test("POST /issues.json", async (t) => {
       ]);
     },
   );
+
+  await t.step(
+    "should send startDate and dueDate as YYYY-MM-DD strings in the request body",
+    async () => {
+      let capturedBody: { issue: Record<string, unknown> } | undefined;
+      server.resetHandlers(
+        http.post(`${context.endpoint}/issues.json`, async ({ request }) => {
+          capturedBody = await request.json() as {
+            issue: Record<string, unknown>;
+          };
+          return HttpResponse.json({});
+        }),
+      );
+
+      await createIssue(context, {
+        projectId: 1,
+        trackerId: 1,
+        statusId: 1,
+        priorityId: 1,
+        subject: "sample",
+        startDate: new Date("2026-07-01"),
+        dueDate: new Date("2026-07-31"),
+      });
+
+      expect(capturedBody).toBeDefined();
+      expect(capturedBody!.issue.start_date).toStrictEqual("2026-07-01");
+      expect(capturedBody!.issue.due_date).toStrictEqual("2026-07-31");
+    },
+  );
 });
