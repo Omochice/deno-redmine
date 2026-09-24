@@ -2,7 +2,7 @@ import type { Context } from "../context.ts";
 import type { AttachmentContent } from "./type.ts";
 import { show } from "./show.ts";
 import { assertResponse } from "../error.ts";
-import { isRedirectStatus } from "jsr:@std/http@1.1.3/status";
+import { isRedirectStatus } from "jsr:@std/http@1.1.4/status";
 
 // The Fetch standard's own limit. Redirects are followed by hand only to keep
 // the API key from crossing origins, so everything else stays as `fetch` would

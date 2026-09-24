@@ -9,7 +9,7 @@ import {
 } from "./_mock.ts";
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { setupServer } from "npm:msw@2.15.0/node";
-import { STATUS_CODE } from "jsr:@std/http@1.1.3/status";
+import { STATUS_CODE } from "jsr:@std/http@1.1.4/status";
 import { expect } from "jsr:@std/expect@1.0.20";
 
 const server = setupServer();
