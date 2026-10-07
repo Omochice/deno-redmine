@@ -1,4 +1,6 @@
-import type { IdName } from "../internal/type.ts";
+import type { IdName, Upload } from "../internal/type.ts";
+
+export type { Upload };
 
 export type IssueStatus = IdName & {
   isClosed?: boolean;
@@ -117,6 +119,7 @@ export type UpdateOption = {
   startDate?: Date | null;
   /** `null` clears the due date. */
   dueDate?: Date | null;
+  uploads?: Upload[];
 };
 
 export type UpdateIssueQuery = Partial<
@@ -148,6 +151,7 @@ export type CreateIssueQuery = {
   startDate?: Date;
   dueDate?: Date;
   customFields?: CustomFieldInput[];
+  uploads?: Upload[];
 };
 
 export type ListIncludeValue = "attachments" | "relations";

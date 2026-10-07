@@ -6,6 +6,7 @@ import { createIssue } from "../issues/create.ts";
 import { update } from "../issues/update.ts";
 import { deleteIssue } from "../issues/delete.ts";
 import { create as createRelation } from "../issue-relations/create.ts";
+import { upload } from "../files/upload.ts";
 import { list as listProjects } from "../projects/list.ts";
 import { create as createProject } from "../projects/create.ts";
 import { deleteProject } from "../projects/delete.ts";
@@ -1095,6 +1096,91 @@ Deno.test({
 
         expect(upToEpoch).toStrictEqual([]);
         expect(sinceEpoch.length).toBeGreaterThan(0);
+      },
+    );
+
+    await t.step(
+      "POST /issues.json and PUT /issues/:id.json should attach uploaded files",
+      async () => {
+        const projects = await Array.fromAsync(listProjects(e2eContext));
+        const project = projects.find((p) =>
+          p.identifier === "e2e-test-project"
+        );
+        expect(project).toBeDefined();
+
+        const issues = await Array.fromAsync(list(e2eContext, {
+          projectId: project!.id,
+        }));
+        expect(issues.length).toBeGreaterThan(0);
+
+        await using cleanup = new AsyncDisposableStack();
+
+        const subject = "E2E Upload Issue";
+        const listUploadIssues = async () =>
+          (await Array.fromAsync(list(e2eContext, {
+            projectId: project!.id,
+          }))).filter((i) => i.subject === subject);
+        cleanup.defer(async () => {
+          for (const issue of await listUploadIssues()) {
+            await deleteIssue(e2eContext, issue.id);
+          }
+        });
+
+        const createToken = await upload(
+          e2eContext,
+          new TextEncoder().encode("attached on create"),
+          "e2e-create.txt",
+        );
+        await createIssue(e2eContext, {
+          projectId: project!.id,
+          trackerId: issues[0].tracker.id,
+          statusId: issues[0].status.id,
+          priorityId: issues[0].priority.id,
+          subject,
+          uploads: [{
+            token: createToken,
+            description: "attached on create",
+            contentType: "text/plain",
+          }],
+        });
+        const created = await listUploadIssues();
+        expect(created.length).toBe(1);
+        const issueId = created[0].id;
+
+        const updateToken = await upload(
+          e2eContext,
+          new TextEncoder().encode("attached on update"),
+          "e2e-update.txt",
+        );
+        await update(e2eContext, issueId, {
+          uploads: [{
+            token: updateToken,
+            filename: "e2e-update.txt",
+            description: "attached on update",
+          }],
+        });
+
+        const { attachments } = await show(e2eContext, issueId, [
+          "attachments",
+        ]);
+        expect(
+          attachments?.map(({ filename, description, contentType }) => ({
+            filename,
+            description,
+            contentType,
+          })).toSorted((a, b) => a.filename.localeCompare(b.filename)),
+        ).toStrictEqual([
+          {
+            filename: "e2e-create.txt",
+            description: "attached on create",
+            contentType: "text/plain",
+          },
+          {
+            filename: "e2e-update.txt",
+            description: "attached on update",
+            contentType: "text/plain",
+          },
+        ]);
       },
     );
 

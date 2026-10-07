@@ -1,4 +1,4 @@
-import type { IdName } from "../internal/type.ts";
+import type { IdName, Upload } from "../internal/type.ts";
 import type { Attachment } from "../attachments/type.ts";
 
 export type News = {
@@ -31,12 +31,7 @@ export type ShowNews = {
   comments?: Comment[];
 };
 
-export type NewsUpload = {
-  token: string;
-  filename?: string;
-  contentType?: string;
-  description?: string;
-};
+export type NewsUpload = Upload;
 
 export type CreateNewsQuery = {
   title: string;

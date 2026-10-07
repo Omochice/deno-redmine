@@ -176,6 +176,38 @@ Deno.test("PUT /issues/:id.json", async (t) => {
       ]);
     },
   );
+
+  await t.step(
+    "should send every upload field in snake_case in the request body",
+    async () => {
+      const issue = await sentIssue({
+        uploads: [{
+          token: "abc",
+          filename: "a.txt",
+          description: "desc",
+          contentType: "text/plain",
+        }],
+      });
+
+      expect(issue.uploads).toStrictEqual([
+        {
+          token: "abc",
+          filename: "a.txt",
+          description: "desc",
+          content_type: "text/plain",
+        },
+      ]);
+    },
+  );
+
+  await t.step(
+    "should send an upload given only a token as just the token",
+    async () => {
+      const issue = await sentIssue({ uploads: [{ token: "abc" }] });
+
+      expect(issue.uploads).toStrictEqual([{ token: "abc" }]);
+    },
+  );
 });
 
 Deno.test("statusId, priorityId, and trackerId reject null at the type level", () => {

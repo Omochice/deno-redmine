@@ -21,7 +21,12 @@ import {
   transform,
   union,
 } from "jsr:@valibot/valibot@1.5.0";
-import { dateLikeString, idName, toUndefined } from "../internal/validator.ts";
+import {
+  dateLikeString,
+  idName,
+  toUndefined,
+  upload,
+} from "../internal/validator.ts";
 import { toUniqueArray } from "../internal/array.ts";
 import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
 import type {
@@ -283,6 +288,7 @@ export const toUpdateRequest = pipe(
       id: number(),
       value: optional(union([string(), array(string())])),
     })),
+    uploads: array(upload),
   })),
   transform((input) => {
     return objectToSnake(input);
@@ -315,6 +321,7 @@ export const toCreateRequest = pipe(
     startDate: optional(toRedmineDate),
     dueDate: optional(toRedmineDate),
     customFields: optional(array(createCustomField)),
+    uploads: optional(array(upload)),
   }),
   transform((input) => {
     return { issue: objectToSnake(input) };
