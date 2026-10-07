@@ -1,11 +1,13 @@
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
+/** Client context pointing at the mocked Redmine endpoint. */
 export const context = {
   apiKey: "sample",
   endpoint: "http://redmine.example.com",
 };
 
+/** Handlers that answer the search endpoint successfully. */
 export const validHandlers = [
   http.get(`${context.endpoint}/search.json`, () => {
     const results = [
@@ -43,6 +45,7 @@ export const validHandlers = [
   }),
 ];
 
+/** Handler that answers the search endpoint with a not-found response for query 404 and a validation error otherwise. */
 export const invalidHandlers = [
   http.get(`${context.endpoint}/search.json`, ({ request }) => {
     const q = new URL(request.url).searchParams.get("q");

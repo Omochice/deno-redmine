@@ -2,11 +2,13 @@ import { http, HttpResponse } from "npm:msw@2.15.0";
 import { STATUS_CODE } from "jsr:@std/http@1.1.4/status";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
+/** Client context pointing at the mocked Redmine endpoint. */
 export const context = {
   apiKey: "sample",
   endpoint: "http://redmine.example.com",
 };
 
+/** Handlers that answer the account retrieval and update endpoints successfully. */
 export const validHandlers = [
   http.get(`${context.endpoint}/my/account.json`, () => {
     const user = {
@@ -31,6 +33,7 @@ export const validHandlers = [
   }),
 ];
 
+/** Handlers that answer the account endpoints with a Redmine validation error. */
 export const invalidHandlers = [
   http.get(`${context.endpoint}/my/account.json`, () => {
     return unprocessableEntity();
@@ -40,6 +43,7 @@ export const invalidHandlers = [
   }),
 ];
 
+/** Handlers that answer the account endpoints with a not-found response. */
 export const notFoundHandlers = [
   http.get(`${context.endpoint}/my/account.json`, () => {
     return notFound();

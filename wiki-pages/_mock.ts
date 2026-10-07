@@ -2,11 +2,13 @@ import { http, HttpResponse } from "npm:msw@2.15.0";
 import { STATUS_CODE } from "jsr:@std/http@1.1.4/status";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
+/** Client context pointing at the mocked Redmine endpoint. */
 export const context = {
   apiKey: "sample",
   endpoint: "http://redmine.example.com",
 };
 
+/** Wiki page as returned by the Redmine API. */
 export type WikiPagePayload = {
   title: string;
   version: number;
@@ -18,6 +20,7 @@ export type WikiPagePayload = {
   attachments?: { id: number; filename: string }[];
 };
 
+/** Builds a sample wiki page, letting a test override individual fields. */
 export function wikiPage(
   overrides: Partial<WikiPagePayload> = {},
 ): WikiPagePayload {
@@ -33,6 +36,7 @@ export function wikiPage(
   };
 }
 
+/** Handlers that answer every wiki page endpoint successfully. */
 export const validResponseHandlers = [
   http.get(
     `${context.endpoint}/projects/:id/wiki/index.json`,
@@ -129,6 +133,7 @@ export const validResponseHandlers = [
   ),
 ];
 
+/** Handlers that answer the wiki page endpoints with Redmine error responses, including edit conflict, forbidden and missing page cases. */
 export const invalidResponseHandlers = [
   http.get(
     `${context.endpoint}/projects/:id/wiki/index.json`,

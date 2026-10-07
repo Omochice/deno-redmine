@@ -2,6 +2,7 @@ import { http, HttpResponse } from "npm:msw@2.15.0";
 import { STATUS_CODE } from "jsr:@std/http@1.1.4/status";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
+/** Client context pointing at the mocked Redmine endpoint. */
 export const context = {
   apiKey: "sample",
   endpoint: "http://redmine.example.com",
@@ -45,6 +46,7 @@ const comments = [
   { id: 11, author: { id: 3, name: "Jane Doe" }, content: "Nice news" },
 ] as const;
 
+/** Handlers that answer every news endpoint successfully. */
 export const validHandlers = [
   http.get(`${context.endpoint}/news.json`, () => {
     return HttpResponse.json({ news: newsItems });
@@ -81,6 +83,7 @@ export const validHandlers = [
   }),
 ];
 
+/** Handlers that answer the news endpoints with Redmine error responses for selected project and news ids. */
 export const invalidHandlers = [
   http.get(`${context.endpoint}/news.json`, () => {
     return unprocessableEntity();

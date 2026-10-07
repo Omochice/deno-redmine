@@ -1,11 +1,13 @@
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
+/** Client context pointing at the mocked Redmine endpoint. */
 export const context = {
   apiKey: "sample",
   endpoint: "http://redmine.example.com",
 };
 
+/** Handlers that answer the endpoints linking issues to repository revisions successfully. */
 export const validHandlers = [
   http.post(
     `${context.endpoint}/projects/:id/repository/:repositoryId/revisions/:rev/issues.json`,
@@ -33,6 +35,7 @@ export const validHandlers = [
   ),
 ];
 
+/** Handlers that answer project ids 422 and 404 on the revision issue endpoints with Redmine error responses. */
 export const invalidHandlers = [
   http.post(
     `${context.endpoint}/projects/422/repository/revisions/:rev/issues.json`,
