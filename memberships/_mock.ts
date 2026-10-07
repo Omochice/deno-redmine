@@ -2,11 +2,13 @@ import { http, HttpResponse } from "npm:msw@2.15.0";
 import { STATUS_CODE } from "jsr:@std/http@1.1.4/status";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
+/** Client context pointing at the mocked Redmine endpoint. */
 export const context = {
   apiKey: "sample",
   endpoint: "http://redmine.example.com",
 };
 
+/** Handlers that answer every membership endpoint successfully. */
 export const validHandlers = [
   http.get(`${context.endpoint}/projects/:id/memberships.json`, () => {
     const memberships = [
@@ -56,6 +58,7 @@ export const validHandlers = [
   }),
 ];
 
+/** Handlers that answer project and membership ids 422 and 404 on the membership endpoints with Redmine error responses. */
 export const invalidHandlers = [
   http.get(`${context.endpoint}/projects/422/memberships.json`, () => {
     return unprocessableEntity();

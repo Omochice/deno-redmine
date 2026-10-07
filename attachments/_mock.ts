@@ -2,15 +2,19 @@ import { http, HttpResponse } from "npm:msw@2.15.0";
 import { STATUS_CODE } from "jsr:@std/http@1.1.4/status";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
+/** Client context pointing at the mocked Redmine endpoint. */
 export const context = {
   apiKey: "sample",
   endpoint: "http://redmine.example.com",
 };
 
+/** Download path of the attachment body served by `contentHandlers`. */
 export const contentPath = "/attachments/download/6243/example.txt";
 
+/** Body served for the attachment download. */
 export const attachmentContent = "example content";
 
+/** Builds the attachment metadata handler, letting a test override fields of the returned attachment. */
 export function showHandler(overrides: { content_url?: string } = {}) {
   return http.get(`${context.endpoint}/attachments/:id.json`, ({ params }) => {
     const attachment = {
@@ -29,12 +33,14 @@ export function showHandler(overrides: { content_url?: string } = {}) {
   });
 }
 
+/** Handlers that serve the attachment body at `contentPath`. */
 export const contentHandlers = [
   http.get(`${context.endpoint}${contentPath}`, () => {
     return HttpResponse.text(attachmentContent);
   }),
 ];
 
+/** Handlers that answer the attachment metadata, update and delete endpoints successfully. */
 export const validHandlers = [
   showHandler(),
   http.patch(`${context.endpoint}/attachments/:id.json`, () => {
@@ -45,6 +51,7 @@ export const validHandlers = [
   }),
 ];
 
+/** Handlers that answer ids 422 and 404 on the attachment endpoints with Redmine error responses. */
 export const invalidHandlers = [
   http.get(`${context.endpoint}/attachments/422.json`, () => {
     return unprocessableEntity();

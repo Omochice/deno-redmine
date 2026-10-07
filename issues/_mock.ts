@@ -1,11 +1,13 @@
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
+/** Client context pointing at the mocked Redmine endpoint. */
 export const context = {
   apiKey: "sample",
   endpoint: "http://redmine.example.com",
 };
 
+/** Handlers that answer every issue endpoint, including watchers, successfully. */
 export const validHandlers = [
   http.get(`${context.endpoint}/issues.json`, () => {
     const issues = [
@@ -134,6 +136,7 @@ export const validHandlers = [
   ),
 ];
 
+/** Handlers that answer the issue endpoints with Redmine error responses, failing every listing and lookup with 422 and ids 422 and 404 on the rest. */
 export const invalidHandlers = [
   http.get(`${context.endpoint}/issues.json`, () => {
     return unprocessableEntity();

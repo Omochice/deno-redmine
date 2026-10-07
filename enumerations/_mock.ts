@@ -1,11 +1,13 @@
 import { http, HttpResponse } from "npm:msw@2.15.0";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
+/** Client context pointing at the mocked Redmine endpoint. */
 export const context = {
   apiKey: "sample",
   endpoint: "http://redmine.example.com",
 };
 
+/** Handlers that answer every enumeration listing successfully. */
 export const validHandlers = [
   http.get(`${context.endpoint}/enumerations/issue_priorities.json`, () => {
     return HttpResponse.json({
@@ -50,6 +52,7 @@ export const validHandlers = [
   ),
 ];
 
+/** Handlers that answer every enumeration listing with a Redmine validation error. */
 export const invalidHandlers = [
   http.get(`${context.endpoint}/enumerations/issue_priorities.json`, () => {
     return unprocessableEntity();
@@ -68,6 +71,7 @@ export const invalidHandlers = [
   ),
 ];
 
+/** Handlers that answer every enumeration listing with a not-found response. */
 export const notFoundHandlers = [
   http.get(`${context.endpoint}/enumerations/issue_priorities.json`, () => {
     return notFound();
