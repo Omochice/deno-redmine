@@ -7,8 +7,6 @@
   ],
   packageRules: [
     {
-      // _msw.ts pins @mswjs/interceptors directly, and it must stay within
-      // the range msw declares or Deno resolves a second copy.
       groupName: "msw",
       matchPackageNames: ["msw", "@mswjs/interceptors"],
     },
