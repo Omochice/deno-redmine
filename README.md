@@ -138,9 +138,9 @@ Redmine rest api wrapper for deno.
   - [x] [Updating a journal](https://www.redmine.org/projects/redmine/wiki/Rest_Journals#Updating-a-journal)
 - [x] [Repositories](https://www.redmine.org/projects/redmine/wiki/Rest_api)
   - [x] `Adding a related issue to a revision`
-        (`POST /projects/:id/repository/(:repository_id/)revisions/:rev/issues`)
+    (`POST /projects/:id/repository/(:repository_id/)revisions/:rev/issues`)
   - [x] `Removing a related issue from a revision`
-        (`DELETE /projects/:id/repository/(:repository_id/)revisions/:rev/issues/:issue_id`)
+    (`DELETE /projects/:id/repository/(:repository_id/)revisions/:rev/issues/:issue_id`)
 
 ### external plugin
 
