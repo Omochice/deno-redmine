@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.0](https://github.com/Omochice/deno-redmine/compare/v3.6.0...v3.7.0) (2026-10-07)
+
+
+### Features
+
+* attach uploaded files when creating or updating an issue ([#515](https://github.com/Omochice/deno-redmine/issues/515)) ([b865334](https://github.com/Omochice/deno-redmine/commit/b865334841f08a80c23560655da17a6407297789))
+
 ## [3.6.0](https://github.com/Omochice/deno-redmine/compare/v3.5.1...v3.6.0) (2026-09-22)
 
 
