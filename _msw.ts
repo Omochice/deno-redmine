@@ -8,9 +8,6 @@ type Interceptor = ConstructorParameters<
   typeof InterceptorSource
 >[0]["interceptors"][number];
 
-/**
- * Intercept `fetch` with request handlers that tests swap in per step.
- */
 export function setupServer() {
   // msw/node's FetchInterceptor passes the call to the real fetch and
   // intercepts at the node:net socket layer, which Deno's native fetch
