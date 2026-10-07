@@ -1,6 +1,6 @@
 import { search } from "./search.ts";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
-import { setupServer } from "npm:msw@3.0.2/node";
+import { setupServer } from "../_msw.ts";
 import { http, HttpResponse } from "npm:msw@3.0.2";
 import { expect } from "jsr:@std/expect@1.0.20";
 
