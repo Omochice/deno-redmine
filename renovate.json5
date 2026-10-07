@@ -8,7 +8,10 @@
   packageRules: [
     {
       groupName: "msw",
-      matchPackageNames: ["msw", "@mswjs/interceptors"],
+      matchPackageNames: [
+        "msw",
+        "@mswjs/interceptors",
+      ],
     },
   ],
   lockFileMaintenance: {
