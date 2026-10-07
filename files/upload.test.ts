@@ -1,8 +1,8 @@
 import { upload } from "./upload.ts";
 import { expect } from "jsr:@std/expect@1.0.20";
 import { context, validHandlers } from "./_mock.ts";
-import { http, HttpResponse } from "npm:msw@2.15.0";
-import { setupServer } from "npm:msw@2.15.0/node";
+import { http, HttpResponse } from "npm:msw@3.0.2";
+import { setupServer } from "../_msw.ts";
 import { STATUS_CODE } from "jsr:@std/http@1.1.4/status";
 
 const server = setupServer();

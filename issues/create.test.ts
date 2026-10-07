@@ -1,8 +1,8 @@
 import { createIssue } from "./create.ts";
 import { expect } from "jsr:@std/expect@1.0.20";
 import { context } from "./_mock.ts";
-import { setupServer } from "npm:msw@2.15.0/node";
-import { http, HttpResponse } from "npm:msw@2.15.0";
+import { setupServer } from "../_msw.ts";
+import { http, HttpResponse } from "npm:msw@3.0.2";
 import type { CreateIssueQuery } from "./type.ts";
 
 const server = setupServer();

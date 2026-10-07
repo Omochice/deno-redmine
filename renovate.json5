@@ -5,6 +5,15 @@
     "github>Omochice/personal-renovate-config:nix#v2.0.0",
     "github>Omochice/renovate-config:deno#v4.1.1",
   ],
+  packageRules: [
+    {
+      groupName: "msw",
+      matchPackageNames: [
+        "msw",
+        "@mswjs/interceptors",
+      ],
+    },
+  ],
   lockFileMaintenance: {
     enabled: true,
     automerge: true,
