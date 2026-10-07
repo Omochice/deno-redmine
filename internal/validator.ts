@@ -2,6 +2,7 @@ import {
   custom,
   number,
   object,
+  optional,
   pipe,
   string,
   transform,
@@ -10,6 +11,13 @@ import {
 export const idName = object({
   id: number(),
   name: string(),
+});
+
+export const upload = object({
+  token: string(),
+  filename: optional(string()),
+  contentType: optional(string()),
+  description: optional(string()),
 });
 
 export const dateLikeString = pipe(

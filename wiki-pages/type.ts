@@ -1,3 +1,5 @@
+import type { Upload } from "../internal/type.ts";
+
 export type Wiki = {
   title: string;
   version: number;
@@ -29,12 +31,7 @@ type Attachment = {
   filename: string;
 };
 
-export type Upload = {
-  token: string;
-  filename?: string;
-  contentType?: string;
-  description?: string;
-};
+export type { Upload };
 
 export type WikiContent = {
   title: string;
