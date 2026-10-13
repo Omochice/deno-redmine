@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "npm:msw@3.0.2";
+import { http, HttpResponse } from "npm:msw@3.0.3";
 import { notFound, unprocessableEntity } from "../_msw.ts";
 
 export const context = {

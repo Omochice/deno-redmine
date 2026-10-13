@@ -6,7 +6,7 @@ import {
   validResponseHandlers,
   wikiPage,
 } from "./_mock.ts";
-import { http, HttpResponse } from "npm:msw@3.0.2";
+import { http, HttpResponse } from "npm:msw@3.0.3";
 import { setupServer } from "../_msw.ts";
 
 const server = setupServer();
