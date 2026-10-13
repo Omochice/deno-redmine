@@ -7,7 +7,7 @@ import {
   showHandler,
   validHandlers,
 } from "./_mock.ts";
-import { http, HttpResponse } from "npm:msw@3.0.2";
+import { http, HttpResponse } from "npm:msw@3.0.3";
 import { setupServer } from "../_msw.ts";
 import { STATUS_CODE } from "jsr:@std/http@1.1.4/status";
 import { expect } from "jsr:@std/expect@1.0.20";
