@@ -1,6 +1,6 @@
 import { HttpResponse } from "npm:msw@3.0.3";
 import { defineNetwork, InterceptorSource } from "npm:msw@3.0.3/experimental";
-import { FetchInterceptor } from "npm:@mswjs/interceptors@0.45.7/fetch/web";
+import { FetchInterceptor } from "npm:@mswjs/interceptors@0.45.9/fetch/web";
 import { STATUS_CODE } from "jsr:@std/http@1.1.4/status";
 
 /**
