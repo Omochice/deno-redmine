@@ -8,7 +8,7 @@ import {
   transform,
 } from "jsr:@valibot/valibot@1.5.0";
 import { Enumeration } from "./type.ts";
-import { objectToCamel } from "npm:ts-case-convert@2.3.1";
+import { objectToCamel } from "npm:ts-case-convert@2.3.2";
 
 // Issue priorities, time entry activities, and document categories are all
 // instances of Redmine's Enumeration model, so a single item schema covers

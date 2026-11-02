@@ -10,7 +10,7 @@ import {
   union,
 } from "jsr:@valibot/valibot@1.5.0";
 import { idName, toUndefined } from "../internal/validator.ts";
-import { objectToCamel } from "npm:ts-case-convert@2.3.1";
+import { objectToCamel } from "npm:ts-case-convert@2.3.2";
 import type { CustomField } from "./type.ts";
 
 // Redmine renders list-type possible values as plain strings on older

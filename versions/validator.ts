@@ -11,7 +11,7 @@ import {
   transform,
 } from "jsr:@valibot/valibot@1.5.0";
 import { dateLikeString, idName, toUndefined } from "../internal/validator.ts";
-import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
+import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.2";
 import type { Version } from "./type.ts";
 
 const statusValues = ["open", "locked", "closed"] as const;

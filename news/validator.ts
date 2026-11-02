@@ -11,7 +11,7 @@ import {
 import type { News, ShowNews } from "./type.ts";
 import { dateLikeString, idName, upload } from "../internal/validator.ts";
 import { attachmentSchema } from "../attachments/validator.ts";
-import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
+import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.2";
 
 const newsSchema = pipe(
   object({

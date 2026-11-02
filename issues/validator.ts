@@ -28,7 +28,7 @@ import {
   upload,
 } from "../internal/validator.ts";
 import { toUniqueArray } from "../internal/array.ts";
-import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
+import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.2";
 import type {
   Attachment,
   Include,
