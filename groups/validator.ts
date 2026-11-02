@@ -9,7 +9,7 @@ import {
   transform,
 } from "jsr:@valibot/valibot@1.5.0";
 import { idName } from "../internal/validator.ts";
-import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
+import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.2";
 import type { Group } from "./type.ts";
 
 export const groupSchema = pipe(

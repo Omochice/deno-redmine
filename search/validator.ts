@@ -7,7 +7,7 @@ import {
   transform,
 } from "jsr:@valibot/valibot@1.5.0";
 import { dateLikeString, toUndefined } from "../internal/validator.ts";
-import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.1";
+import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.2";
 import type { SearchQuery, SearchResult } from "./type.ts";
 
 export const searchResultSchema = pipe(
