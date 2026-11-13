@@ -2,7 +2,7 @@ import { addWatcher } from "./add-watcher.ts";
 import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "../_msw.ts";
-import { http, HttpResponse } from "npm:msw@3.0.3";
+import { http, HttpResponse } from "npm:msw@3.0.4";
 
 const server = setupServer();
 server.listen();
