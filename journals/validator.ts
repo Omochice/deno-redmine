@@ -6,7 +6,7 @@ import {
   string,
   transform,
 } from "jsr:@valibot/valibot@1.5.0";
-import { objectToSnake } from "npm:ts-case-convert@2.3.2";
+import { objectToSnake } from "npm:ts-case-convert@2.3.3";
 
 const updateJournalQuerySchema = object({
   notes: optional(string()),
