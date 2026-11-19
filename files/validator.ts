@@ -8,7 +8,7 @@ import {
   transform,
 } from "jsr:@valibot/valibot@1.5.0";
 import { dateLikeString, idName, toUndefined } from "../internal/validator.ts";
-import { objectToCamel, objectToSnake } from "npm:ts-case-convert@2.3.3";
+import { objectToCamel, objectToSnake } from "npm:ts-case-convert@3.0.0";
 import type { ProjectFile } from "./type.ts";
 
 export const fileSchema = pipe(
