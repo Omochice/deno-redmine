@@ -8,7 +8,7 @@ import {
   transform,
 } from "jsr:@valibot/valibot@1.5.0";
 import { idName } from "../internal/validator.ts";
-import { objectToCamel } from "npm:ts-case-convert@2.3.3";
+import { objectToCamel } from "npm:ts-case-convert@3.0.0";
 import type { Role } from "./type.ts";
 
 export const roleListResponse = object({
