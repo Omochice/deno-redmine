@@ -2,7 +2,7 @@ import { update } from "./update.ts";
 import { expect } from "jsr:@std/expect@1.0.20";
 import { context, invalidHandlers, validHandlers } from "./_mock.ts";
 import { setupServer } from "../_msw.ts";
-import { http, HttpResponse } from "npm:msw@3.0.4";
+import { http, HttpResponse } from "npm:msw@3.0.7";
 import type { UpdateIssueQuery } from "./type.ts";
 
 const server = setupServer();
